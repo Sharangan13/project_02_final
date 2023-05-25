@@ -139,13 +139,12 @@ class _registerState extends State<register> {
                     ),
                     obscureText: true,
                     validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'This field is required';
+                      if (value!.isEmpty) {
+                        return 'Please confirm your password';
                       }
-                      if (value.trim().length < 8) {
-                        return 'Password must be at least 8 characters in length';
+                      if (value != _passwordTextController.text) {
+                        return 'Passwords do not match';
                       }
-                      // Return null if the entered password is valid
                       return null;
                     },
                   ),
