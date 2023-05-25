@@ -8,13 +8,15 @@ import 'home.dart';
 
 class login_screen extends StatefulWidget {
   const login_screen({Key? key}) : super(key: key);
-
   @override
   State<login_screen> createState() => _login_screenState();
 }
 
 class _login_screenState extends State<login_screen> {
+  final _formKey = GlobalKey<FormState>();
+
   TextEditingController _passwordTextController = TextEditingController();
+
   TextEditingController _emailTextController = TextEditingController();
 
   @override
@@ -33,44 +35,78 @@ class _login_screenState extends State<login_screen> {
           child: Padding(
             padding: EdgeInsets.fromLTRB(
                 20, MediaQuery.of(context).size.height * 0.1, 20, 0),
-            child: Column(
-              children: <Widget>[
-                Text(
-                  'Psell',
-                  style: TextStyle(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    'Psell',
+                    style: TextStyle(
                       fontSize: 80,
                       color: Colors.white,
                       fontFamily: 'Times New Roman',
-                      letterSpacing: 4),
-                ),
-                logoWidget('assects/images/logo1.png'),
-                SizedBox(
-                  height: 40,
-                ),
-                reusableTextField("Enter your user name", Icons.person, false,
-                    _emailTextController),
-                SizedBox(
-                  height: 30,
-                ),
-                reusableTextField("Enter your password", Icons.password, true,
-                    _passwordTextController),
-                SizedBox(
-                  height: 20,
-                ),
-                firebaseUIButton(context, "Login", () {
-                  FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text)
-                      .then((value) {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => home()));
-                  }).onError((error, stackTrace) {
-                    print("Error ${error.toString()}");
-                  });
-                }),
-                registerOption(),
-              ],
+                      letterSpacing: 4,
+                    ),
+                  ),
+                  logoWidget('assets/images/logo1.png'),
+                  SizedBox(height: 40),
+                  TextFormField(
+                    controller: _emailTextController,
+                    decoration: InputDecoration(
+                      labelText: 'User Name',
+                      icon: Icon(Icons.person),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'This field is required';
+                      }
+                      if (value.trim().length < 4) {
+                        return 'Username must be at least 4 characters in length';
+                      }
+                      // Return null if the entered username is valid
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 30),
+                  TextFormField(
+                    controller: _passwordTextController,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      icon: Icon(Icons.lock),
+                    ),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'This field is required';
+                      }
+                      if (value.trim().length < 8) {
+                        return 'Password must be at least 8 characters in length';
+                      }
+                      // Return null if the entered password is valid
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  firebaseUIButton(context, "Login", () {
+                    if (_formKey.currentState!.validate()) {
+                      FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                        email: _emailTextController.text,
+                        password: _passwordTextController.text,
+                      )
+                          .then((value) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => home()),
+                        );
+                      }).onError((error, stackTrace) {
+                        print("Error ${error.toString()}");
+                      });
+                    }
+                  }),
+                  registerOption(),
+                ],
+              ),
             ),
           ),
         ),
@@ -86,8 +122,8 @@ class _login_screenState extends State<login_screen> {
             style: TextStyle(color: Colors.white70)),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => register()));
+            Navigator.push(context as BuildContext,
+                MaterialPageRoute(builder: (context) => register()));
           },
           child: const Text(
             "  Register",

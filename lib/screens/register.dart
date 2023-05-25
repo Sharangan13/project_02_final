@@ -4,7 +4,6 @@ import '../reusable_widgets/reusable_widgets.dart';
 import 'package:project_02_final/screens/login.dart';
 
 import 'home.dart';
-import 'login.dart';
 
 class register extends StatefulWidget {
   const register({Key? key}) : super(key: key);
@@ -14,6 +13,7 @@ class register extends StatefulWidget {
 }
 
 class _registerState extends State<register> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _userNameTextController = TextEditingController();
@@ -45,51 +45,132 @@ class _registerState extends State<register> {
           child: SingleChildScrollView(
               child: Padding(
             padding: EdgeInsets.fromLTRB(20, 120, 20, 0),
-            child: Column(
-              children: <Widget>[
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField("Enter User Name", Icons.person_outline,
-                    false, _userNameTextController),
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField(
-                    "Enter Email Id", Icons.email, false, _emailTextController),
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField("Enter phone number", Icons.phone, false,
-                    _phoneTextController),
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField("Enter Password", Icons.password, true,
-                    _passwordTextController),
-                const SizedBox(
-                  height: 20,
-                ),
-                reusableTextField("Conform Password", Icons.password, true,
-                    _conformpasswordTextController),
-                const SizedBox(
-                  height: 20,
-                ),
-                firebaseUIButton(context, "Register", () {
-                  FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text)
-                      .then((value) {
-                    print("Ctrate new account");
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => home()));
-                  }).onError((error, stackTrace) {
-                    print("Error ${error.toString()}");
-                  });
-                }),
-                loginOption(),
-              ],
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: _userNameTextController,
+                    decoration: InputDecoration(
+                      labelText: 'User Name',
+                      icon: Icon(Icons.person),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'This field is required';
+                      }
+                      if (value.trim().length < 4) {
+                        return 'Username must be at least 4 characters in length';
+                      }
+                      // Return null if the entered username is valid
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: _emailTextController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter Email Id',
+                      icon: Icon(Icons.email),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter an email';
+                      } else if (!RegExp(
+                              r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$')
+                          .hasMatch(value)) {
+                        return "Please Enter a Valid Phone Number";
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: _phoneTextController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter phone number',
+                      icon: Icon(Icons.phone),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please Enter a Phone Number";
+                      } else if (!RegExp(
+                              r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$')
+                          .hasMatch(value)) {
+                        return "Please Enter a Valid Phone Number";
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: _passwordTextController,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      icon: Icon(Icons.lock),
+                    ),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'This field is required';
+                      }
+                      if (value.trim().length < 8) {
+                        return 'Password must be at least 8 characters in length';
+                      }
+                      // Return null if the entered password is valid
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    controller: _conformpasswordTextController,
+                    decoration: InputDecoration(
+                      labelText: 'Conform Password',
+                      icon: Icon(Icons.lock),
+                    ),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'This field is required';
+                      }
+                      if (value.trim().length < 8) {
+                        return 'Password must be at least 8 characters in length';
+                      }
+                      // Return null if the entered password is valid
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  firebaseUIButton(context, "Register", () {
+                    if (_formKey.currentState!.validate()) {
+                      FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                        email: _emailTextController.text,
+                        password: _passwordTextController.text,
+                      )
+                          .then((value) {
+                        print("Ctrate new account");
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => home()));
+                      }).onError((error, stackTrace) {
+                        print("Error ${error.toString()}");
+                      });
+                    }
+                  }),
+                  loginOption(),
+                ],
+              ),
             ),
           ))),
     );

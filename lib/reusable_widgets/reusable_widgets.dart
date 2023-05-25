@@ -11,7 +11,8 @@ Image logoWidget(String imageName) {
 }
 
 TextField reusableTextField(String text, IconData icon, bool isPasswordType,
-    TextEditingController controller) {
+    TextEditingController controller,
+    {required String? Function(dynamic value) validator}) {
   return TextField(
     controller: controller,
     obscureText: isPasswordType,
