@@ -81,11 +81,10 @@ class _registerState extends State<register> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter an email';
-                      } else if (!RegExp(
-                              r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$')
-                          .hasMatch(value)) {
-                        return "Please Enter a Valid Phone Number";
+                      } else if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                        return "Please Enter a Valid Email";
                       }
+                      return null;
                     },
                   ),
                   const SizedBox(
@@ -105,6 +104,7 @@ class _registerState extends State<register> {
                           .hasMatch(value)) {
                         return "Please Enter a Valid Phone Number";
                       }
+                      return null;
                     },
                   ),
                   const SizedBox(
