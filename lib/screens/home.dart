@@ -15,48 +15,99 @@ class _homeState extends State<home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("PSell"),
-      ),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Color.fromRGBO(25, 176, 47, 1),
-            Color.fromRGBO(0, 0, 0, 10)
-          ], begin: Alignment.bottomCenter, end: Alignment.topCenter),
+        backgroundColor: Colors.green[700],
+        iconTheme: IconThemeData(color: Colors.black),
+        title: Text(
+          'Home',
+          style: TextStyle(color: Colors.black, fontSize: 17),
         ),
-        child: SingleChildScrollView(
-            child: Column(
-          children: <Widget>[
-            SafeArea(
-              child: Text(
-                'Welcome bro!!!',
-                style: TextStyle(
-                    fontSize: 40,
-                    color: Colors.green,
-                    fontFamily: 'Times New Roman',
-                    letterSpacing: 4),
+        actions: [
+          CircleAvatar(
+            radius: 15,
+            backgroundColor: Colors.white,
+            child: IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.search,
+                size: 17,
+                color: Colors.black,
               ),
             ),
-            SizedBox(
-              height: 40,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: GestureDetector(
+              onTap: () {},
+              child: CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 15,
+                child: Icon(
+                  Icons.shop,
+                  size: 17,
+                  color: Colors.black,
+                ),
+              ),
             ),
-            ElevatedButton(
-              child: Text("Logout"),
-              onPressed: () {
-                FirebaseAuth.instance.signOut().then((value) {
-                  print("Log Out");
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => login_screen()));
-                });
-              },
-            ),
-          ],
-        )),
+          ),
+        ],
       ),
       drawer: Drawer(
         elevation: 10,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        child: ListView(
+          children: [
+            Container(
+              height: 150,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                      'https://salisburygreenhouse.com/wp-content/uploads/Top-10-Plants-That-Make-You-Happy-main.png'),
+                ),
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(right: 130, bottom: 10),
+                          ),
+                          Text(
+                            '15% Off',
+                            style: TextStyle(
+                                fontSize: 40,
+                                color: Colors.yellow,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Text(
+                              'On all plants until 13th may',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

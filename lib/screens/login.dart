@@ -52,9 +52,22 @@ class _login_screenState extends State<login_screen> {
                   SizedBox(height: 40),
                   TextFormField(
                     controller: _emailTextController,
+                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      labelText: 'User Name',
-                      icon: Icon(Icons.person),
+                      prefixIcon: Icon(
+                        Icons.person_outline,
+                        color: Colors.white70,
+                      ),
+                      labelText: "Enter UserName",
+                      labelStyle:
+                          TextStyle(color: Colors.white.withOpacity(0.9)),
+                      filled: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      fillColor: Colors.white.withOpacity(0.3),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                              width: 0, style: BorderStyle.none)),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -70,9 +83,22 @@ class _login_screenState extends State<login_screen> {
                   SizedBox(height: 30),
                   TextFormField(
                     controller: _passwordTextController,
+                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      labelText: 'Password',
-                      icon: Icon(Icons.lock),
+                      prefixIcon: Icon(
+                        Icons.password,
+                        color: Colors.white70,
+                      ),
+                      labelText: "Password",
+                      labelStyle:
+                          TextStyle(color: Colors.white.withOpacity(0.9)),
+                      filled: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      fillColor: Colors.white.withOpacity(0.3),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                              width: 0, style: BorderStyle.none)),
                     ),
                     obscureText: true,
                     validator: (value) {

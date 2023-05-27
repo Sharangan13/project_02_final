@@ -54,9 +54,22 @@ class _registerState extends State<register> {
                   ),
                   TextFormField(
                     controller: _userNameTextController,
+                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      labelText: 'User Name',
-                      icon: Icon(Icons.person),
+                      prefixIcon: Icon(
+                        Icons.person_outline,
+                        color: Colors.white70,
+                      ),
+                      labelText: "Enter UserName",
+                      labelStyle:
+                          TextStyle(color: Colors.white.withOpacity(0.9)),
+                      filled: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      fillColor: Colors.white.withOpacity(0.3),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                              width: 0, style: BorderStyle.none)),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
@@ -74,9 +87,22 @@ class _registerState extends State<register> {
                   ),
                   TextFormField(
                     controller: _emailTextController,
+                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      labelText: 'Enter Email Id',
-                      icon: Icon(Icons.email),
+                      prefixIcon: Icon(
+                        Icons.email,
+                        color: Colors.white70,
+                      ),
+                      labelText: "Enter Email Id",
+                      labelStyle:
+                          TextStyle(color: Colors.white.withOpacity(0.9)),
+                      filled: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      fillColor: Colors.white.withOpacity(0.3),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                              width: 0, style: BorderStyle.none)),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -92,9 +118,22 @@ class _registerState extends State<register> {
                   ),
                   TextFormField(
                     controller: _phoneTextController,
+                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      labelText: 'Enter phone number',
-                      icon: Icon(Icons.phone),
+                      prefixIcon: Icon(
+                        Icons.phone,
+                        color: Colors.white70,
+                      ),
+                      labelText: "Enter Phone Number",
+                      labelStyle:
+                          TextStyle(color: Colors.white.withOpacity(0.9)),
+                      filled: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      fillColor: Colors.white.withOpacity(0.3),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                              width: 0, style: BorderStyle.none)),
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -112,9 +151,22 @@ class _registerState extends State<register> {
                   ),
                   TextFormField(
                     controller: _passwordTextController,
+                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      labelText: 'Password',
-                      icon: Icon(Icons.lock),
+                      prefixIcon: Icon(
+                        Icons.password,
+                        color: Colors.white70,
+                      ),
+                      labelText: "Enter password",
+                      labelStyle:
+                          TextStyle(color: Colors.white.withOpacity(0.9)),
+                      filled: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      fillColor: Colors.white.withOpacity(0.3),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                              width: 0, style: BorderStyle.none)),
                     ),
                     obscureText: true,
                     validator: (value) {
@@ -133,9 +185,22 @@ class _registerState extends State<register> {
                   ),
                   TextFormField(
                     controller: _conformpasswordTextController,
+                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      labelText: 'Conform Password',
-                      icon: Icon(Icons.lock),
+                      prefixIcon: Icon(
+                        Icons.password,
+                        color: Colors.white70,
+                      ),
+                      labelText: "Confirm password",
+                      labelStyle:
+                          TextStyle(color: Colors.white.withOpacity(0.9)),
+                      filled: true,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      fillColor: Colors.white.withOpacity(0.3),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: const BorderSide(
+                              width: 0, style: BorderStyle.none)),
                     ),
                     obscureText: true,
                     validator: (value) {
