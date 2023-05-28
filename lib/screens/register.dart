@@ -20,7 +20,7 @@ class _registerState extends State<register> {
   TextEditingController _phoneTextController = TextEditingController();
   TextEditingController _conformpasswordTextController =
       TextEditingController();
-
+  bool textvisible = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,6 +157,21 @@ class _registerState extends State<register> {
                         Icons.password,
                         color: Colors.white70,
                       ),
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              textvisible = !textvisible;
+                            });
+                          },
+                          icon: textvisible
+                              ? Icon(
+                                  Icons.visibility,
+                                  color: Colors.white,
+                                )
+                              : Icon(
+                                  Icons.visibility_off,
+                                  color: Colors.white,
+                                )),
                       labelText: "Enter password",
                       labelStyle:
                           TextStyle(color: Colors.white.withOpacity(0.9)),
@@ -168,7 +183,7 @@ class _registerState extends State<register> {
                           borderSide: const BorderSide(
                               width: 0, style: BorderStyle.none)),
                     ),
-                    obscureText: true,
+                    obscureText: textvisible,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'This field is required';
@@ -191,6 +206,21 @@ class _registerState extends State<register> {
                         Icons.password,
                         color: Colors.white70,
                       ),
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              textvisible = !textvisible;
+                            });
+                          },
+                          icon: textvisible
+                              ? Icon(
+                                  Icons.visibility,
+                                  color: Colors.white,
+                                )
+                              : Icon(
+                                  Icons.visibility_off,
+                                  color: Colors.white,
+                                )),
                       labelText: "Confirm password",
                       labelStyle:
                           TextStyle(color: Colors.white.withOpacity(0.9)),
@@ -202,7 +232,7 @@ class _registerState extends State<register> {
                           borderSide: const BorderSide(
                               width: 0, style: BorderStyle.none)),
                     ),
-                    obscureText: true,
+                    obscureText: textvisible,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please confirm your password';

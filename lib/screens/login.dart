@@ -18,7 +18,7 @@ class _login_screenState extends State<login_screen> {
   TextEditingController _passwordTextController = TextEditingController();
 
   TextEditingController _emailTextController = TextEditingController();
-
+  bool textvisible = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,6 +89,21 @@ class _login_screenState extends State<login_screen> {
                         Icons.password,
                         color: Colors.white70,
                       ),
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              textvisible = !textvisible;
+                            });
+                          },
+                          icon: textvisible
+                              ? Icon(
+                                  Icons.visibility,
+                                  color: Colors.white,
+                                )
+                              : Icon(
+                                  Icons.visibility_off,
+                                  color: Colors.white,
+                                )),
                       labelText: "Password",
                       labelStyle:
                           TextStyle(color: Colors.white.withOpacity(0.9)),
@@ -100,7 +115,7 @@ class _login_screenState extends State<login_screen> {
                           borderSide: const BorderSide(
                               width: 0, style: BorderStyle.none)),
                     ),
-                    obscureText: true,
+                    obscureText: textvisible,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'This field is required';
