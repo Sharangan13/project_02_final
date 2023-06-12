@@ -52,6 +52,85 @@ class _homeState extends State<home> {
         ],
       ),
       drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text('Kunarasa Tharsujan'),
+              accountEmail: Text('kunarastharsujan@gmail.com'),
+              currentAccountPicture: CircleAvatar(
+                child: ClipOval(
+                  child: Image.asset('assets/images/profile.png'),
+                ),
+              ),
+              decoration: BoxDecoration(color: Colors.lightGreen),
+            ),
+            ListTile(
+              dense: true,
+              title: Text("My Account"),
+              leading: Icon(Icons.person),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: Text("Pre-Orders Bookings"),
+              leading: Icon(Icons.add_box),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: Text("Consultancy Bookings"),
+              leading: Icon(Icons.add_box),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: Text("Notifications"),
+              leading: Icon(Icons.notifications_rounded),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: Text("About us"),
+              leading: Icon(Icons.contact_page_rounded),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: Text("Rate us"),
+              leading: Icon(Icons.star_rate),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: Text("Your QR"),
+              leading: Icon(Icons.qr_code),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: Text("Log out"),
+              leading: Icon(Icons.arrow_back),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+          ],
+        ),
         elevation: 10,
       ),
       body: Padding(
