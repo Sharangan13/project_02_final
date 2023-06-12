@@ -131,7 +131,7 @@ class _homeState extends State<home> {
             ),
           ],
         ),
-        elevation: 10,
+        elevation: 40,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
