@@ -142,8 +142,7 @@ class _homeState extends State<home> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(
-                      'https://salisburygreenhouse.com/wp-content/uploads/Top-10-Plants-That-Make-You-Happy-main.png'),
+                  image: NetworkImage('https://salisburygreenhouse.com/wp-content/uploads/Top-10-Plants-That-Make-You-Happy-main.png'),
                 ),
                 color: Colors.red,
                 borderRadius: BorderRadius.circular(10),

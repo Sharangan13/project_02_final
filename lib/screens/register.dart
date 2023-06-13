@@ -254,7 +254,7 @@ class _registerState extends State<register> {
                         password: _passwordTextController.text,
                       )
                           .then((value) {
-                        print("Ctrate new account");
+                        print("Create new account");
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) => home()));
                       }).onError((error, stackTrace) {

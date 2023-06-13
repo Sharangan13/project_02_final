@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:project_02_final/screens/register.dart';
+import 'package:project_02_final/screens/reset_password.dart';
 
 import '../reusable_widgets/reusable_widgets.dart';
 import 'home.dart';
