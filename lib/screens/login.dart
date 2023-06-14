@@ -182,7 +182,7 @@ class _login_screenState extends State<login_screen> {
   Widget forgetPassword(BuildContext context){
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 35,
+      height: 30,
       alignment: Alignment.bottomRight,
       child: TextButton(
         child: const Text(
@@ -190,7 +190,9 @@ class _login_screenState extends State<login_screen> {
               style:TextStyle(color:Colors.white70),
               textAlign: TextAlign.right,
       ),
-        onPressed: (){},
+        onPressed: () =>Navigator.push(
+          context,MaterialPageRoute(builder: (context)=>resetpassword())
+        ),
     ),
         );
 
