@@ -59,11 +59,20 @@ class _homeState extends State<home> {
               accountName: Text('Kunarasa Tharsujan'),
               accountEmail: Text('kunarastharsujan@gmail.com'),
               currentAccountPicture: CircleAvatar(
-                child: ClipOval(
-                  child: Image.asset('assets/images/profile.png'),
+                backgroundColor: Colors.white,
+                radius: 15,
+                child: Icon(
+                  Icons.person,
+                  size: 30,
+                  color: Colors.black,
                 ),
               ),
-              decoration: BoxDecoration(color: Colors.lightGreen),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                    Color.fromRGBO(25, 176, 47, 1),
+                    Color.fromRGBO(0, 0, 0, 10)
+                  ], begin: Alignment.bottomCenter, end: Alignment.topCenter),
+                ),
             ),
             ListTile(
               dense: true,
@@ -135,58 +144,31 @@ class _homeState extends State<home> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: ListView(
-          children: [
-            Container(
-              height: 150,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage('https://salisburygreenhouse.com/wp-content/uploads/Top-10-Plants-That-Make-You-Happy-main.png'),
+        child:Column(
+          children:[
+            Row(
+              children: [
+                Expanded(child:
+                Container(
+                  color:Colors.grey,
+                  child: Row(
+                    children: [
+                      Icon(Icons.search),
+                      Text("Search products"),
+                    ],
+                  ),
+
                 ),
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(right: 130, bottom: 10),
-                          ),
-                          Text(
-                            '15% Off',
-                            style: TextStyle(
-                                fontSize: 40,
-                                color: Colors.yellow,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: Text(
-                              'On all plants until 13th may',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              ],
+            )
           ],
-        ),
+      )
+
+
+
       ),
     );
+
   }
 }
