@@ -59,7 +59,7 @@ class _login_screenState extends State<login_screen> {
                         Icons.person_outline,
                         color: Colors.white70,
                       ),
-                      labelText: "Enter UserName",
+                      labelText: "Enter Email address",
                       labelStyle:
                           TextStyle(color: Colors.white.withOpacity(0.9)),
                       filled: true,
@@ -128,11 +128,9 @@ class _login_screenState extends State<login_screen> {
                       return null;
                     },
                   ),
-                 const SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   forgetPassword(context),
-
                   SizedBox(height: 20),
-
                   firebaseUIButton(context, "Login", () {
                     if (_formKey.currentState!.validate()) {
                       FirebaseAuth.instance
@@ -143,7 +141,7 @@ class _login_screenState extends State<login_screen> {
                           .then((value) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => home()),
+                          MaterialPageRoute(builder: (context) => const home()),
                         );
                       }).onError((error, stackTrace) {
                         print("Error ${error.toString()}");
@@ -179,24 +177,21 @@ class _login_screenState extends State<login_screen> {
       ],
     );
   }
-  Widget forgetPassword(BuildContext context){
+
+  Widget forgetPassword(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 30,
+      height: 35,
       alignment: Alignment.bottomRight,
       child: TextButton(
         child: const Text(
           "forgot password?",
-              style:TextStyle(color:Colors.white70),
-              textAlign: TextAlign.right,
-      ),
-        onPressed: () =>Navigator.push(
-          context,MaterialPageRoute(builder: (context)=>resetpassword())
+          style: TextStyle(color: Colors.white70),
+          textAlign: TextAlign.right,
         ),
-    ),
-        );
-
-
+        onPressed: () => Navigator.push(
+            context, MaterialPageRoute(builder: (context) => resetpassword())),
+      ),
+    );
   }
-
 }

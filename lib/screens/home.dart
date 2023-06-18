@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:firebase_database/firebase_database.dart';
+import 'register.dart';
 import 'login.dart';
 
 class home extends StatefulWidget {
@@ -11,6 +12,9 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
+  TextEditingController _emailTextController = TextEditingController();
+  TextEditingController _userNameTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,12 +40,12 @@ class _homeState extends State<home> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: GestureDetector(
-              onTap: () {},
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 15,
-                child: Icon(
+            child: CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.white,
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(
                   Icons.shop,
                   size: 17,
                   color: Colors.black,
@@ -56,23 +60,21 @@ class _homeState extends State<home> {
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text('Kunarasa Tharsujan'),
-              accountEmail: Text('kunarastharsujan@gmail.com'),
+              accountName: Text(_userNameTextController.text),
+              accountEmail: Text(_emailTextController.text),
               currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
                 radius: 15,
-                child: Icon(
-                  Icons.person,
-                  size: 30,
-                  color: Colors.black,
+                backgroundColor: Colors.white,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.person,
+                    size: 40,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    Color.fromRGBO(25, 176, 47, 1),
-                    Color.fromRGBO(0, 0, 0, 10)
-                  ], begin: Alignment.bottomCenter, end: Alignment.topCenter),
-                ),
+              decoration: BoxDecoration(color: Colors.lightGreen),
             ),
             ListTile(
               dense: true,
@@ -135,7 +137,10 @@ class _homeState extends State<home> {
               title: Text("Log out"),
               leading: Icon(Icons.arrow_back),
               onTap: () {
-                //action when this menu is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => login_screen()),
+                );
               },
             ),
           ],
@@ -144,31 +149,59 @@ class _homeState extends State<home> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child:Column(
-          children:[
-            Row(
-              children: [
-                Expanded(child:
-                Container(
-                  color:Colors.grey,
-                  child: Row(
-                    children: [
-                      Icon(Icons.search),
-                      Text("Search products"),
-                    ],
+        child: ListView(
+          children: [
+            Container(
+              height: 150,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                      'https://salisburygreenhouse.com/wp-content/uploads/Top-10-Plants-That-Make-You-Happy-main.png'),
+                ),
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(right: 130, bottom: 10),
+                          ),
+                          Text(
+                            '15% Off',
+                            style: TextStyle(
+                                fontSize: 40,
+                                color: Colors.yellow,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Text(
+                              'On all plants until 13th may',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-
-                ),
-                ),
-              ],
-            )
+                  Expanded(
+                    child: Container(),
+                  ),
+                ],
+              ),
+            ),
           ],
-      )
-
-
-
+        ),
       ),
     );
-
   }
 }
