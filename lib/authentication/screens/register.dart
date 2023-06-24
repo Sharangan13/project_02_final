@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import '../reusable_widgets/reusable_widgets.dart';
-import 'package:project_02_final/screens/login.dart';
-
+import 'package:get/get.dart';
+import 'package:project_02_final/authentication/screens/login.dart';
+import 'package:project_02_final/authentication/controller/register_controller.dart';
+import '../models/user_model.dart';
 import 'home.dart';
 
 class register extends StatefulWidget {
@@ -14,24 +14,8 @@ class register extends StatefulWidget {
 }
 
 class _registerState extends State<register> {
+  final controller = Get.put(registerontroller());
   final _formKey = GlobalKey<FormState>();
-  late DatabaseReference _ref;
-  TextEditingController _passwordTextController = TextEditingController();
-  TextEditingController _emailTextController = TextEditingController();
-  TextEditingController _userNameTextController = TextEditingController();
-  TextEditingController _phoneTextController = TextEditingController();
-  TextEditingController _conformpasswordTextController =
-      TextEditingController();
-
-  @override
-  void initState() {
-    _passwordTextController = TextEditingController();
-    _emailTextController = TextEditingController();
-    _userNameTextController = TextEditingController();
-    _phoneTextController = TextEditingController();
-    _ref = FirebaseDatabase.instance.ref().child("Registeraccount_details");
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +32,7 @@ class _registerState extends State<register> {
       body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(colors: [
               Color.fromRGBO(25, 176, 47, 1),
               Color.fromRGBO(0, 0, 0, 10)
@@ -56,7 +40,7 @@ class _registerState extends State<register> {
           ),
           child: SingleChildScrollView(
               child: Padding(
-            padding: EdgeInsets.fromLTRB(20, 120, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -65,10 +49,10 @@ class _registerState extends State<register> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: _userNameTextController,
+                    controller: controller.username,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      prefixIcon: Icon(
+                      prefixIcon: const Icon(
                         Icons.person_outline,
                         color: Colors.white70,
                       ),
@@ -98,10 +82,10 @@ class _registerState extends State<register> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: _emailTextController,
+                    controller: controller.email,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      prefixIcon: Icon(
+                      prefixIcon: const Icon(
                         Icons.email,
                         color: Colors.white70,
                       ),
@@ -119,7 +103,8 @@ class _registerState extends State<register> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter an email';
-                      } else if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                      } else if (!value.contains('@') ||
+                          !value.contains('.com')) {
                         return "Please Enter a Valid Email";
                       }
                       return null;
@@ -129,10 +114,10 @@ class _registerState extends State<register> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: _phoneTextController,
+                    controller: controller.phonenumber,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      prefixIcon: Icon(
+                      prefixIcon: const Icon(
                         Icons.phone,
                         color: Colors.white70,
                       ),
@@ -162,10 +147,10 @@ class _registerState extends State<register> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: _passwordTextController,
+                    controller: controller.password,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      prefixIcon: Icon(
+                      prefixIcon: const Icon(
                         Icons.password,
                         color: Colors.white70,
                       ),
@@ -196,10 +181,9 @@ class _registerState extends State<register> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: _conformpasswordTextController,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
-                      prefixIcon: Icon(
+                      prefixIcon: const Icon(
                         Icons.password,
                         color: Colors.white70,
                       ),
@@ -219,7 +203,7 @@ class _registerState extends State<register> {
                       if (value!.isEmpty) {
                         return 'Please confirm your password';
                       }
-                      if (value != _passwordTextController.text) {
+                      if (value != controller.password.text) {
                         return 'Passwords do not match';
                       }
                       return null;
@@ -230,73 +214,74 @@ class _registerState extends State<register> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      if (!_formKey.currentState!.validate()) {
-                        return;
-                      }
+                      if (_formKey.currentState!.validate()) {
+                        try {
+                          // Create new account with Firebase Authentication
+                          await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                            email: controller.email.text,
+                            password: controller.password.text,
+                          );
 
-                      _formKey.currentState!.save();
+                          print("Data pushed successfully");
+                          print("Create new account");
 
-                      try {
-                        // Create new account with Firebase Authentication
-                        await FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text,
-                        );
+                          // Navigation logic
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const home()),
+                          );
+                        } catch (error) {
+                          /// Handle the error when the email is already in use
 
-                        // Save user information to the Realtime Database
-                        await _ref.push().set({
-                          'username': _userNameTextController.text,
-                          'email': _emailTextController.text,
-                          'phone': _phoneTextController.text,
-                          'password': _passwordTextController.text,
-                        });
+                          if (error is FirebaseAuthException &&
+                              error.code == 'email-already-in-use') {
+                            /// Provide feedback to the user that the email is already in use
 
-                        print("Data pushed successfully");
-
-                        print("Create new account");
-
-                        // Navigation logic
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const home()),
-                        );
-                      } catch (error) {
-                        // Handle the error when the email is already in use
-                        if (error is FirebaseAuthException &&
-                            error.code == 'email-already-in-use') {
-                          // Provide feedback to the user that the email is already in use
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Registration Failed'),
-                                titleTextStyle: (TextStyle(
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Registration Failed'),
+                                  titleTextStyle: const TextStyle(
                                     color: Colors.red,
                                     fontSize: 25,
-                                    fontWeight: FontWeight.bold)),
-                                content: Text(
-                                    'The email is already in use. Please use a different email.'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text('OK'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          // Handle other errors
-                          print('Error: $error');
+                                  content: const Text(
+                                    'The email is already in use. Please use a different email.',
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: const Text('OK'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            // Handle other errors
+                            print('Error: $error');
+                          }
                         }
+
+                        final user = UserModel(
+                          email: controller.email.text.trim(),
+                          password: controller.password.text.trim(),
+                          username: controller.username.text.trim(),
+                          phonenumber: controller.phonenumber.text.trim(),
+                        );
+                        registerontroller.instance.createUser(user);
                       }
                     },
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all<EdgeInsets>(
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 50.0),
+                        const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 50.0),
                       ),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
@@ -308,13 +293,13 @@ class _registerState extends State<register> {
                       foregroundColor:
                           MaterialStateProperty.all<Color>(Colors.black),
                       textStyle: MaterialStateProperty.all<TextStyle>(
-                        TextStyle(
+                        const TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    child: Text('Register'),
+                    child: const Text('Register'),
                   ),
                   const SizedBox(
                     height: 25,
@@ -336,7 +321,7 @@ class _registerState extends State<register> {
         GestureDetector(
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => login_screen()));
+                MaterialPageRoute(builder: (context) => const login_screen()));
           },
           child: const Text(
             "  Login",

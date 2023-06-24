@@ -1,7 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'register.dart';
+import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'login.dart';
 
 class home extends StatefulWidget {
@@ -12,16 +10,13 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
-  TextEditingController _emailTextController = TextEditingController();
-  TextEditingController _userNameTextController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[700],
-        iconTheme: IconThemeData(color: Colors.black),
-        title: Text(
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const Text(
           'Home',
           style: TextStyle(color: Colors.black, fontSize: 17),
         ),
@@ -31,7 +26,7 @@ class _homeState extends State<home> {
             backgroundColor: Colors.white,
             child: IconButton(
               onPressed: () {},
-              icon: Icon(
+              icon: const Icon(
                 Icons.search,
                 size: 17,
                 color: Colors.black,
@@ -45,7 +40,7 @@ class _homeState extends State<home> {
               backgroundColor: Colors.white,
               child: IconButton(
                 onPressed: () {},
-                icon: Icon(
+                icon: const Icon(
                   Icons.shop,
                   size: 17,
                   color: Colors.black,
@@ -56,96 +51,100 @@ class _homeState extends State<home> {
         ],
       ),
       drawer: Drawer(
+        elevation: 40,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text(_userNameTextController.text),
-              accountEmail: Text(_emailTextController.text),
+              accountName: const Text("Sharangan"),
+              accountEmail: const Text("Sharangan199@gmail.com"),
               currentAccountPicture: CircleAvatar(
                 radius: 15,
                 backgroundColor: Colors.white,
                 child: IconButton(
                   onPressed: () {},
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.person,
                     size: 40,
                     color: Colors.black,
                   ),
                 ),
               ),
-              decoration: BoxDecoration(color: Colors.lightGreen),
+              decoration: const BoxDecoration(color: Colors.lightGreen),
             ),
             ListTile(
               dense: true,
-              title: Text("My Account"),
-              leading: Icon(Icons.person),
-              onTap: () {
-                //action when this menu is pressed
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: Text("Pre-Orders Bookings"),
-              leading: Icon(Icons.add_box),
-              onTap: () {
-                //action when this menu is pressed
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: Text("Consultancy Bookings"),
-              leading: Icon(Icons.add_box),
-              onTap: () {
-                //action when this menu is pressed
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: Text("Notifications"),
-              leading: Icon(Icons.notifications_rounded),
-              onTap: () {
-                //action when this menu is pressed
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: Text("About us"),
-              leading: Icon(Icons.contact_page_rounded),
-              onTap: () {
-                //action when this menu is pressed
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: Text("Rate us"),
-              leading: Icon(Icons.star_rate),
-              onTap: () {
-                //action when this menu is pressed
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: Text("Your QR"),
-              leading: Icon(Icons.qr_code),
-              onTap: () {
-                //action when this menu is pressed
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: Text("Log out"),
-              leading: Icon(Icons.arrow_back),
+              title: const Text("My Account"),
+              leading: const Icon(Icons.person),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => login_screen()),
+                  MaterialPageRoute(
+                      builder: (context) => const updateProfile()),
+                );
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: const Text("Pre-Orders Bookings"),
+              leading: const Icon(Icons.add_box),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: const Text("Consultancy Bookings"),
+              leading: const Icon(Icons.add_box),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: const Text("Notifications"),
+              leading: const Icon(Icons.notifications_rounded),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: const Text("About us"),
+              leading: const Icon(Icons.contact_page_rounded),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: const Text("Rate us"),
+              leading: const Icon(Icons.star_rate),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: const Text("Your QR"),
+              leading: const Icon(Icons.qr_code),
+              onTap: () {
+                //action when this menu is pressed
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: const Text("Log out"),
+              leading: const Icon(Icons.arrow_back),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const login_screen()),
                 );
               },
             ),
           ],
         ),
-        elevation: 40,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -154,7 +153,7 @@ class _homeState extends State<home> {
             Container(
               height: 150,
               decoration: BoxDecoration(
-                image: DecorationImage(
+                image: const DecorationImage(
                   fit: BoxFit.cover,
                   image: NetworkImage(
                       'https://salisburygreenhouse.com/wp-content/uploads/Top-10-Plants-That-Make-You-Happy-main.png'),
@@ -167,11 +166,10 @@ class _homeState extends State<home> {
                   Expanded(
                     flex: 2,
                     child: Container(
-                      child: Column(
+                      child: const Column(
                         children: [
                           Padding(
-                            padding:
-                                const EdgeInsets.only(right: 130, bottom: 10),
+                            padding: EdgeInsets.only(right: 130, bottom: 10),
                           ),
                           Text(
                             '15% Off',
@@ -181,7 +179,7 @@ class _homeState extends State<home> {
                                 fontWeight: FontWeight.bold),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 20),
+                            padding: EdgeInsets.only(left: 20),
                             child: Text(
                               'On all plants until 13th may',
                               style: TextStyle(
