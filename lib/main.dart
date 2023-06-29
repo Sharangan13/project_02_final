@@ -5,6 +5,9 @@ import 'package:project_02_final/authentication/screens/login.dart';
 import 'package:project_02_final/authentication/screens/register.dart';
 import 'firebase_options.dart';
 
+
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
