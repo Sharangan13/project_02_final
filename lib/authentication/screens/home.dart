@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:project_02_final/authentication/screens/AboutUsPage.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'login.dart';
 
@@ -113,7 +115,10 @@ class _homeState extends State<home> {
               title: const Text("About us"),
               leading: const Icon(Icons.contact_page_rounded),
               onTap: () {
-                //action when this menu is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutUsPage()),
+                );//action when this menu is pressed
               },
             ),
             ListTile(
