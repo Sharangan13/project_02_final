@@ -2,11 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/home.dart';
 import 'package:project_02_final/authentication/screens/login.dart';
-import 'package:project_02_final/authentication/screens/register.dart';
 import 'firebase_options.dart';
-
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +33,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const login_screen(),
+      home: const home(),
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:project_02_final/authentication/screens/AboutUsPage.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
+import 'AboutUsPage.dart';
 import 'login.dart';
 
 class home extends StatefulWidget {
@@ -118,7 +117,7 @@ class _homeState extends State<home> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const AboutUsPage()),
-                );//action when this menu is pressed
+                ); //action when this menu is pressed
               },
             ),
             ListTile(
@@ -171,7 +170,7 @@ class _homeState extends State<home> {
                   Expanded(
                     flex: 2,
                     child: Container(
-                      child: const Column(
+                      child: Column(
                         children: [
                           Padding(
                             padding: EdgeInsets.only(right: 130, bottom: 10),
