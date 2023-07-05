@@ -1,7 +1,9 @@
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'AboutUsPage.dart';
 import 'login.dart';
+import 'package:project_02_final/components/horizontal_listview.dart';
 
 class home extends StatefulWidget {
   const home({Key? key}) : super(key: key);
@@ -13,6 +15,24 @@ class home extends StatefulWidget {
 class _homeState extends State<home> {
   @override
   Widget build(BuildContext context) {
+    Widget image_carousel = Container(
+      height: 200.0,
+      child: new Carousel(
+        boxFit: BoxFit.cover,
+        images: [
+          AssetImage('assets/images/H1.png'),
+          AssetImage('assets/images/H2.jfif'),
+          AssetImage('assets/images/H3.jpg'),
+          AssetImage('assets/images/H4.jfif')
+        ],
+        autoplay: true,
+        animationCurve: Curves.fastOutSlowIn,
+        animationDuration: Duration(milliseconds: 1000),
+        dotSize: 4.0,
+        dotColor: Colors.green,
+        indicatorBgPadding: 2.0,
+      ),
+    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[700],
@@ -136,6 +156,7 @@ class _homeState extends State<home> {
                 //action when this menu is pressed
               },
             ),
+            Divider(),
             ListTile(
               dense: true,
               title: const Text("Log out"),
@@ -150,59 +171,11 @@ class _homeState extends State<home> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: ListView(
-          children: [
-            Container(
-              height: 150,
-              decoration: BoxDecoration(
-                image: const DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(
-                      'https://salisburygreenhouse.com/wp-content/uploads/Top-10-Plants-That-Make-You-Happy-main.png'),
-                ),
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(right: 130, bottom: 10),
-                          ),
-                          Text(
-                            '15% Off',
-                            style: TextStyle(
-                                fontSize: 40,
-                                color: Colors.yellow,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 20),
-                            child: Text(
-                              'On all plants until 13th may',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+      body: new ListView(
+        children: [
+          image_carousel,
+          HorizontalList(),
+        ],
       ),
     );
   }
