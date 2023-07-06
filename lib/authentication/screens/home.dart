@@ -4,6 +4,7 @@ import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'AboutUsPage.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
+import 'package:project_02_final/components/products.dart';
 
 class home extends StatefulWidget {
   const home({Key? key}) : super(key: key);
@@ -174,7 +175,19 @@ class _homeState extends State<home> {
       body: new ListView(
         children: [
           image_carousel,
+          new Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(child: new Text("SHOP FOR")),
+          ),
           HorizontalList(),
+          new Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Center(child: new Text("Recent Products")),
+          ),
+          Container(
+            height: 320.0,
+            child: Products(),
+          )
         ],
       ),
     );

@@ -6,10 +6,16 @@ class HorizontalList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80.0,
+      height: 100.0,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: [
+          category(
+              image_location: 'assets/types/O1.jpg',
+              image_caption: 'Air Plants'),
+          category(
+              image_location: 'assets/types/O1.jpg',
+              image_caption: 'Air Plants'),
           category(
               image_location: 'assets/types/O1.jpg',
               image_caption: 'Air Plants'),
