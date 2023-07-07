@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project_02_final/authentication/controller/register_controller.dart';
+
 import 'package:project_02_final/authentication/screens/register.dart';
 import 'package:project_02_final/authentication/screens/reset_password.dart';
 import '../../reusable_widgets/reusable_widgets.dart';
@@ -132,7 +133,7 @@ class _login_screenState extends State<login_screen> {
                           .then((value) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const home()),
+                          MaterialPageRoute(builder: (context) => home()),
                         );
                       }).catchError((error) {
                         if (error.code == 'user-not-found') {

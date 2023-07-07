@@ -22,7 +22,7 @@ class AuthenticationRepository extends GetxController {
   _setInitialScreen(User? user) {
     user == null
         ? Get.offAll(() => const login_screen())
-        : Get.offAll(() => const home());
+        : Get.offAll(() => home());
   }
 
   Future<void> createUserWithEmailAndPassword(

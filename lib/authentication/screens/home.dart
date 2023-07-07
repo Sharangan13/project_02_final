@@ -1,5 +1,6 @@
-import 'package:carousel_pro/carousel_pro.dart';
+//import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:project_02_final/authentication/screens/admin/adminHome.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'AboutUsPage.dart';
 import 'login.dart';
@@ -17,22 +18,99 @@ class _homeState extends State<home> {
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = Container(
-      height: 200.0,
-      child: new Carousel(
-        boxFit: BoxFit.cover,
-        images: [
-          AssetImage('assets/images/H1.png'),
-          AssetImage('assets/images/H2.jfif'),
-          AssetImage('assets/images/H3.jpg'),
-          AssetImage('assets/images/H4.jfif')
+      height: 150.0,
+      child: ListView(
+        children: [
+          Container(
+            height: 150,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQi0Xg-k622Sbztlrb-L1o1CAla3zCbVc2lUw&usqp=CAU'),
+              ),
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(right: 130, bottom: 10),
+                          child: Container(
+                            height: 50,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: Color(0xffd1ad17),
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(50),
+                                bottomLeft: Radius.circular(50),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Plants',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  shadows: [
+                                    BoxShadow(
+                                        color: Colors.green,
+                                        blurRadius: 10,
+                                        offset: Offset(3, 3))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '30% Off',
+                          style: TextStyle(
+                              fontSize: 40,
+                              color: Colors.green[100],
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            'On all Plants',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(),
+                ),
+              ],
+            ),
+          ),
         ],
-        autoplay: true,
-        animationCurve: Curves.fastOutSlowIn,
-        animationDuration: Duration(milliseconds: 1000),
-        dotSize: 4.0,
-        dotColor: Colors.green,
-        indicatorBgPadding: 2.0,
       ),
+      //   boxFit: BoxFit.cover,
+      //   images: [
+      //     AssetImage('assets/images/H1.png'),
+      //     AssetImage('assets/images/H2.jfif'),
+      //     AssetImage('assets/images/H3.jpg'),
+      //     AssetImage('assets/images/H4.jfif')
+      //   ],
+      //   autoplay: true,
+      //   animationCurve: Curves.fastOutSlowIn,
+      //   animationDuration: Duration(milliseconds: 1000),
+      //   dotSize: 4.0,
+      //   dotColor: Colors.green,
+      //   indicatorBgPadding: 2.0,
+      // ),
     );
     return Scaffold(
       appBar: AppBar(
@@ -127,7 +205,10 @@ class _homeState extends State<home> {
               title: const Text("Notifications"),
               leading: const Icon(Icons.notifications_rounded),
               onTap: () {
-                //action when this menu is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const adminHome()),
+                );
               },
             ),
             ListTile(
@@ -172,23 +253,26 @@ class _homeState extends State<home> {
           ],
         ),
       ),
-      body: new ListView(
-        children: [
-          image_carousel,
-          new Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(child: new Text("SHOP FOR")),
-          ),
-          HorizontalList(),
-          new Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Center(child: new Text("Recent Products")),
-          ),
-          Container(
-            height: 320.0,
-            child: Products(),
-          )
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+        child: new ListView(
+          children: [
+            image_carousel,
+            new Padding(
+              padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+              child: Center(child: new Text("SHOP FOR")),
+            ),
+            HorizontalList(),
+            new Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Center(child: new Text("Recent Products")),
+            ),
+            Container(
+              height: 200.0,
+              child: Products(),
+            )
+          ],
+        ),
       ),
     );
   }

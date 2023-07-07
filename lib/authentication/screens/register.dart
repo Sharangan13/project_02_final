@@ -229,8 +229,7 @@ class _registerState extends State<register> {
                           // Navigation logic
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => const home()),
+                            MaterialPageRoute(builder: (context) => home()),
                           );
                         } catch (error) {
                           /// Handle the error when the email is already in use
