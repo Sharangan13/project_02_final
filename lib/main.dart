@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'package:project_02_final/authentication/screens/home.dart';
 import 'package:project_02_final/authentication/screens/login.dart';
 import 'firebase_options.dart';

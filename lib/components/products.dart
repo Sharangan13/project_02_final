@@ -38,6 +38,12 @@ class _ProductsState extends State<Products> {
       "old_price": "120",
       "price": "80",
     },
+    {
+      "name": "MoneyPlant",
+      "picture": "assets/images/g1.png",
+      "old_price": "120",
+      "price": "80",
+    },
   ];
   @override
   Widget build(BuildContext context) {
@@ -85,26 +91,22 @@ class Single_prod extends StatelessWidget {
                     ))),
             child: GridTile(
                 footer: Container(
-                  color: Colors.white70,
-                  child: ListTile(
-                    leading: Text(
-                      product_name,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    title: Text(
-                      "\$$prod_price",
-                      style: TextStyle(
-                          color: Colors.green, fontWeight: FontWeight.w800),
-                    ),
-                    subtitle: Text(
-                      "\$$prod_old_price",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w800,
-                          decoration: TextDecoration.lineThrough),
-                    ),
-                  ),
-                ),
+                    color: Colors.white,
+                    child: new Row(
+                      children: [
+                        Expanded(
+                            child: Text(
+                          product_name,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16.0),
+                        )),
+                        new Text(
+                          "\$${prod_price}",
+                          style: TextStyle(
+                              color: Colors.green, fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    )),
                 child: Image.asset(
                   prod_picture,
                   fit: BoxFit.cover,
