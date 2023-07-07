@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'cart.dart';
+
 class ProductDetails extends StatefulWidget {
   final product_detail_name;
   final product_details_old_price;
@@ -37,21 +39,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                 Icons.search,
                 size: 17,
                 color: Colors.black,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: CircleAvatar(
-              radius: 15,
-              backgroundColor: Colors.white,
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.shopping_cart,
-                  size: 17,
-                  color: Colors.black,
-                ),
               ),
             ),
           ),
@@ -199,7 +186,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                       elevation: 0.2,
                       child: new Text("Buy now"))),
               new IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => new Cart()));
+                },
                 icon: Icon(Icons.add_shopping_cart),
                 color: Colors.green,
               ),

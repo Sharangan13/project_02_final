@@ -5,8 +5,7 @@
 
 
      <item>
-        <bitmap
-            android:gravity="center"
+        <bitmap></bitmap>
 
-    </item>
+     </item>
 </layer-list>

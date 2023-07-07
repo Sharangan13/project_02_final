@@ -6,6 +6,7 @@ import 'AboutUsPage.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
 import 'package:project_02_final/components/products.dart';
+import 'package:project_02_final/Pages/cart.dart';
 
 class home extends StatefulWidget {
   const home({Key? key}) : super(key: key);
@@ -139,7 +140,10 @@ class _homeState extends State<home> {
               radius: 15,
               backgroundColor: Colors.white,
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => new Cart()));
+                },
                 icon: const Icon(
                   Icons.shopping_cart,
                   size: 17,
@@ -268,7 +272,7 @@ class _homeState extends State<home> {
               child: Center(child: new Text("Recent Products")),
             ),
             Container(
-              height: 200.0,
+              height: 400.0,
               child: Products(),
             )
           ],
