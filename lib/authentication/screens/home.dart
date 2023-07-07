@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/admin/adminHome.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
+import 'package:project_02_final/reusable_widgets/Chat.dart';
 import 'AboutUsPage.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
@@ -201,7 +202,10 @@ class _homeState extends State<home> {
               title: const Text("Consultancy Bookings"),
               leading: const Icon(Icons.add_box),
               onTap: () {
-                //action when this menu is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatScreen()),
+                );//action when this menu is pressed
               },
             ),
             ListTile(
@@ -261,7 +265,7 @@ class _homeState extends State<home> {
         padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
         child: new ListView(
           children: [
-            image_carousel,
+            //image_carousel,
             new Padding(
               padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
               child: Center(child: new Text("SHOP FOR")),
