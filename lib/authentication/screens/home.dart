@@ -63,7 +63,7 @@ class _homeState extends State<home> {
               child: IconButton(
                 onPressed: () {},
                 icon: const Icon(
-                  Icons.shop,
+                  Icons.shopping_cart,
                   size: 17,
                   color: Colors.black,
                 ),
