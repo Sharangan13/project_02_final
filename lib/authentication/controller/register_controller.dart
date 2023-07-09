@@ -13,7 +13,6 @@ class registerontroller extends GetxController {
   final password = TextEditingController();
   final username = TextEditingController();
   final phonenumber = TextEditingController();
-
   final userRepo = Get.put(UserRepository());
 
   Future<void> createUser(UserModel user) async {

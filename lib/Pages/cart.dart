@@ -18,20 +18,6 @@ class _CartState extends State<Cart> {
           'Cart',
           style: TextStyle(color: Colors.black, fontSize: 17),
         ),
-        actions: [
-          CircleAvatar(
-            radius: 15,
-            backgroundColor: Colors.white,
-            child: IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.search,
-                size: 17,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ],
       ),
       bottomNavigationBar: new Container(
         color: Colors.white,
@@ -40,7 +26,7 @@ class _CartState extends State<Cart> {
             Expanded(
                 child: ListTile(
               title: new Text("Total:"),
-              subtitle: new Text("\$560"),
+              subtitle: new Text("Rs560"),
             )),
             Expanded(
                 child: new MaterialButton(

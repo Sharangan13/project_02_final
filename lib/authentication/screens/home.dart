@@ -1,6 +1,4 @@
-//import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
-import 'package:project_02_final/authentication/screens/admin/adminHome.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'package:project_02_final/reusable_widgets/Chat.dart';
 import 'AboutUsPage.dart';
@@ -98,8 +96,7 @@ class _homeState extends State<home> {
             ),
           ),
         ],
-      ),
-      //   boxFit: BoxFit.cover,
+      ), //   boxFit: BoxFit.cover,
       //   images: [
       //     AssetImage('assets/images/H1.png'),
       //     AssetImage('assets/images/H2.jfif'),
@@ -205,19 +202,14 @@ class _homeState extends State<home> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ChatScreen()),
-                );//action when this menu is pressed
+                ); //action when this menu is pressed
               },
             ),
             ListTile(
               dense: true,
               title: const Text("Notifications"),
               leading: const Icon(Icons.notifications_rounded),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const adminHome()),
-                );
-              },
+              onTap: () {},
             ),
             ListTile(
               dense: true,
@@ -265,7 +257,7 @@ class _homeState extends State<home> {
         padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
         child: new ListView(
           children: [
-            //image_carousel,
+            image_carousel,
             new Padding(
               padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
               child: Center(child: new Text("SHOP FOR")),

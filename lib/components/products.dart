@@ -11,107 +11,143 @@ class _ProductsState extends State<Products> {
     {
       "name": "MoneyPlant",
       "picture": "assets/images/g1.png",
-      "old_price": "120",
       "price": "80",
+      "quantity": "10",
     },
     {
       "name": "MoneyPlant",
       "picture": "assets/images/g1.png",
-      "old_price": "120",
       "price": "80",
+      "quantity": "10",
     },
     {
       "name": "MoneyPlant",
       "picture": "assets/images/g1.png",
-      "old_price": "120",
       "price": "80",
+      "quantity": "10",
     },
     {
       "name": "MoneyPlant",
       "picture": "assets/images/g1.png",
-      "old_price": "120",
       "price": "80",
+      "quantity": "10",
     },
     {
       "name": "MoneyPlant",
       "picture": "assets/images/g1.png",
-      "old_price": "120",
       "price": "80",
+      "quantity": "10",
     },
     {
       "name": "MoneyPlant",
       "picture": "assets/images/g1.png",
-      "old_price": "120",
       "price": "80",
+      "quantity": "10",
     },
   ];
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-        itemCount: product_List.length,
-        gridDelegate:
-            new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemBuilder: (BuildContext context, int index) {
-          return Single_prod(
-            product_name: product_List[index]['name'],
-            prod_picture: product_List[index]['picture'],
-            prod_old_price: product_List[index]['old_price'],
-            prod_price: product_List[index]['price'],
-          );
-        });
+      itemCount: product_List.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.7,
+      ),
+      itemBuilder: (BuildContext context, int index) {
+        return SingleProduct(
+          productName: product_List[index]['name'],
+          productPicture: product_List[index]['picture'],
+          productPrice: product_List[index]['price'],
+          productQuantity: product_List[index]['quantity'],
+        );
+      },
+    );
   }
 }
 
-class Single_prod extends StatelessWidget {
-  final product_name;
-  final prod_picture;
-  final prod_old_price;
-  final prod_price;
+class SingleProduct extends StatelessWidget {
+  final productName;
+  final productPicture;
+  final productPrice;
+  final productQuantity;
 
-  Single_prod({
-    this.product_name,
-    this.prod_picture,
-    this.prod_old_price,
-    this.prod_price,
+  SingleProduct({
+    this.productName,
+    this.productPicture,
+    this.productPrice,
+    this.productQuantity,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Hero(
-        tag: product_name,
-        child: Material(
-          child: InkWell(
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (context) => new ProductDetails(
-                      product_detail_name: product_name,
-                      product_details_new_price: prod_price,
-                      product_details_old_price: prod_old_price,
-                      product_details_picture: prod_picture,
-                    ))),
-            child: GridTile(
-                footer: Container(
-                    color: Colors.white,
-                    child: new Row(
-                      children: [
-                        Expanded(
-                            child: Text(
-                          product_name,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16.0),
-                        )),
-                        new Text(
-                          "\$${prod_price}",
-                          style: TextStyle(
-                              color: Colors.green, fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    )),
-                child: Image.asset(
-                  prod_picture,
-                  fit: BoxFit.cover,
-                )),
-          ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ProductDetails(
+                productDetailName: productName,
+                productDetailPrice: productPrice,
+                productDetailQuantity: productQuantity,
+                productDetailPicture: productPicture,
+              ),
+            ),
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(8.0),
+                  ),
+                  image: DecorationImage(
+                    image: AssetImage(productPicture),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    productName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 4.0),
+                  Text(
+                    "Rs$productPrice",
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4.0),
+                  Text(
+                    "Quantity: $productQuantity",
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
