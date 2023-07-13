@@ -6,7 +6,6 @@ import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
 import 'package:project_02_final/components/products.dart';
 
-
 class home extends StatefulWidget {
   const home({Key? key}) : super(key: key);
 
@@ -138,9 +137,7 @@ class _homeState extends State<home> {
               radius: 15,
               backgroundColor: Colors.white,
               child: IconButton(
-                onPressed: () {
-
-                },
+                onPressed: () {},
                 icon: const Icon(
                   Icons.shopping_cart,
                   size: 17,
@@ -185,20 +182,18 @@ class _homeState extends State<home> {
                 );
               },
             ),
-
             ListTile(
               dense: true,
               title: const Text("Pre-Orders Bookings"),
               leading: const Icon(Icons.add_box),
-              onTap: () {
-              },
+              onTap: () {},
             ),
             ListTile(
               dense: true,
               title: const Text("Consultancy Bookings"),
               leading: const Icon(Icons.add_box),
               onTap: () {
-                 //action when this menu is pressed
+                //action when this menu is pressed
               },
             ),
             ListTile(
@@ -218,7 +213,6 @@ class _homeState extends State<home> {
                 );
               },
             ),
-
             ListTile(
               dense: true,
               title: const Text("About us"),
@@ -235,7 +229,7 @@ class _homeState extends State<home> {
               title: const Text("Rate us"),
               leading: const Icon(Icons.star_rate),
               onTap: () {
-               //action when this menu is pressed
+                //action when this menu is pressed
               },
             ),
             ListTile(
