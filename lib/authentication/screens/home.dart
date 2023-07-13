@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'package:project_02_final/reusable_widgets/Chat.dart';
 import '../../Pages/cart.dart';
 import 'AboutUsPage.dart';
+import 'QRCodeRetrieval.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
 import 'package:project_02_final/components/products.dart';
@@ -243,7 +245,20 @@ class _homeState extends State<home> {
               title: const Text("Your QR"),
               leading: const Icon(Icons.qr_code),
               onTap: () {
-                //action when this menu is pressed
+                // action when this menu is pressed
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  final uid = user.uid;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => QRCodeRetrieval(uid: uid),
+                    ),
+                  );
+                } else {
+                  print('User authentication failed');
+                  // Handle the error or show an error message to the user
+                }
               },
             ),
             Divider(),
