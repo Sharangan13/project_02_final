@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'package:project_02_final/reusable_widgets/Chat.dart';
+import '../../Pages/cart.dart';
 import 'AboutUsPage.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
@@ -137,7 +138,12 @@ class _homeState extends State<home> {
               radius: 15,
               backgroundColor: Colors.white,
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Cart()),
+                  );
+                },
                 icon: const Icon(
                   Icons.shopping_cart,
                   size: 17,

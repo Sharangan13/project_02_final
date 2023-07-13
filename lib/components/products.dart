@@ -1,47 +1,65 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_02_final/Pages/product_details.dart';
 
-class Products extends StatelessWidget {
+class Products extends StatefulWidget {
+  @override
+  State<Products> createState() => _ProductsState();
+}
+
+class _ProductsState extends State<Products> {
+  var product_List = [
+    {
+      "name": "MoneyPlant",
+      "picture": "assets/images/g1.png",
+      "price": "80",
+      "quantity": "10",
+    },
+    {
+      "name": "MoneyPlant",
+      "picture": "assets/images/g1.png",
+      "price": "80",
+      "quantity": "10",
+    },
+    {
+      "name": "MoneyPlant",
+      "picture": "assets/images/g1.png",
+      "price": "80",
+      "quantity": "10",
+    },
+    {
+      "name": "MoneyPlant",
+      "picture": "assets/images/g1.png",
+      "price": "80",
+      "quantity": "10",
+    },
+    {
+      "name": "MoneyPlant",
+      "picture": "assets/images/g1.png",
+      "price": "80",
+      "quantity": "10",
+    },
+    {
+      "name": "MoneyPlant",
+      "picture": "assets/images/g1.png",
+      "price": "80",
+      "quantity": "10",
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('Plants').snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        }
-
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        }
-
-        List<DocumentSnapshot>? products = snapshot.data?.docs;
-
-        if (products == null || products.isEmpty) {
-          return Text('No products found.');
-        }
-
-        return GridView.builder(
-          itemCount: products.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.7,
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            var product = products[index].data() as Map<String, dynamic>;
-            var productName = product['description'];
-            var productPicture = product['image_url'];
-            var productPrice = product['price'];
-            var productQuantity = product['quantity'];
-
-            return SingleProduct(
-              productName: productName,
-              productPicture: productPicture,
-              productPrice: productPrice,
-              productQuantity: productQuantity,
-            );
-          },
+    return GridView.builder(
+      itemCount: product_List.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.7,
+      ),
+      itemBuilder: (BuildContext context, int index) {
+        return SingleProduct(
+          productName: product_List[index]['name'],
+          productPicture: product_List[index]['picture'],
+          productPrice: product_List[index]['price'],
+          productQuantity: product_List[index]['quantity'],
         );
       },
     );
