@@ -270,7 +270,7 @@ class _homeState extends State<home> {
               padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
               child: Center(child: new Text("SHOP FOR")),
             ),
-            HorizontalList(),
+            horizontalList(),
             new Padding(
               padding: const EdgeInsets.all(10.0),
               child: Center(child: new Text("Recent Products")),
