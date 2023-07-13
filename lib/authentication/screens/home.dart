@@ -5,7 +5,7 @@ import 'AboutUsPage.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
 import 'package:project_02_final/components/products.dart';
-import 'package:project_02_final/Pages/cart.dart';
+
 
 class home extends StatefulWidget {
   const home({Key? key}) : super(key: key);
@@ -139,8 +139,7 @@ class _homeState extends State<home> {
               backgroundColor: Colors.white,
               child: IconButton(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => new Cart()));
+
                 },
                 icon: const Icon(
                   Icons.shopping_cart,
@@ -186,12 +185,12 @@ class _homeState extends State<home> {
                 );
               },
             ),
+
             ListTile(
               dense: true,
               title: const Text("Pre-Orders Bookings"),
               leading: const Icon(Icons.add_box),
               onTap: () {
-                //action when this menu is pressed
               },
             ),
             ListTile(
@@ -199,10 +198,7 @@ class _homeState extends State<home> {
               title: const Text("Consultancy Bookings"),
               leading: const Icon(Icons.add_box),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChatScreen()),
-                ); //action when this menu is pressed
+                 //action when this menu is pressed
               },
             ),
             ListTile(
@@ -211,6 +207,18 @@ class _homeState extends State<home> {
               leading: const Icon(Icons.notifications_rounded),
               onTap: () {},
             ),
+            ListTile(
+              dense: true,
+              title: const Text("Chat"),
+              leading: const Icon(Icons.chat),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatScreen()),
+                );
+              },
+            ),
+
             ListTile(
               dense: true,
               title: const Text("About us"),
@@ -227,7 +235,7 @@ class _homeState extends State<home> {
               title: const Text("Rate us"),
               leading: const Icon(Icons.star_rate),
               onTap: () {
-                //action when this menu is pressed
+               //action when this menu is pressed
               },
             ),
             ListTile(
@@ -262,7 +270,7 @@ class _homeState extends State<home> {
               padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
               child: Center(child: new Text("SHOP FOR")),
             ),
-            HorizontalList(),
+            horizontalList(),
             new Padding(
               padding: const EdgeInsets.all(10.0),
               child: Center(child: new Text("Recent Products")),

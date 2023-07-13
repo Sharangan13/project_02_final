@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'cart.dart';
+
 
 class ProductDetails extends StatelessWidget {
   final productDetailName;
@@ -99,10 +99,7 @@ class ProductDetails extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Cart()),
-                  );
+
                 },
                 icon: Icon(Icons.add_shopping_cart),
                 color: Colors.green,

@@ -7,57 +7,61 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController _messageController = TextEditingController();
+  TextEditingController _messageController = TextEditingController();
+  CollectionReference _messagesCollection = FirebaseFirestore.instance.collection('messages');
 
-  void _sendMessage() {
-    String message = _messageController.text.trim();
-    if (message.isNotEmpty) {
-      FirebaseFirestore.instance.collection('messages').add({
-        'text': message,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-      _messageController.clear();
-    }
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
+
+  void _sendMessage(String message) {
+    _messagesCollection.add({
+      'content': message,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    _messageController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Chat App'),
+      appBar: AppBar( backgroundColor: Colors.green,
+        title: Text('Chat'),
       ),
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('messages')
-                  .orderBy('timestamp', descending: true)
-                  .snapshots(),
+              stream: _messagesCollection.orderBy('timestamp').snapshots(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
                 }
-                var messages = snapshot.data!.docs;
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
+
+                List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+
                 return ListView.builder(
-                  reverse: true,
-                  itemCount: messages.length,
+                  itemCount: documents.length,
                   itemBuilder: (context, index) {
-                    var message = messages[index].data() as Map<String, dynamic>;
+                    var messageData = documents[index].data() as Map<String, dynamic>;
+                    var content = messageData['content'] ?? '';
+
                     return ListTile(
-                      title: Text(message['text']),
-                      subtitle: Text(
-                        // Format timestamp here if needed
-                        message['timestamp'].toString(),
-                      ),
+                      title: Text(content),
                     );
                   },
                 );
               },
             ),
           ),
+          Divider(),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
@@ -65,12 +69,17 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration: InputDecoration(labelText: 'Type a message...'),
+                    decoration: InputDecoration(labelText: 'Type your message...'),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.send),
-                  onPressed: _sendMessage,
+                  onPressed: () {
+                    String message = _messageController.text.trim();
+                    if (message.isNotEmpty) {
+                      _sendMessage(message);
+                    }
+                  },
                 ),
               ],
             ),
@@ -79,4 +88,10 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: ChatScreen(),
+  ));
 }
