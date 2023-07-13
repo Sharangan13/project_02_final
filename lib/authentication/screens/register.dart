@@ -1,9 +1,12 @@
+import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:project_02_final/authentication/screens/login.dart';
 import 'package:project_02_final/authentication/controller/register_controller.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../models/user_model.dart';
 import 'home.dart';
 
@@ -17,6 +20,37 @@ class register extends StatefulWidget {
 class _registerState extends State<register> {
   final controller = Get.put(registerontroller());
   final _formKey = GlobalKey<FormState>();
+
+  Future<String?> generateQRCode(String uid) async {
+    try {
+      final qrData = uid;
+      final qrImageData = await QrPainter(
+        data: qrData,
+        version: QrVersions.auto,
+      ).toImageData(200);
+
+      if (qrImageData != null) {
+        print("Successfully generate QR code");
+        final filePath = 'qr_codes/$uid.png'; // Use UID as the file name
+        final Reference storageReference =
+            FirebaseStorage.instance.ref().child(filePath);
+
+        final uploadTask =
+            storageReference.putData(qrImageData.buffer.asUint8List());
+        final TaskSnapshot storageSnapshot = await uploadTask;
+
+        if (storageSnapshot.state == TaskState.success) {
+          final downloadUrl = await storageReference.getDownloadURL();
+          return downloadUrl;
+        }
+      }
+
+      throw Exception('QR code upload failed');
+    } catch (e) {
+      print('Error generating QR code: $e');
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -219,88 +253,88 @@ class _registerState extends State<register> {
                       if (_formKey.currentState!.validate()) {
                         try {
                           // Create new account with Firebase Authentication
-                          await FirebaseAuth.instance
-                              .createUserWithEmailAndPassword(
+                          final UserCredential userCredential =
+                              await FirebaseAuth.instance
+                                  .createUserWithEmailAndPassword(
                             email: controller.email.text,
                             password: controller.password.text,
                           );
+                          // Generate and store the QR code
 
-                          print("Data pushed successfully");
-                          print("Create new account");
+                          final uid = userCredential.user!.uid;
+                          final downloadUrl = await generateQRCode(uid);
+                          if (downloadUrl != null) {
+                            print('QR Code URL: $downloadUrl');
+                            // Store user data in Firestore
+                            final user = UserModel(
+                              uid: userCredential.user!.uid,
+                              email: controller.email.text.trim(),
+                              username: controller.username.text.trim(),
+                              phonenumber: controller.phonenumber.text.trim(),
+                              downloadUrl: downloadUrl,
+                            );
+                            registerontroller.instance.createUser(user);
 
-                          // Navigation logic
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => home()),
-                          );
-                        } catch (error) {
-                          /// Handle the error when the email is already in use
+                            // Generate and store the QR code
 
-                          if (error is FirebaseAuthException &&
-                              error.code == 'email-already-in-use') {
-                            /// Provide feedback to the user that the email is already in use
-
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Registration Failed'),
-                                  titleTextStyle: const TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  content: const Text(
-                                    'The email is already in use. Please use a different email.',
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text('OK'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
+                            // Navigation logic
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => home()),
                             );
                           } else {
-                            // Handle other errors
-                            print('Error: $error');
+                            print('Failed to generate QR code');
                           }
+                        } catch (error) {
+                          // Handle errors
+                          print('Error: $error');
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Registration Failed'),
+                                titleTextStyle: const TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                content: Text(
+                                    'Registration failed due to an error.'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text('OK'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         }
-
-                        final user = UserModel(
-                          email: controller.email.text.trim(),
-                          password: controller.password.text.trim(),
-                          username: controller.username.text.trim(),
-                          phonenumber: controller.phonenumber.text.trim(),
-                        );
-                        registerontroller.instance.createUser(user);
                       }
                     },
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all<EdgeInsets>(
-                        const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 50.0),
-                      ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                      ),
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.black),
-                      textStyle: MaterialStateProperty.all<TextStyle>(
-                        const TextStyle(
-                          fontSize: 16.0,
+                    child: const Text(
+                      'Register',
+                      style: TextStyle(
+                          color: Colors.black87,
                           fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                          fontSize: 16),
                     ),
-                    child: const Text('Register'),
+
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith((states) {
+                          if (states.contains(MaterialState.pressed)) {
+                            return Colors.black26;
+                          }
+                          return Colors.white;
+                        }),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30)))),
+                    // ... Rest of the button code
                   ),
                   const SizedBox(
                     height: 25,

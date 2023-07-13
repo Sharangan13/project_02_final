@@ -1,26 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  final String? id;
+  final String? uid;
   final String username;
   final String email;
   final String phonenumber;
-  final String password;
+  final String? downloadUrl;
 
   const UserModel({
-    this.id,
+    this.uid,
     required this.username,
     required this.email,
     required this.phonenumber,
-    required this.password,
+    this.downloadUrl,
   });
 
   toJson() {
     return {
+      "uid": uid,
       "UserName": username,
       "Email": email,
       "PhoneNumber": phonenumber,
-      "Password": password,
+      "qrCodeUrl": downloadUrl,
     };
   }
 
@@ -31,9 +32,8 @@ class UserModel {
     final data = document.data()!;
 
     return UserModel(
-      id: document.id,
+      uid: document.id,
       email: data["Email"],
-      password: data["Password"],
       username: data["UserName"],
       phonenumber: data["PhoneNumber"],
     );

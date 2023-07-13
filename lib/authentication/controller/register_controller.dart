@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:project_02_final/authentication/models/user_model.dart';
 import '../../repository/authendication_repository/authendication_repository.dart';
 import '../../repository/user_repository/user_repository.dart';

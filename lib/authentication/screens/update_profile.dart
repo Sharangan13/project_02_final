@@ -132,31 +132,6 @@ class _updateprofileState extends State<updateProfile> {
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                  TextFormField(
-                                    initialValue: userData.password,
-                                    style: TextStyle(
-                                        color: Colors.white.withOpacity(0.9)),
-                                    decoration: InputDecoration(
-                                      prefixIcon: const Icon(
-                                        Icons.password,
-                                        color: Colors.white70,
-                                      ),
-                                      labelText: "Enter password",
-                                      labelStyle: TextStyle(
-                                          color: Colors.white.withOpacity(0.9)),
-                                      filled: true,
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.never,
-                                      fillColor: Colors.white.withOpacity(0.3),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                          borderSide: const BorderSide(
-                                              width: 0,
-                                              style: BorderStyle.none)),
-                                    ),
-                                    obscureText: true,
-                                  ),
                                   const SizedBox(
                                     height: 25,
                                   ),
