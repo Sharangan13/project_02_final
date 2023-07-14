@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'package:project_02_final/reusable_widgets/Chat.dart';
@@ -17,6 +18,32 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
+  String notificationmsg="waiting for notification";
+  @override
+  void initState(){
+    super.initState();
+    FirebaseMessaging.instance.getInitialMessage().then((event)
+    {if(event !=null){
+    setState(() {
+      notificationmsg="${event.notification!.title} ${event.notification!.body}i am coming from terminated state";
+
+    });
+    }
+    }
+    );
+    FirebaseMessaging.onMessage.listen((event) {
+      setState(() {
+        notificationmsg = "${event.notification!.title} ${event.notification!
+            .body}i am coming from fore ground state";
+      });
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      setState(() {
+        notificationmsg = "${event.notification!.title} ${event.notification!
+            .body}i am coming from background state";
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = Container(
