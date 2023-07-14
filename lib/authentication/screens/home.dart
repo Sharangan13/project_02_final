@@ -5,6 +5,7 @@ import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'package:project_02_final/reusable_widgets/Chat.dart';
 import '../../Pages/cart.dart';
 import 'AboutUsPage.dart';
+import 'ConsultancyBookingPage.dart';
 import 'QRCodeRetrieval.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
@@ -18,32 +19,32 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
-  String notificationmsg="waiting for notification";
+  String notificationmsg = "waiting for notification";
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    FirebaseMessaging.instance.getInitialMessage().then((event)
-    {if(event !=null){
-    setState(() {
-      notificationmsg="${event.notification!.title} ${event.notification!.body}i am coming from terminated state";
-
+    FirebaseMessaging.instance.getInitialMessage().then((event) {
+      if (event != null) {
+        setState(() {
+          notificationmsg =
+              "${event.notification!.title} ${event.notification!.body}i am coming from terminated state";
+        });
+      }
     });
-    }
-    }
-    );
     FirebaseMessaging.onMessage.listen((event) {
       setState(() {
-        notificationmsg = "${event.notification!.title} ${event.notification!
-            .body}i am coming from fore ground state";
+        notificationmsg =
+            "${event.notification!.title} ${event.notification!.body}i am coming from fore ground state";
       });
     });
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       setState(() {
-        notificationmsg = "${event.notification!.title} ${event.notification!
-            .body}i am coming from background state";
+        notificationmsg =
+            "${event.notification!.title} ${event.notification!.body}i am coming from background state";
       });
     });
   }
+
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = Container(
@@ -228,7 +229,11 @@ class _homeState extends State<home> {
               title: const Text("Consultancy Bookings"),
               leading: const Icon(Icons.add_box),
               onTap: () {
-                //action when this menu is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => BookingPage()),
+                );
+                //action when this menu is pressedBookingPage
               },
             ),
             ListTile(
@@ -312,7 +317,9 @@ class _homeState extends State<home> {
               padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
               child: Center(child: new Text("SHOP FOR")),
             ),
-            horizontalList(),
+            HorizontalList(
+              onCategorySelected: (String) {},
+            ),
             new Padding(
               padding: const EdgeInsets.all(10.0),
               child: Center(child: new Text("Recent Products")),

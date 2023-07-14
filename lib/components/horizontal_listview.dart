@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-class horizontalList extends StatelessWidget {
-  const horizontalList({Key? key}) : super(key: key);
+class HorizontalList extends StatelessWidget {
+  final Function(String) onCategorySelected;
+
+  const HorizontalList({Key? key, required this.onCategorySelected})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,45 +17,35 @@ class horizontalList extends StatelessWidget {
             imageLocation: 'assets/types/O1.jpg',
             imageCaption: 'Equipments',
             onTap: () {
-              // Handle Equipment category tap
-              // You can add your logic here
-              print('Equipment category tapped');
+              onCategorySelected('Equipments');
             },
           ),
           Category(
             imageLocation: 'assets/types/O1.jpg',
             imageCaption: 'Flowering Plants',
             onTap: () {
-              // Handle Flowering Plants category tap
-              // You can add your logic here
-              print('Flowering Plants category tapped');
+              onCategorySelected('Flowering Plants');
             },
           ),
           Category(
             imageLocation: 'assets/types/O1.jpg',
             imageCaption: 'Indoor Plants',
             onTap: () {
-              // Handle Indoor Plants category tap
-              // You can add your logic here
-              print('Indoor Plants category tapped');
+              onCategorySelected('Indoor Plants');
             },
           ),
           Category(
             imageLocation: 'assets/types/O1.jpg',
             imageCaption: 'Medicinal Plants',
             onTap: () {
-              // Handle Medicinal Plants category tap
-              // You can add your logic here
-              print('Medicinal Plants category tapped');
+              onCategorySelected('Medicinal Plants');
             },
           ),
           Category(
             imageLocation: 'assets/types/O1.jpg',
             imageCaption: 'Exotic Plants',
             onTap: () {
-              // Handle Exotic Plants category tap
-              // You can add your logic here
-              print('Exotic Plants category tapped');
+              onCategorySelected('Exotic Plants');
             },
           ),
         ],
