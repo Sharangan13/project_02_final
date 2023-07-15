@@ -8,6 +8,7 @@ import 'QRCodeRetrieval.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
 import 'package:project_02_final/components/products.dart';
+import 'MyAccount.dart';
 
 class home extends StatefulWidget {
   const home({Key? key}) : super(key: key);
@@ -185,11 +186,11 @@ class _homeState extends State<home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const updateProfile()),
+                  MaterialPageRoute(builder: (context) => const MyAccount()),
                 );
               },
             ),
+
             ListTile(
               dense: true,
               title: const Text("Pre-Orders Bookings"),
