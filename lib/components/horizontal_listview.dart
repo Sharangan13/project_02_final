@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class HorizontalList extends StatelessWidget {
-  final Function(String) onCategorySelected;
+import '../authentication/screens/ProductListPage.dart';
+// Import the product list page
 
-  const HorizontalList({Key? key, required this.onCategorySelected})
-      : super(key: key);
+class HorizontalList extends StatelessWidget {
+  const HorizontalList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,38 +17,60 @@ class HorizontalList extends StatelessWidget {
             imageLocation: 'assets/types/O1.jpg',
             imageCaption: 'Equipments',
             onTap: () {
-              onCategorySelected('Equipments');
+              // Handle Equipment category tap
+              navigateToProductList(context, 'Equipments');
             },
           ),
           Category(
             imageLocation: 'assets/types/O1.jpg',
             imageCaption: 'Flowering Plants',
             onTap: () {
-              onCategorySelected('Flowering Plants');
+              // Handle Flowering Plants category tap
+              navigateToProductList(context, 'FloweringPlants');
             },
           ),
           Category(
             imageLocation: 'assets/types/O1.jpg',
             imageCaption: 'Indoor Plants',
             onTap: () {
-              onCategorySelected('Indoor Plants');
+              // Handle Indoor Plants category tap
+              navigateToProductList(context, 'IndoorPlants');
             },
           ),
           Category(
             imageLocation: 'assets/types/O1.jpg',
             imageCaption: 'Medicinal Plants',
             onTap: () {
-              onCategorySelected('Medicinal Plants');
+              // Handle Medicinal Plants category tap
+              navigateToProductList(context, 'MedicinalPlants');
             },
           ),
           Category(
             imageLocation: 'assets/types/O1.jpg',
-            imageCaption: 'Exotic Plants',
+            imageCaption: 'Outdoor Plants',
             onTap: () {
-              onCategorySelected('Exotic Plants');
+              // Handle Exotic Plants category tap
+              navigateToProductList(context, 'OutdoorPlants');
+            },
+          ),
+          Category(
+            imageLocation: 'assets/types/O1.jpg',
+            imageCaption: 'Rare Plants',
+            onTap: () {
+              // Handle Exotic Plants category tap
+              navigateToProductList(context, 'RareandExoticPlants');
             },
           ),
         ],
+      ),
+    );
+  }
+
+  void navigateToProductList(BuildContext context, String category) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductListPage(category: category),
       ),
     );
   }
