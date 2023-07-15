@@ -48,7 +48,36 @@ class _MyAccountState extends State<MyAccount> {
     }
   }
 
-
+  void changePassword() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final email = user.email;
+      if (email != null) {
+        try {
+          await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Password Reset'),
+                content: Text('A password reset link has been sent to your email. Please follow the instructions to change your password.'),
+                actions: [
+                  TextButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        } catch (e) {
+          print('Error sending password reset email: $e');
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +98,11 @@ class _MyAccountState extends State<MyAccount> {
             Text(
               'Email: $email',
               style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: changePassword,
+              child: Text('Change My Password'),
             ),
           ],
         ),
