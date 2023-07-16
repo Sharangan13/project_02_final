@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
-import 'package:project_02_final/reusable_widgets/Chat.dart';
+import 'package:project_02_final/authentication/screens/Chat.dart';
 import '../../Pages/cart.dart';
 import 'AboutUsPage.dart';
+import 'RateUs.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
 import 'package:project_02_final/components/products.dart';
@@ -215,7 +216,7 @@ class _homeState extends State<home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ChatScreen()),
+                  MaterialPageRoute(builder: (context) => ChatScreen(receiverId: '',)),
                 );
               },
             ),
@@ -235,7 +236,10 @@ class _homeState extends State<home> {
               title: const Text("Rate us"),
               leading: const Icon(Icons.star_rate),
               onTap: () {
-                //action when this menu is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RateUsScreen()),
+                );//action when this menu is pressed
               },
             ),
             ListTile(

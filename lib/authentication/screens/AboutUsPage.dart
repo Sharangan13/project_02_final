@@ -54,9 +54,62 @@ class AboutUsPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 8),
-              Text(
-                'Email: info@company.com\nPhone: 0219876543',
-                style: TextStyle(fontSize: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      color: Colors.white,
+                      child: IconButton(
+                        onPressed: null,
+                        icon: Icon(
+                          Icons.phone,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      color: Colors.white,
+                      child: IconButton(
+                        onPressed: null,
+                        icon: Icon(
+                          Icons.web,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      color: Colors.white,
+                      child: IconButton(
+                        onPressed: null,
+                        icon: Icon(
+                          Icons.facebook,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      color: Colors.white,
+                      child: IconButton(
+                        onPressed: null,
+                        icon: Icon(
+                          Icons.email,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
