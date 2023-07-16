@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
+  final String receiverId;
+
+  ChatScreen({required this.receiverId});
+
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController _messageController = TextEditingController();
-  CollectionReference _messagesCollection = FirebaseFirestore.instance.collection('messages');
+  CollectionReference _messagesCollection =
+  FirebaseFirestore.instance.collection('messages');
 
   @override
   void dispose() {
@@ -16,13 +21,31 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  void _sendMessage(String message) {
-    _messagesCollection.add({
-      'content': message,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
+  void _sendMessage(String message) async {
+    try {
+      await _messagesCollection.add({
+        'content': message,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
 
-    _messageController.clear();
+      _messageController.clear();
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to send message: $e'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -35,22 +58,29 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: _messagesCollection.orderBy('timestamp').snapshots(),
+              stream: _messagesCollection
+                  .orderBy('timestamp')
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 }
 
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
 
-                List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+                List<QueryDocumentSnapshot> documents =
+                    snapshot.data!.docs;
 
                 return ListView.builder(
                   itemCount: documents.length,
                   itemBuilder: (context, index) {
-                    var messageData = documents[index].data() as Map<String, dynamic>;
+                    var messageData =
+                    documents[index].data() as Map<String, dynamic>;
                     var content = messageData['content'] ?? '';
 
                     return ListTile(
@@ -69,7 +99,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration: InputDecoration(labelText: 'Type your message...'),
+                    decoration:
+                    InputDecoration(labelText: 'Type your message...'),
                   ),
                 ),
                 IconButton(
@@ -92,6 +123,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
 void main() {
   runApp(MaterialApp(
-    home: ChatScreen(),
+    home: ChatScreen(receiverId: 'Admin'),
   ));
 }

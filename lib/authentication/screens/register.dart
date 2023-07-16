@@ -123,7 +123,7 @@ class _registerState extends State<register> {
                         Icons.email,
                         color: Colors.white70,
                       ),
-                      labelText: "Enter Email Id",
+                      labelText: "Enter Email id",
                       labelStyle:
                           TextStyle(color: Colors.white.withOpacity(0.9)),
                       filled: true,

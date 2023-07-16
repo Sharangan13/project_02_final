@@ -1,15 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
-import 'package:project_02_final/reusable_widgets/Chat.dart';
+import 'package:project_02_final/authentication/screens/Chat.dart';
 import '../../Pages/cart.dart';
 import '../../components/RecentProductsPage.dart';
 import 'AboutUsPage.dart';
-import 'QRCodeRetrieval.dart';
+import 'RateUs.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
-import 'package:project_02_final/components/products.dart';
 
 class home extends StatefulWidget {
   const home({Key? key}) : super(key: key);
@@ -19,36 +16,6 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
-  late User? user;
-  late String accountName = "";
-  late String accountEmail = "";
-
-  @override
-  void initState() {
-    super.initState();
-    fetchUserData();
-  }
-
-  Future<void> fetchUserData() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      final documentId = currentUser.uid;
-      final userSnapshot = await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(documentId)
-          .get();
-
-      if (userSnapshot.exists) {
-        final userData = userSnapshot.data();
-        setState(() {
-          user = currentUser;
-          accountName = userData?['UserName'] ?? '';
-          accountEmail = userData?['Email'] ?? '';
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = Container(
@@ -194,8 +161,8 @@ class _homeState extends State<home> {
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text(accountName),
-              accountEmail: Text(accountEmail),
+              accountName: const Text("Sharangan"),
+              accountEmail: const Text("Sharangan199@gmail.com"),
               currentAccountPicture: CircleAvatar(
                 radius: 15,
                 backgroundColor: Colors.white,
@@ -249,7 +216,10 @@ class _homeState extends State<home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ChatScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => ChatScreen(
+                            receiverId: '',
+                          )),
                 );
               },
             ),
@@ -269,7 +239,10 @@ class _homeState extends State<home> {
               title: const Text("Rate us"),
               leading: const Icon(Icons.star_rate),
               onTap: () {
-                //action when this menu is pressed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RateUsScreen()),
+                ); //action when this menu is pressed
               },
             ),
             ListTile(
@@ -277,20 +250,7 @@ class _homeState extends State<home> {
               title: const Text("Your QR"),
               leading: const Icon(Icons.qr_code),
               onTap: () {
-                // action when this menu is pressed
-                final user = FirebaseAuth.instance.currentUser;
-                if (user != null) {
-                  final uid = user.uid;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => QRCodeRetrieval(uid: uid),
-                    ),
-                  );
-                } else {
-                  print('User authentication failed');
-                  // Handle the error or show an error message to the user
-                }
+                //action when this menu is pressed
               },
             ),
             Divider(),
