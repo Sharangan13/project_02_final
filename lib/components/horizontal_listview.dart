@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-class horizontalList extends StatelessWidget {
-  const horizontalList({Key? key}) : super(key: key);
+import '../authentication/screens/ProductListPage.dart';
+// Import the product list page
+
+class HorizontalList extends StatelessWidget {
+  const HorizontalList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,51 +14,63 @@ class horizontalList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: [
           Category(
-            imageLocation: 'assets/types/O1.jpg',
+            imageLocation: 'assets/category/equipment.png',
             imageCaption: 'Equipments',
             onTap: () {
               // Handle Equipment category tap
-              // You can add your logic here
-              print('Equipment category tapped');
+              navigateToProductList(context, 'Equipments');
             },
           ),
           Category(
-            imageLocation: 'assets/types/O1.jpg',
+            imageLocation: 'assets/category/floweringplant.png',
             imageCaption: 'Flowering Plants',
             onTap: () {
               // Handle Flowering Plants category tap
-              // You can add your logic here
-              print('Flowering Plants category tapped');
+              navigateToProductList(context, 'FloweringPlants');
             },
           ),
           Category(
-            imageLocation: 'assets/types/O1.jpg',
+            imageLocation: 'assets/category/indoor.png',
             imageCaption: 'Indoor Plants',
             onTap: () {
               // Handle Indoor Plants category tap
-              // You can add your logic here
-              print('Indoor Plants category tapped');
+              navigateToProductList(context, 'IndoorPlants');
             },
           ),
           Category(
-            imageLocation: 'assets/types/O1.jpg',
+            imageLocation: 'assets/category/medicineplants.png',
             imageCaption: 'Medicinal Plants',
             onTap: () {
               // Handle Medicinal Plants category tap
-              // You can add your logic here
-              print('Medicinal Plants category tapped');
+              navigateToProductList(context, 'MedicinalPlants');
             },
           ),
           Category(
-            imageLocation: 'assets/types/O1.jpg',
-            imageCaption: 'Exotic Plants',
+            imageLocation: 'assets/category/outdoor.png',
+            imageCaption: 'Outdoor Plants',
             onTap: () {
               // Handle Exotic Plants category tap
-              // You can add your logic here
-              print('Exotic Plants category tapped');
+              navigateToProductList(context, 'OutdoorPlants');
+            },
+          ),
+          Category(
+            imageLocation: 'assets/category/rareplant.png',
+            imageCaption: 'Rare Plants',
+            onTap: () {
+              // Handle Exotic Plants category tap
+              navigateToProductList(context, 'RareandExoticPlants');
             },
           ),
         ],
+      ),
+    );
+  }
+
+  void navigateToProductList(BuildContext context, String category) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductListPage(category: category),
       ),
     );
   }

@@ -1,29 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../authentication/screens/ProductListPage.dart';
 
 class ProductDetails extends StatelessWidget {
-  final productDetailName;
-  final productDetailPrice;
-  final productDetailQuantity;
-  final productDetailPicture;
+  final Product product;
 
-  ProductDetails({
-    required this.productDetailName,
-    required this.productDetailPrice,
-    required this.productDetailQuantity,
-    required this.productDetailPicture,
-  });
+  const ProductDetails({required this.product});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          'PSell',
-          style: TextStyle(color: Colors.black, fontSize: 17),
-        ),
+        title: Text(product.name),
       ),
       body: ListView(
         children: [
@@ -32,7 +21,7 @@ class ProductDetails extends StatelessWidget {
             child: GridTile(
               child: Container(
                 color: Colors.white,
-                child: Image.asset(productDetailPicture),
+                child: Image.network(product.imageURL),
               ),
               footer: Container(
                 color: Colors.white70,
@@ -41,25 +30,27 @@ class ProductDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      productDetailName,
+                      product.name,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
                       ),
                     ),
                     SizedBox(height: 4.0),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            "Rs ${productDetailPrice}",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green,
-                            ),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      'Price: Rs ${product.price.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                    SizedBox(height: 4.0),
+                    Text(
+                      'Quantity: ${product.quantity}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                   ],
                 ),
@@ -71,13 +62,15 @@ class ProductDetails extends StatelessWidget {
             children: [
               Expanded(
                 child: MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Handle the quantity button tap
+                  },
                   color: Colors.white,
                   textColor: Colors.black,
                   elevation: 0.2,
                   child: Row(
                     children: [
-                      Expanded(child: Text("Qty")),
+                      Expanded(child: Text("Quantity")),
                       Expanded(child: Icon(Icons.arrow_drop_down)),
                     ],
                   ),
@@ -90,7 +83,9 @@ class ProductDetails extends StatelessWidget {
             children: [
               Expanded(
                 child: MaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Handle the Buy Now button tap
+                  },
                   color: Colors.green,
                   textColor: Colors.white,
                   elevation: 0.2,
@@ -99,13 +94,15 @@ class ProductDetails extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-
+                  // Handle the add to cart button tap
                 },
                 icon: Icon(Icons.add_shopping_cart),
                 color: Colors.green,
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  // Handle the favorite button tap
+                },
                 icon: Icon(Icons.favorite_border),
                 color: Colors.green,
               ),
@@ -115,7 +112,7 @@ class ProductDetails extends StatelessWidget {
           ListTile(
             title: Text("Description"),
             subtitle: Text(
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliqu",
+              product.description,
             ),
           ),
           Divider(color: Colors.green),

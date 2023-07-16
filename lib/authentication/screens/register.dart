@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:project_02_final/authentication/screens/login.dart';
 import 'package:project_02_final/authentication/controller/register_controller.dart';
@@ -177,7 +176,6 @@ class _registerState extends State<register> {
                       }
                       return null;
                     },
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                   const SizedBox(
                     height: 20,
