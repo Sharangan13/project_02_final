@@ -18,7 +18,7 @@ class HorizontalList extends StatelessWidget {
             imageCaption: 'Equipments',
             onTap: () {
               // Handle Equipment category tap
-              navigateToProductList(context, 'Equipments');
+              navigateToProductList(context, 'equipments');
             },
           ),
           Category(

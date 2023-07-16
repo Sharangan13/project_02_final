@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'package:project_02_final/reusable_widgets/Chat.dart';
 import '../../Pages/cart.dart';
+import '../../components/RecentProductsPage.dart';
 import 'AboutUsPage.dart';
 import 'QRCodeRetrieval.dart';
 import 'login.dart';
@@ -292,6 +293,7 @@ class _homeState extends State<home> {
             ),
             Container(
               height: 400.0,
+              child: RecentProductsPage(),
             )
           ],
         ),

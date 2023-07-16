@@ -12,11 +12,12 @@ class ProductListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green[700],
         title: Text(category),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('Plants')
+            .collection(category == 'equipments' ? 'Equipments' : 'Plants')
             .doc(category)
             .collection('Items')
             .snapshots(),
@@ -27,49 +28,86 @@ class ProductListPage extends StatelessWidget {
             );
           }
 
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error fetching products'),
-            );
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(
-              child: Text('No products found'),
-            );
-          }
-
           final products = snapshot.data!.docs
               .map((doc) => Product.fromSnapshot(doc))
               .toList();
 
-          return ListView.builder(
+          return GridView.builder(
+            padding: EdgeInsets.all(8.0),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 8.0,
+              mainAxisSpacing: 8.0,
+              childAspectRatio: 0.7,
+            ),
             itemCount: products.length,
-            itemBuilder: (context, index) {
+            itemBuilder: (BuildContext context, int index) {
               final product = products[index];
-              return Card(
-                child: InkWell(
-                  onTap: () {
-                    // Handle the product tap
-                    // You can add your logic here
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetails(
-                          product: product,
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductDetails(
+                        product: product,
+                      ),
+                    ),
+                  );
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(8.0),
+                            ),
+                            image: DecorationImage(
+                              image: NetworkImage(product.imageURL),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                       ),
-                    );
-                  },
-                  child: ListTile(
-                    leading: Image.network(
-                      product.imageURL,
-                      width: 72,
-                      height: 72,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(product.name),
-                    subtitle: Text('Rs ${product.price.toStringAsFixed(2)}'),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              product.name,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 4.0),
+                            Text(
+                              'Rs ${product.price.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 4.0),
+                            Text(
+                              'Quantity: ${product.quantity}',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );
