@@ -14,7 +14,7 @@ class HorizontalList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: [
           Category(
-            imageLocation: 'assets/types/O1.jpg',
+            imageLocation: 'assets/category/equipment.png',
             imageCaption: 'Equipments',
             onTap: () {
               // Handle Equipment category tap
@@ -22,7 +22,7 @@ class HorizontalList extends StatelessWidget {
             },
           ),
           Category(
-            imageLocation: 'assets/types/O1.jpg',
+            imageLocation: 'assets/category/floweringplant.png',
             imageCaption: 'Flowering Plants',
             onTap: () {
               // Handle Flowering Plants category tap
@@ -30,7 +30,7 @@ class HorizontalList extends StatelessWidget {
             },
           ),
           Category(
-            imageLocation: 'assets/types/O1.jpg',
+            imageLocation: 'assets/category/indoor.png',
             imageCaption: 'Indoor Plants',
             onTap: () {
               // Handle Indoor Plants category tap
@@ -38,7 +38,7 @@ class HorizontalList extends StatelessWidget {
             },
           ),
           Category(
-            imageLocation: 'assets/types/O1.jpg',
+            imageLocation: 'assets/category/medicineplants.png',
             imageCaption: 'Medicinal Plants',
             onTap: () {
               // Handle Medicinal Plants category tap
@@ -46,7 +46,7 @@ class HorizontalList extends StatelessWidget {
             },
           ),
           Category(
-            imageLocation: 'assets/types/O1.jpg',
+            imageLocation: 'assets/category/outdoor.png',
             imageCaption: 'Outdoor Plants',
             onTap: () {
               // Handle Exotic Plants category tap
@@ -54,7 +54,7 @@ class HorizontalList extends StatelessWidget {
             },
           ),
           Category(
-            imageLocation: 'assets/types/O1.jpg',
+            imageLocation: 'assets/category/rareplant.png',
             imageCaption: 'Rare Plants',
             onTap: () {
               // Handle Exotic Plants category tap

@@ -43,7 +43,11 @@ class ProductListPage extends StatelessWidget {
               .map((doc) => Product.fromSnapshot(doc))
               .toList();
 
-          return ListView.builder(
+          return GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // Adjust the number of columns as needed
+              childAspectRatio: 0.75, // Adjust the aspect ratio as needed
+            ),
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
@@ -61,15 +65,35 @@ class ProductListPage extends StatelessWidget {
                       ),
                     );
                   },
-                  child: ListTile(
-                    leading: Image.network(
-                      product.imageURL,
-                      width: 72,
-                      height: 72,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(product.name),
-                    subtitle: Text('Rs ${product.price.toStringAsFixed(2)}'),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AspectRatio(
+                        aspectRatio: 1.0,
+                        child: Image.network(
+                          product.imageURL,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              product.name,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Rs ${product.price.toStringAsFixed(2)}',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );
