@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/update_profile.dart';
@@ -18,6 +19,36 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
+  late User? user;
+  late String accountName = "";
+  late String accountEmail = "";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final documentId = currentUser.uid;
+      final userSnapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(documentId)
+          .get();
+
+      if (userSnapshot.exists) {
+        final userData = userSnapshot.data();
+        setState(() {
+          user = currentUser;
+          accountName = userData?['UserName'] ?? '';
+          accountEmail = userData?['Email'] ?? '';
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = Container(
@@ -44,7 +75,7 @@ class _homeState extends State<home> {
                       children: [
                         Padding(
                           padding:
-                              const EdgeInsets.only(right: 130, bottom: 10),
+                          const EdgeInsets.only(right: 130, bottom: 10),
                           child: Container(
                             height: 50,
                             width: 100,
@@ -163,8 +194,8 @@ class _homeState extends State<home> {
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-              accountName: const Text("Sharangan"),
-              accountEmail: const Text("Sharangan199@gmail.com"),
+              accountName: Text(accountName),
+              accountEmail: Text(accountEmail),
               currentAccountPicture: CircleAvatar(
                 radius: 15,
                 backgroundColor: Colors.white,
