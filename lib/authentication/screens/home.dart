@@ -75,7 +75,7 @@ class _homeState extends State<home> {
                       children: [
                         Padding(
                           padding:
-                          const EdgeInsets.only(right: 130, bottom: 10),
+                              const EdgeInsets.only(right: 130, bottom: 10),
                           child: Container(
                             height: 50,
                             width: 100,
@@ -208,7 +208,7 @@ class _homeState extends State<home> {
                   ),
                 ),
               ),
-              decoration: const BoxDecoration(color: Colors.lightGreen),
+              decoration: const BoxDecoration(color: Colors.green),
             ),
             ListTile(
               dense: true,

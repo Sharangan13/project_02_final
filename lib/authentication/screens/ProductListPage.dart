@@ -98,7 +98,7 @@ class ProductListPage extends StatelessWidget {
                             ),
                             SizedBox(height: 4.0),
                             Text(
-                              'Quantity: ${product.quantity}',
+                              '${product.quantity} Available',
                               style: TextStyle(
                                 fontSize: 12.0,
                                 color: Colors.grey,
