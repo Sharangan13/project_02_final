@@ -274,14 +274,14 @@ class _homeState extends State<home> {
               padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
               child: Center(child: new Text("SHOP FOR")),
             ),
-            horizontalList(),
+            HorizontalList(),
             new Padding(
               padding: const EdgeInsets.all(10.0),
               child: Center(child: new Text("Recent Products")),
             ),
             Container(
               height: 400.0,
-              child: Products(),
+              child: products(),
             )
           ],
         ),
