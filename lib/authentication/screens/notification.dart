@@ -34,10 +34,14 @@ class _MyNotificationState extends State<MyNotification> {
   }
 
   void processMessage(RemoteMessage message) {
-    setState(() {
-      notificationMsg =
-      "${message.notification!.title} ${message.notification!.body}";
-    });
+    final notification = message.notification;
+    if (notification != null) {
+      final title = notification.title ?? "";
+      final body = notification.body ?? "";
+      setState(() {
+        notificationMsg = "$title:\n$body";
+      });
+    }
   }
 
   Future<void> showForegroundNotification(RemoteMessage message) async {
@@ -69,7 +73,7 @@ class _MyNotificationState extends State<MyNotification> {
     await flutterLocalNotificationsPlugin.show(
       DateTime.now().microsecondsSinceEpoch,
       message.notification!.title,
-      "${message.notification!.title} ${message.notification!.body}",
+      "${message.notification!.title}: ${message.notification!.body}",
       platformChannelSpecifics,
       payload: message.data['message'],
     );
