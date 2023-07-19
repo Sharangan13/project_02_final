@@ -46,19 +46,19 @@ class _MyNotificationState extends State<MyNotification> {
 
   Future<void> showForegroundNotification(RemoteMessage message) async {
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+        FlutterLocalNotificationsPlugin();
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('app_icon');
+        AndroidInitializationSettings('app_icon');
 
     final InitializationSettings initializationSettings =
-    InitializationSettings(
+        InitializationSettings(
       android: initializationSettingsAndroid,
     );
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'com.example.firebase_push_notification',
       'firebase_push_notification',
       importance: Importance.max,
@@ -68,7 +68,7 @@ class _MyNotificationState extends State<MyNotification> {
     );
 
     final NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
+        NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
       DateTime.now().microsecondsSinceEpoch,
@@ -83,6 +83,7 @@ class _MyNotificationState extends State<MyNotification> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green[700],
         title: const Text("Firebase Notifications"),
       ),
       body: Center(

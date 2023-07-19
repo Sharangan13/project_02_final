@@ -1,44 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:project_02_final/components/cart_products.dart';
 
-class Cart extends StatefulWidget {
-  const Cart({Key? key}) : super(key: key);
+import 'Product.dart';
+
+class AddToCartPage extends StatefulWidget {
+  final Product product;
+
+  AddToCartPage({required this.product});
 
   @override
-  State<Cart> createState() => _CartState();
+  _AddToCartPageState createState() => _AddToCartPageState();
 }
 
-class _CartState extends State<Cart> {
+class _AddToCartPageState extends State<AddToCartPage> {
+  int selectedQuantity = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          'Cart',
-          style: TextStyle(color: Colors.black, fontSize: 17),
-        ),
+        title: Text('Add to Cart'),
       ),
-      body: new Cart_products(),
-      bottomNavigationBar: new Container(
-        color: Colors.white,
-        child: Row(
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-                child: ListTile(
-              title: new Text("Total:"),
-              subtitle: new Text("Rs560"),
-            )),
-            Expanded(
-                child: new MaterialButton(
-              onPressed: () {},
-              child: new Text(
-                "Check Out",
-                style: TextStyle(color: Colors.white),
+            Text(
+              'Product: ${widget.product.name}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0,
               ),
-              color: Colors.green,
-            ))
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Selected Quantity: $selectedQuantity',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0,
+              ),
+            ),
           ],
         ),
       ),

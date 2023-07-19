@@ -8,7 +8,6 @@ import 'firebase_options.dart';
 Future<void> backroundHandler(RemoteMessage message) async {
   print(message.notification!.title);
   print(message.notification!.title);
-
 }
 
 void main() async {
@@ -41,7 +40,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const home(),
+      home: const login_screen(),
     );
   }
 }

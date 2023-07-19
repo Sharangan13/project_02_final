@@ -1,28 +1,40 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../authentication/screens/ProductListPage.dart';
+import 'Product.dart';
 
-class ProductDetails extends StatelessWidget {
+class ProductDetails extends StatefulWidget {
   final Product product;
 
   const ProductDetails({required this.product});
 
   @override
+  _ProductDetailsState createState() => _ProductDetailsState();
+}
+
+class _ProductDetailsState extends State<ProductDetails> {
+  int selectedQuantity = 1;
+
+  @override
   Widget build(BuildContext context) {
+    double totalAmount = selectedQuantity * widget.product.price;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[700],
-        title: Text(product.name),
+        title: Text(widget.product.name),
       ),
       body: ListView(
+        padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         children: [
           Container(
             height: 300.0,
             child: GridTile(
               child: Container(
                 color: Colors.white,
-                child: Image.network(product.imageURL),
+                child: Image.network(
+                  widget.product.imageURL,
+                  fit: BoxFit.cover,
+                ),
               ),
               footer: Container(
                 color: Colors.white70,
@@ -31,7 +43,7 @@ class ProductDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.name,
+                      widget.product.name,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
@@ -39,7 +51,7 @@ class ProductDetails extends StatelessWidget {
                     ),
                     SizedBox(height: 4.0),
                     Text(
-                      'Price: Rs ${product.price.toStringAsFixed(2)}',
+                      'Price: Rs ${widget.product.price.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
@@ -47,7 +59,7 @@ class ProductDetails extends StatelessWidget {
                     ),
                     SizedBox(height: 4.0),
                     Text(
-                      'Quantity: ${product.quantity}',
+                      '${widget.product.quantity} Available',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -58,44 +70,67 @@ class ProductDetails extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 8.0),
+          SizedBox(height: 16.0),
           Row(
             children: [
               Expanded(
-                child: MaterialButton(
-                  onPressed: () {
-                    // Handle the quantity button tap
+                child: DropdownButtonFormField<int>(
+                  value: selectedQuantity,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedQuantity = newValue!;
+                    });
                   },
-                  color: Colors.white,
-                  textColor: Colors.black,
-                  elevation: 0.2,
-                  child: Row(
-                    children: [
-                      Expanded(child: Text("Quantity")),
-                      Expanded(child: Icon(Icons.arrow_drop_down)),
-                    ],
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(color: Colors.green),
+                    ),
+                    hintText: 'Select Quantity',
+                  ),
+                  items: List.generate(
+                    widget.product.quantity.toInt(),
+                    (index) => DropdownMenuItem<int>(
+                      value: index + 1,
+                      child: Text('${index + 1}'),
+                    ),
                   ),
                 ),
               ),
+              SizedBox(width: 8.0),
             ],
           ),
-          SizedBox(height: 8.0),
+          SizedBox(height: 16.0),
+          Text(
+            'Total Amount: Rs ${totalAmount.toStringAsFixed(2)}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16.0,
+            ),
+          ),
+          SizedBox(height: 16.0),
           Row(
             children: [
               Expanded(
-                child: MaterialButton(
+                child: ElevatedButton(
                   onPressed: () {
                     // Handle the Buy Now button tap
                   },
-                  color: Colors.green,
-                  textColor: Colors.white,
-                  elevation: 0.2,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.green,
+                    elevation: 0.2,
+                  ),
                   child: Text("Buy Now"),
                 ),
               ),
               IconButton(
                 onPressed: () {
-                  // Handle the add to cart button tap
+                  addToCart(widget.product, selectedQuantity);
                 },
                 icon: Icon(Icons.add_shopping_cart),
                 color: Colors.green,
@@ -111,17 +146,23 @@ class ProductDetails extends StatelessWidget {
           ),
           Divider(color: Colors.green),
           ListTile(
-            title: Text("Description"),
-            subtitle: Text(
-              product.description,
+            title: Text(
+              "Description",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          Divider(color: Colors.green),
-          Row(
-            children: [],
+            subtitle: Text(
+              widget.product.description,
+            ),
           ),
         ],
       ),
     );
   }
+}
+
+void addToCart(Product product, int quantity) {
+  // Handle the logic to add the product to the cart
+  // You can customize this logic based on your requirements
 }

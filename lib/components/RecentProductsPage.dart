@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../Pages/product_details.dart';
+import '../../Pages/product_details.dart';
+import '../Pages/Product.dart';
+import '../authentication/screens/ProductListPage.dart';
 
 class RecentProductsPage extends StatelessWidget {
   @override
@@ -35,62 +37,74 @@ class RecentProductsPage extends StatelessWidget {
             ),
             itemCount: products.length,
             itemBuilder: (BuildContext context, int index) {
-              final product = products[index];
+              final product1 = products[index];
               return GestureDetector(
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(8.0),
-                            ),
-                            image: DecorationImage(
-                              image: NetworkImage(product.imageURL),
-                              fit: BoxFit.cover,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductDetails(
+                        product: product1,
+                      ),
+                    ),
+                  );
+                },
+                child: GestureDetector(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(8.0),
+                              ),
+                              image: DecorationImage(
+                                image: NetworkImage(product1.imageURL),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              product.name,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product1.name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            SizedBox(height: 4.0),
-                            Text(
-                              'Rs ${product.price.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
+                              SizedBox(height: 4.0),
+                              Text(
+                                'Rs ${product1.price.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 4.0),
-                            Text(
-                              'Quantity: ${product.quantity}',
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Colors.grey,
+                              SizedBox(height: 4.0),
+                              Text(
+                                '${product1.quantity} Available',
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.grey,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -126,50 +140,8 @@ class RecentProductsPage extends StatelessWidget {
 
       products.addAll(collectionProducts);
     }
-
     products.sort((a, b) => b.date.compareTo(a.date));
 
     return products;
-  }
-}
-
-class Product {
-  final String name;
-  final double price;
-  final String imageURL;
-  final String description;
-  final int quantity;
-  final DateTime date;
-
-  Product({
-    required this.name,
-    required this.price,
-    required this.imageURL,
-    required this.description,
-    required this.quantity,
-    required this.date,
-  });
-
-  factory Product.fromSnapshot(DocumentSnapshot snapshot) {
-    final data = snapshot.data() as Map<String, dynamic>;
-
-    final name = data['name'] as String? ?? '';
-    final priceString = data['price'] as String? ?? '';
-    final price = double.tryParse(priceString) ?? 0.0;
-    final imageURL = data['image_url'] as String? ?? '';
-    final description = data['description'] as String? ?? '';
-    final quantityString = data['quantity'] as String? ?? '';
-    final quantity = int.tryParse(quantityString) ?? 0;
-    final dateTimestamp = data['date'] as Timestamp? ?? Timestamp.now();
-    final date = dateTimestamp.toDate();
-
-    return Product(
-      name: name,
-      price: price,
-      imageURL: imageURL,
-      description: description,
-      quantity: quantity,
-      date: date,
-    );
   }
 }

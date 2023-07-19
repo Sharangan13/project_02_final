@@ -10,6 +10,7 @@ import 'RateUs.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
 import 'notification.dart';
+
 class home extends StatefulWidget {
   const home({Key? key}) : super(key: key);
 
@@ -18,7 +19,6 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
-
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = Container(
@@ -142,12 +142,7 @@ class _homeState extends State<home> {
               radius: 15,
               backgroundColor: Colors.white,
               child: IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Cart()),
-                  );
-                },
+                onPressed: () {},
                 icon: const Icon(
                   Icons.shopping_cart,
                   size: 17,
@@ -210,11 +205,12 @@ class _homeState extends State<home> {
               dense: true,
               title: const Text("Notifications"),
               leading: const Icon(Icons.notifications_rounded),
-              onTap: () {Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => MyNotification()),
-    ); //action when this menu is pressed
-    },
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyNotification()),
+                ); //action when this menu is pressed
+              },
             ),
             ListTile(
               dense: true,
@@ -303,7 +299,7 @@ class _homeState extends State<home> {
               child: Center(child: new Text("Recent Plants")),
             ),
             Container(
-              height: 400.0,
+              height: 340.0,
               child: RecentProductsPage(),
             )
           ],
