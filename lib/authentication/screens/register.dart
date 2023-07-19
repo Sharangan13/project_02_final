@@ -32,10 +32,10 @@ class _registerState extends State<register> {
         print("Successfully generate QR code");
         final filePath = 'qr_codes/$uid.png'; // Use UID as the file name
         final Reference storageReference =
-            FirebaseStorage.instance.ref().child(filePath);
+        FirebaseStorage.instance.ref().child(filePath);
 
         final uploadTask =
-            storageReference.putData(qrImageData.buffer.asUint8List());
+        storageReference.putData(qrImageData.buffer.asUint8List());
         final TaskSnapshot storageSnapshot = await uploadTask;
 
         if (storageSnapshot.state == TaskState.success) {
@@ -74,274 +74,274 @@ class _registerState extends State<register> {
           ),
           child: SingleChildScrollView(
               child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    controller: controller.username,
-                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.person_outline,
-                        color: Colors.white70,
+                padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      const SizedBox(
+                        height: 20,
                       ),
-                      labelText: "Enter UserName",
-                      labelStyle:
+                      TextFormField(
+                        controller: controller.username,
+                        style: TextStyle(color: Colors.white.withOpacity(0.9)),
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.person_outline,
+                            color: Colors.white70,
+                          ),
+                          labelText: "Enter UserName",
+                          labelStyle:
                           TextStyle(color: Colors.white.withOpacity(0.9)),
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      fillColor: Colors.white.withOpacity(0.3),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none)),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'This field is required';
-                      }
-                      if (value.trim().length < 1) {
-                        return 'Username must be at least 2 characters in length';
-                      }
-                      // Return null if the entered username is valid
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    controller: controller.email,
-                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.email,
-                        color: Colors.white70,
+                          filled: true,
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          fillColor: Colors.white.withOpacity(0.3),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: const BorderSide(
+                                  width: 0, style: BorderStyle.none)),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'This field is required';
+                          }
+                          if (value.trim().length < 1) {
+                            return 'Username must be at least 2 characters in length';
+                          }
+                          // Return null if the entered username is valid
+                          return null;
+                        },
                       ),
-                      labelText: "Enter Email id",
-                      labelStyle:
-                          TextStyle(color: Colors.white.withOpacity(0.9)),
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      fillColor: Colors.white.withOpacity(0.3),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none)),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter an email';
-                      } else if (!value.contains('@') ||
-                          !value.contains('.com')) {
-                        return "Please Enter a Valid Email";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    controller: controller.phonenumber,
-                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.phone,
-                        color: Colors.white70,
+                      const SizedBox(
+                        height: 20,
                       ),
-                      labelText: "Enter Phone Number",
-                      labelStyle:
+                      TextFormField(
+                        controller: controller.email,
+                        style: TextStyle(color: Colors.white.withOpacity(0.9)),
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.email,
+                            color: Colors.white70,
+                          ),
+                          labelText: "Enter Email id",
+                          labelStyle:
                           TextStyle(color: Colors.white.withOpacity(0.9)),
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      fillColor: Colors.white.withOpacity(0.3),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none)),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Please Enter a Phone Number";
-                      } else if (!RegExp(
+                          filled: true,
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          fillColor: Colors.white.withOpacity(0.3),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: const BorderSide(
+                                  width: 0, style: BorderStyle.none)),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter an email';
+                          } else if (!value.contains('@') ||
+                              !value.contains('.com')) {
+                            return "Please Enter a Valid Email";
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        controller: controller.phonenumber,
+                        style: TextStyle(color: Colors.white.withOpacity(0.9)),
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.phone,
+                            color: Colors.white70,
+                          ),
+                          labelText: "Enter Phone Number",
+                          labelStyle:
+                          TextStyle(color: Colors.white.withOpacity(0.9)),
+                          filled: true,
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          fillColor: Colors.white.withOpacity(0.3),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: const BorderSide(
+                                  width: 0, style: BorderStyle.none)),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please Enter a Phone Number";
+                          } else if (!RegExp(
                               r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$')
-                          .hasMatch(value)) {
-                        return "Please Enter a Valid Phone Number";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    controller: controller.password,
-                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.password,
-                        color: Colors.white70,
+                              .hasMatch(value)) {
+                            return "Please Enter a Valid Phone Number";
+                          }
+                          return null;
+                        },
                       ),
-                      labelText: "Enter password",
-                      labelStyle:
-                          TextStyle(color: Colors.white.withOpacity(0.9)),
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      fillColor: Colors.white.withOpacity(0.3),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none)),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'This field is required';
-                      }
-                      if (value.trim().length < 8) {
-                        return 'Password must be at least 8 characters in length';
-                      }
-                      // Return null if the entered password is valid
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    style: TextStyle(color: Colors.white.withOpacity(0.9)),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.password,
-                        color: Colors.white70,
+                      const SizedBox(
+                        height: 20,
                       ),
-                      labelText: "Confirm password",
-                      labelStyle:
+                      TextFormField(
+                        controller: controller.password,
+                        style: TextStyle(color: Colors.white.withOpacity(0.9)),
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.password,
+                            color: Colors.white70,
+                          ),
+                          labelText: "Enter password",
+                          labelStyle:
                           TextStyle(color: Colors.white.withOpacity(0.9)),
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      fillColor: Colors.white.withOpacity(0.3),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: const BorderSide(
-                              width: 0, style: BorderStyle.none)),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please confirm your password';
-                      }
-                      if (value != controller.password.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        try {
-                          // Create new account with Firebase Authentication
-                          final UserCredential userCredential =
+                          filled: true,
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          fillColor: Colors.white.withOpacity(0.3),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: const BorderSide(
+                                  width: 0, style: BorderStyle.none)),
+                        ),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'This field is required';
+                          }
+                          if (value.trim().length < 8) {
+                            return 'Password must be at least 8 characters in length';
+                          }
+                          // Return null if the entered password is valid
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextFormField(
+                        style: TextStyle(color: Colors.white.withOpacity(0.9)),
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.password,
+                            color: Colors.white70,
+                          ),
+                          labelText: "Confirm password",
+                          labelStyle:
+                          TextStyle(color: Colors.white.withOpacity(0.9)),
+                          filled: true,
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          fillColor: Colors.white.withOpacity(0.3),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: const BorderSide(
+                                  width: 0, style: BorderStyle.none)),
+                        ),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please confirm your password';
+                          }
+                          if (value != controller.password.text) {
+                            return 'Passwords do not match';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            try {
+                              // Create new account with Firebase Authentication
+                              final UserCredential userCredential =
                               await FirebaseAuth.instance
                                   .createUserWithEmailAndPassword(
-                            email: controller.email.text,
-                            password: controller.password.text,
-                          );
-                          // Generate and store the QR code
-
-                          final uid = userCredential.user!.uid;
-                          final downloadUrl = await generateQRCode(uid);
-                          if (downloadUrl != null) {
-                            print('QR Code URL: $downloadUrl');
-                            // Store user data in Firestore
-                            final user = UserModel(
-                              uid: userCredential.user!.uid,
-                              email: controller.email.text.trim(),
-                              username: controller.username.text.trim(),
-                              phonenumber: controller.phonenumber.text.trim(),
-                              downloadUrl: downloadUrl,
-                            );
-                            registerontroller.instance.createUser(user);
-
-                            // Generate and store the QR code
-
-                            // Navigation logic
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => home()),
-                            );
-                          } else {
-                            print('Failed to generate QR code');
-                          }
-                        } catch (error) {
-                          // Handle errors
-                          print('Error: $error');
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Registration Failed'),
-                                titleTextStyle: const TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                content: Text(
-                                    'Registration failed due to an error.'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: const Text('OK'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
+                                email: controller.email.text,
+                                password: controller.password.text,
                               );
-                            },
-                          );
-                        }
-                      }
-                    },
-                    child: const Text(
-                      'Register',
-                      style: TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    ),
+                              // Generate and store the QR code
 
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith((states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.black26;
+                              final uid = userCredential.user!.uid;
+                              final downloadUrl = await generateQRCode(uid);
+                              if (downloadUrl != null) {
+                                print('QR Code URL: $downloadUrl');
+                                // Store user data in Firestore
+                                final user = UserModel(
+                                  uid: userCredential.user!.uid,
+                                  email: controller.email.text.trim(),
+                                  username: controller.username.text.trim(),
+                                  phonenumber: controller.phonenumber.text.trim(),
+                                  downloadUrl: downloadUrl,
+                                );
+                                registerontroller.instance.createUser(user);
+
+                                // Generate and store the QR code
+
+                                // Navigation logic
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => home()),
+                                );
+                              } else {
+                                print('Failed to generate QR code');
+                              }
+                            } catch (error) {
+                              // Handle errors
+                              print('Error: $error');
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Registration Failed'),
+                                    titleTextStyle: const TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    content: Text(
+                                        'Registration failed due to an error.'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
                           }
-                          return Colors.white;
-                        }),
-                        shape:
+                        },
+                        child: const Text(
+                          'Register',
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+
+                        style: ButtonStyle(
+                            backgroundColor:
+                            MaterialStateProperty.resolveWith((states) {
+                              if (states.contains(MaterialState.pressed)) {
+                                return Colors.black26;
+                              }
+                              return Colors.white;
+                            }),
+                            shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30)))),
-                    // ... Rest of the button code
+                        // ... Rest of the button code
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      loginOption(),
+                    ],
                   ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  loginOption(),
-                ],
-              ),
-            ),
-          ))),
+                ),
+              ))),
     );
   }
 

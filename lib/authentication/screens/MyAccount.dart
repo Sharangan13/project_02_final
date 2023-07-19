@@ -29,20 +29,27 @@ class _MyAccountState extends State<MyAccount> {
       final User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         final String currentUserEmail = user.email!;
-        final QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
-            .collection('Users')
-            .where('Email', isEqualTo: currentUserEmail)
-            .limit(1)
-            .get();
+        final DocumentReference userDocRef =
+        FirebaseFirestore.instance.collection('Users').doc(currentUserEmail);
 
-        if (snapshot.docs.isNotEmpty) {
-          final userData = snapshot.docs.first.data();
+        final DocumentSnapshot userSnapshot = await userDocRef.get();
+        if (userSnapshot.exists) {
+          final userData = userSnapshot.data() as Map<String, dynamic>;
           setState(() {
             username = userData['UserName'];
             email = userData['Email'];
-            profilePictureURL = userData['ProfilePictureURL'];
+            // Check if ProfilePictureURL field exists, otherwise set it to null
+            profilePictureURL = userData.containsKey('ProfilePictureURL')
+                ? userData['ProfilePictureURL']
+                : null;
           });
         } else {
+          // Create a new document for the user and set the profilePictureURL field
+          await userDocRef.set({
+            'Email': currentUserEmail,
+            'ProfilePictureURL': null, // or provide a default URL if needed
+          }, SetOptions(merge: true)); // Use merge option to avoid overwriting existing data
+
           setState(() {
             username = null;
             email = null;
@@ -54,6 +61,10 @@ class _MyAccountState extends State<MyAccount> {
       print('Error fetching user data: $e');
     }
   }
+
+
+
+
 
   Future<void> _uploadProfilePicture() async {
     final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);

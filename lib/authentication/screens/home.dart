@@ -9,7 +9,7 @@ import 'QRCodeRetrieval.dart';
 import 'RateUs.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
-
+import 'notification.dart';
 class home extends StatefulWidget {
   const home({Key? key}) : super(key: key);
 
@@ -18,6 +18,7 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
+
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = Container(
@@ -209,7 +210,11 @@ class _homeState extends State<home> {
               dense: true,
               title: const Text("Notifications"),
               leading: const Icon(Icons.notifications_rounded),
-              onTap: () {},
+              onTap: () {Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => MyNotification()),
+    ); //action when this menu is pressed
+    },
             ),
             ListTile(
               dense: true,
