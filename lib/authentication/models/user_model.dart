@@ -1,21 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class UserModel {
+  // Helper method to convert DateTime to String in a specific format
+  String formatDate(DateTime? dateTime) {
+    if (dateTime != null) {
+      final formattedDate = DateFormat('yyyy-MM-dd')
+          .format(dateTime); // Customize the date format here
+      return formattedDate;
+    }
+    return "";
+  }
+
   final String? uid;
   final String username;
   final String email;
   final String phonenumber;
   final String? downloadUrl;
   final String? ProfileUrl;
+  final DateTime formattedDate;
 
-  const UserModel({
+  UserModel({
     this.uid,
     required this.username,
     required this.email,
     required this.phonenumber,
     this.downloadUrl,
     this.ProfileUrl,
-  });
+    DateTime? formattedDate,
+  }) : formattedDate = formattedDate ?? DateTime.now();
 
   toJson() {
     return {
@@ -24,7 +37,8 @@ class UserModel {
       "Email": email,
       "PhoneNumber": phonenumber,
       "qrCodeUrl": downloadUrl,
-      "ProfileUrl": ProfileUrl
+      "ProfileUrl": ProfileUrl,
+      "Date": formatDate(formattedDate),
     };
   }
 

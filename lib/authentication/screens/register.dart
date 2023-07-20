@@ -277,7 +277,9 @@ class _registerState extends State<register> {
                                 username: controller.username.text.trim(),
                                 phonenumber: controller.phonenumber.text.trim(),
                                 downloadUrl: downloadUrl,
-                                ProfileUrl: "");
+                                ProfileUrl: "",
+                                formattedDate: DateTime.now());
+
                             registerontroller.instance.createUser(user);
 
                             await showDialog(
