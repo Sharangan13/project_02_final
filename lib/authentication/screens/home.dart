@@ -1,10 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'package:project_02_final/authentication/screens/Chat.dart';
-import '../../Pages/cart.dart';
 import '../../components/RecentProductsPage.dart';
 import 'AboutUsPage.dart';
+import 'ProductSearchScreen.dart';
 import 'QRCodeRetrieval.dart';
 import 'RateUs.dart';
 import 'login.dart';
@@ -128,7 +127,13 @@ class _homeState extends State<home> {
             radius: 15,
             backgroundColor: Colors.white,
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProductSearchScreen()),
+                );
+              },
               icon: const Icon(
                 Icons.search,
                 size: 17,
@@ -179,13 +184,6 @@ class _homeState extends State<home> {
               dense: true,
               title: const Text("My Account"),
               leading: const Icon(Icons.person),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const updateProfile()),
-                );
-              },
             ),
             ListTile(
               dense: true,

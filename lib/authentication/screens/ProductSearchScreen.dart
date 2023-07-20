@@ -3,16 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../Pages/Product.dart';
 import '../../Pages/product_details.dart';
 
-class ProductListPage extends StatefulWidget {
-  final String category;
-
-  const ProductListPage({required this.category, Key? key}) : super(key: key);
-
+class ProductSearchScreen extends StatefulWidget {
   @override
-  _ProductListPageState createState() => _ProductListPageState();
+  _ProductSearchScreenState createState() => _ProductSearchScreenState();
 }
 
-class _ProductListPageState extends State<ProductListPage> {
+class _ProductSearchScreenState extends State<ProductSearchScreen> {
   String _searchQuery = '';
 
   @override
@@ -20,42 +16,38 @@ class _ProductListPageState extends State<ProductListPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green[700],
-        title: Text(widget.category),
+        title: Text('Available Plants'),
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                prefixIcon: Icon(Icons.search, color: Colors.green),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: BorderSide(
-                    color: Colors.green,
-                  ),
-                ),
-              ),
               onChanged: (value) {
                 setState(() {
                   _searchQuery = value;
                 });
               },
+              decoration: InputDecoration(
+                prefixIcon: CircleAvatar(
+                  radius: 15,
+                  backgroundColor: Colors.white,
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.search,
+                      size: 20,
+                      color: Colors.green,
+                    ),
+                  ),
+                ),
+                hintText: 'Search Plants...',
+              ),
             ),
           ),
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection(
-                      widget.category == 'equipments' ? 'Equipments' : 'Plants')
-                  .doc(widget.category)
-                  .collection('Items')
-                  .snapshots(),
+            child: FutureBuilder<List<Product>>(
+              future: _fetchProducts(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -63,17 +55,22 @@ class _ProductListPageState extends State<ProductListPage> {
                   );
                 }
 
-                final products = snapshot.data!.docs
-                    .map((doc) => Product.fromSnapshot(doc))
-                    .toList();
+                final products = snapshot.data;
+
+                if (products == null || products.isEmpty) {
+                  return Center(
+                    child: Text('No products found.'),
+                  );
+                }
 
                 // Filter products based on the search query
                 final filteredProducts = products
-                    .where((product) => product.name.toLowerCase().startsWith(
-                          _searchQuery.toLowerCase(),
-                        ))
+                    .where((product) => product.name
+                        .toLowerCase()
+                        .startsWith(_searchQuery.toLowerCase()))
                     .toList();
 
+                // Products found
                 return GridView.builder(
                   padding: EdgeInsets.all(8.0),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -161,5 +158,31 @@ class _ProductListPageState extends State<ProductListPage> {
         ],
       ),
     );
+  }
+
+  Future<List<Product>> _fetchProducts() async {
+    final List<String> categories = [
+      'FloweringPlants',
+      'IndoorPlants',
+      'MedicinalPlants',
+      'OutdoorPlants',
+      'RareandExoticPlants',
+    ];
+
+    final CollectionReference plantsCollection =
+        FirebaseFirestore.instance.collection('Plants');
+
+    // Fetch products from all categories and combine them into a single list
+    List<Product> allProducts = [];
+    for (final category in categories) {
+      final QuerySnapshot itemsQuerySnapshot =
+          await plantsCollection.doc(category).collection('Items').get();
+      final categoryProducts = itemsQuerySnapshot.docs
+          .map((doc) => Product.fromSnapshot(doc))
+          .toList();
+      allProducts.addAll(categoryProducts);
+    }
+
+    return allProducts;
   }
 }
