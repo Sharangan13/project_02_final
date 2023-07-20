@@ -30,6 +30,7 @@ class UserModel {
     DateTime? formattedDate,
   }) : formattedDate = formattedDate ?? DateTime.now();
 
+
   toJson() {
     return {
       "uid": uid,
