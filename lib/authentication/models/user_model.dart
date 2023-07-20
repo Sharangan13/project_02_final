@@ -6,6 +6,7 @@ class UserModel {
   final String email;
   final String phonenumber;
   final String? downloadUrl;
+  final String? ProfileUrl;
 
   const UserModel({
     this.uid,
@@ -13,6 +14,7 @@ class UserModel {
     required this.email,
     required this.phonenumber,
     this.downloadUrl,
+    this.ProfileUrl,
   });
 
   toJson() {
@@ -22,6 +24,7 @@ class UserModel {
       "Email": email,
       "PhoneNumber": phonenumber,
       "qrCodeUrl": downloadUrl,
+      "ProfileUrl": ProfileUrl
     };
   }
 
