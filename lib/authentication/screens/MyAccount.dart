@@ -4,6 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import '../controller/profile_controller.dart';
+import '../models/user_model.dart';
+import 'update_profile.dart';
 
 class MyAccount extends StatefulWidget {
   const MyAccount({Key? key}) : super(key: key);
@@ -119,7 +122,21 @@ class _MyAccountState extends State<MyAccount> {
       }
     }
   }
+  void navigateToUpdateProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => UpdateProfile(
+            userData: UserModel(
+              username: username ?? "",
+              email: email ?? "",
+              phonenumber: PhoneNumber ?? "",
+              role: '',
+      ),
 
+      )),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,9 +182,23 @@ class _MyAccountState extends State<MyAccount> {
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            Row(
+              children:[
+                Expanded(
+            child:ElevatedButton(
               onPressed: changePassword,
               child: Text('Change My Password'),
+            ),
+                ),
+            const SizedBox(height: 20),
+        const SizedBox(height: 20),
+        Expanded(
+          child:   ElevatedButton(
+          onPressed: navigateToUpdateProfile,
+          child: Text('Update Profile'),
+          ),
+        ),
+              ],
             ),
           ],
         ),

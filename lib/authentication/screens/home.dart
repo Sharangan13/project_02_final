@@ -11,6 +11,8 @@ import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
 import 'notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+
 
 class home extends StatefulWidget {
   const home({Key? key}) : super(key: key);
@@ -219,7 +221,8 @@ class _homeState extends State<home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MyAccount()),
+                  MaterialPageRoute(
+                      builder: (context) => const MyAccount()),
                 );
               },
             ),
