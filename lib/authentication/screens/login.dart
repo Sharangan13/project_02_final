@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,7 +6,9 @@ import 'package:project_02_final/authentication/controller/register_controller.d
 
 import 'package:project_02_final/authentication/screens/register.dart';
 import 'package:project_02_final/authentication/screens/reset_password.dart';
+import '../../Admin/AdminHome.dart';
 import '../../reusable_widgets/reusable_widgets.dart';
+import '../models/user_model.dart';
 import 'home.dart';
 
 class login_screen extends StatefulWidget {
@@ -20,6 +23,76 @@ class _login_screenState extends State<login_screen> {
   bool textvisible = true;
   String? emailError;
   String? passwordError;
+
+  Future<void> signIn() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        UserCredential? userCredential;
+        try {
+          userCredential =
+              await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: controller.email.text,
+            password: controller.password.text,
+          );
+        } catch (error) {
+          // Check if the error is a FirebaseAuthException
+          if (error is FirebaseAuthException) {
+            if (error.code == 'user-not-found') {
+              setState(() {
+                emailError = 'User not found';
+              });
+            } else if (error.code == 'wrong-password') {
+              setState(() {
+                passwordError = 'Incorrect password';
+              });
+            } else {
+              print("Error: ${error.toString()}");
+            }
+          } else {
+            // Handle other types of errors if needed
+            print("Error: ${error.toString()}");
+          }
+        }
+
+        if (userCredential != null && userCredential.user != null) {
+          String? email = userCredential.user!.email;
+          QuerySnapshot<Map<String, dynamic>> userDocs = await FirebaseFirestore
+              .instance
+              .collection('Users')
+              .where('Email', isEqualTo: email)
+              .get();
+
+          // Check if a user document with the provided email exists
+          if (userDocs.docs.isNotEmpty) {
+            DocumentSnapshot<Map<String, dynamic>> userDoc =
+                userDocs.docs.first;
+            UserModel user = UserModel.fromSnapshot(userDoc);
+
+            if (user.role == 'admin') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AdminHome()),
+              );
+            } else if (user.role == 'user') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => home()),
+              );
+            } else {
+              // Handle other roles or invalid role values here (if needed)
+              print('Invalid user role: ${user.role}');
+            }
+          } else {
+            // Handle the case where the user document does not exist
+            print('User document not found for the provided email.');
+          }
+        }
+      } catch (error) {
+        print("Error: ${error.toString()}");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,34 +196,7 @@ class _login_screenState extends State<login_screen> {
                   const SizedBox(height: 8),
                   forgetPassword(context),
                   const SizedBox(height: 20),
-                  firebaseUIButton(context, "Login", () {
-                    if (_formKey.currentState!.validate()) {
-                      FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                        email: controller.email.text,
-                        password: controller.password.text,
-                      )
-                          .then((value) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => home()),
-                        );
-                      }).catchError((error) {
-                        if (error.code == 'user-not-found') {
-                          setState(() {
-                            emailError = 'User not found';
-                          });
-                        } else if (error.code == 'wrong-password') {
-                          setState(() {
-                            passwordError = 'Incorrect password';
-                          });
-                        } else {
-                          // Handle other errors if needed
-                          print("Error: ${error.toString()}");
-                        }
-                      });
-                    }
-                  }),
+                  firebaseUIButton(context, "Login", signIn),
                   registerOption(),
                 ],
               ),

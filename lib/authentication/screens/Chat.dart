@@ -13,7 +13,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController _messageController = TextEditingController();
   CollectionReference _messagesCollection =
-  FirebaseFirestore.instance.collection('messages');
+      FirebaseFirestore.instance.collection('messages');
 
   @override
   void dispose() {
@@ -51,36 +51,33 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( backgroundColor: Colors.green,
+      appBar: AppBar(
+        backgroundColor: Colors.green,
         title: Text('Chat'),
       ),
       body: Column(
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: _messagesCollection
-                  .orderBy('timestamp')
-                  .snapshots(),
+              stream: _messagesCollection.orderBy('timestamp').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 }
 
-                if (snapshot.connectionState ==
-                    ConnectionState.waiting) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
 
-                List<QueryDocumentSnapshot> documents =
-                    snapshot.data!.docs;
+                List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
 
                 return ListView.builder(
                   itemCount: documents.length,
                   itemBuilder: (context, index) {
                     var messageData =
-                    documents[index].data() as Map<String, dynamic>;
+                        documents[index].data() as Map<String, dynamic>;
                     var content = messageData['content'] ?? '';
 
                     return ListTile(
@@ -100,7 +97,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: TextField(
                     controller: _messageController,
                     decoration:
-                    InputDecoration(labelText: 'Type your message...'),
+                        InputDecoration(labelText: 'Type your message...'),
                   ),
                 ),
                 IconButton(

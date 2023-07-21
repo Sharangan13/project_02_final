@@ -10,6 +10,7 @@ class MyAccount extends StatefulWidget {
   @override
   State<MyAccount> createState() => _MyAccountState();
 }
+
 class _MyAccountState extends State<MyAccount> {
   String? username = null;
   String? email = null;
@@ -20,29 +21,31 @@ class _MyAccountState extends State<MyAccount> {
     super.initState();
     fetchUserData();
   }
+
   Future<void> fetchUserData() async {
     try {
       final User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         final String currentUserEmail = user.email!;
-        final QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
-            .collection('Users')
-            .where('Email', isEqualTo: currentUserEmail)
-            .limit(1)
-            .get();
+        final QuerySnapshot<Map<String, dynamic>> snapshot =
+            await FirebaseFirestore.instance
+                .collection('Users')
+                .where('Email', isEqualTo: currentUserEmail)
+                .limit(1)
+                .get();
         if (snapshot.docs.isNotEmpty) {
           final userData = snapshot.docs.first.data();
           setState(() {
             username = userData['UserName'];
             email = userData['Email'];
-            PhoneNumber=userData['PhoneNumber'];
+            PhoneNumber = userData['PhoneNumber'];
             profilePictureURL = userData['ProfilePictureURL'];
           });
         } else {
           setState(() {
             username = null;
             email = null;
-            PhoneNumber= null;
+            PhoneNumber = null;
             profilePictureURL = null;
           });
         }
@@ -51,7 +54,6 @@ class _MyAccountState extends State<MyAccount> {
       print('Error fetching user data: $e');
     }
   }
-
 
   void changePassword() async {
     final User? user = FirebaseAuth.instance.currentUser;
@@ -84,40 +86,45 @@ class _MyAccountState extends State<MyAccount> {
       }
     }
   }
-    Future<void> _uploadProfilePicture() async {
-      final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (pickedImage != null) {
-        final File imageFile = File(pickedImage.path);
 
-        try {
-          final User? user = FirebaseAuth.instance.currentUser;
-          if (user != null) {
-            final String currentUserEmail = user.email!;
-            final Reference storageReference = FirebaseStorage.instance.ref().child('profilePictures/$currentUserEmail.jpg');
-            final UploadTask uploadTask = storageReference.putFile(imageFile);
-            final TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
-            final String downloadURL = await taskSnapshot.ref.getDownloadURL();
+  Future<void> _uploadProfilePicture() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      final File imageFile = File(pickedImage.path);
 
-            await FirebaseFirestore.instance
-                .collection('Users')
-                .doc(currentUserEmail)
-                .update({'ProfilePictureURL': downloadURL});
+      try {
+        final User? user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          final String currentUserEmail = user.email!;
+          final Reference storageReference = FirebaseStorage.instance
+              .ref()
+              .child('profilePictures/$currentUserEmail.jpg');
+          final UploadTask uploadTask = storageReference.putFile(imageFile);
+          final TaskSnapshot taskSnapshot =
+              await uploadTask.whenComplete(() => null);
+          final String downloadURL = await taskSnapshot.ref.getDownloadURL();
 
-            setState(() {
-              profilePictureURL = downloadURL;
-            });
-          }
-        } catch (e) {
-          print('Error uploading profile picture: $e');
+          await FirebaseFirestore.instance
+              .collection('Users')
+              .doc(currentUserEmail)
+              .update({'ProfilePictureURL': downloadURL});
+
+          setState(() {
+            profilePictureURL = downloadURL;
+          });
         }
+      } catch (e) {
+        print('Error uploading profile picture: $e');
       }
     }
-
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green[700],
         title: const Text('My Account'),
       ),
       body: Padding(
@@ -128,16 +135,18 @@ class _MyAccountState extends State<MyAccount> {
             CircleAvatar(
               radius: 50,
               backgroundColor: Colors.grey,
-              backgroundImage: profilePictureURL != null ? NetworkImage(profilePictureURL!) : null,
+              backgroundImage: profilePictureURL != null
+                  ? NetworkImage(profilePictureURL!)
+                  : null,
               child: profilePictureURL == null
                   ? IconButton(
-                onPressed: _uploadProfilePicture,
-                icon: const Icon(
-                  Icons.camera_alt,
-                  size: 40,
-                  color: Colors.white,
-                ),
-              )
+                      onPressed: _uploadProfilePicture,
+                      icon: const Icon(
+                        Icons.camera_alt,
+                        size: 40,
+                        color: Colors.white,
+                      ),
+                    )
                   : null,
             ),
             const SizedBox(height: 20),

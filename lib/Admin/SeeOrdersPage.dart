@@ -5,6 +5,7 @@ class SeeOrdersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green[700],
         title: Text('See Orders'),
       ),
       body: Center(

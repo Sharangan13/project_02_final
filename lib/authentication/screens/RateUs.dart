@@ -20,7 +20,8 @@ class _RateUsScreenState extends State<RateUsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( backgroundColor: Colors.green,
+      appBar: AppBar(
+        backgroundColor: Colors.green[700],
         title: Text('Rate Us'),
       ),
       body: Padding(
@@ -72,8 +73,9 @@ class _RateUsScreenState extends State<RateUsScreen> {
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                      (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.pressed)) return Colors.blue;
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.pressed))
+                      return Colors.blue;
                     return Colors.green;
                   },
                 ),

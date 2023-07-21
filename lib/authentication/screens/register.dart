@@ -268,6 +268,7 @@ class _registerState extends State<register> {
                           final uid = userCredential.user!.uid;
                           final downloadUrl = await generateQRCode(uid);
                           final ProfileUrl = "";
+                          final role = "user";
                           if (downloadUrl != null) {
                             print('QR Code URL: $downloadUrl');
                             // Store user data in Firestore
@@ -278,6 +279,7 @@ class _registerState extends State<register> {
                                 phonenumber: controller.phonenumber.text.trim(),
                                 downloadUrl: downloadUrl,
                                 ProfileUrl: "",
+                                role: role,
                                 formattedDate: DateTime.now());
 
                             registerontroller.instance.createUser(user);

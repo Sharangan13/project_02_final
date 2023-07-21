@@ -14,6 +14,20 @@ class ProductDetails extends StatefulWidget {
 class _ProductDetailsState extends State<ProductDetails> {
   int selectedQuantity = 1;
 
+  void _showImageInFullScreen() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Image.network(
+            widget.product.imageURL,
+            fit: BoxFit.contain,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double totalAmount = selectedQuantity * widget.product.price;
@@ -26,46 +40,49 @@ class _ProductDetailsState extends State<ProductDetails> {
       body: ListView(
         padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         children: [
-          Container(
-            height: 300.0,
-            child: GridTile(
-              child: Container(
-                color: Colors.white,
-                child: Image.network(
-                  widget.product.imageURL,
-                  fit: BoxFit.cover,
+          GestureDetector(
+            onTap: _showImageInFullScreen,
+            child: Container(
+              height: 300.0,
+              child: GridTile(
+                child: Container(
+                  color: Colors.white,
+                  child: Image.network(
+                    widget.product.imageURL,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              footer: Container(
-                color: Colors.white70,
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.product.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
+                footer: Container(
+                  color: Colors.white70,
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.product.name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 4.0),
-                    Text(
-                      'Price: Rs ${widget.product.price.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                      SizedBox(height: 4.0),
+                      Text(
+                        'Price: Rs ${widget.product.price.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 4.0),
-                    Text(
-                      '${widget.product.quantity} Available',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                      SizedBox(height: 4.0),
+                      Text(
+                        '${widget.product.quantity} Available',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

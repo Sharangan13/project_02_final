@@ -19,6 +19,7 @@ class UserModel {
   final String? downloadUrl;
   final String? ProfileUrl;
   final DateTime formattedDate;
+  final String role;
 
   UserModel({
     this.uid,
@@ -26,10 +27,10 @@ class UserModel {
     required this.email,
     required this.phonenumber,
     this.downloadUrl,
+    required this.role,
     this.ProfileUrl,
     DateTime? formattedDate,
   }) : formattedDate = formattedDate ?? DateTime.now();
-
 
   toJson() {
     return {
@@ -40,6 +41,7 @@ class UserModel {
       "qrCodeUrl": downloadUrl,
       "ProfileUrl": ProfileUrl,
       "Date": formatDate(formattedDate),
+      "role": role
     };
   }
 
@@ -50,10 +52,10 @@ class UserModel {
     final data = document.data()!;
 
     return UserModel(
-      uid: document.id,
-      email: data["Email"],
-      username: data["UserName"],
-      phonenumber: data["PhoneNumber"],
-    );
+        uid: document.id,
+        email: data["Email"],
+        username: data["UserName"],
+        phonenumber: data["PhoneNumber"],
+        role: data["role"]);
   }
 }

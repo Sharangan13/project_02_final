@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project_02_final/authentication/screens/update_profile.dart';
 import 'package:project_02_final/authentication/screens/Chat.dart';
 import '../../components/RecentProductsPage.dart';
 import 'AboutUsPage.dart';
@@ -50,6 +49,7 @@ class _homeState extends State<home> {
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     Widget image_carousel = Container(
@@ -76,7 +76,7 @@ class _homeState extends State<home> {
                       children: [
                         Padding(
                           padding:
-                          const EdgeInsets.only(right: 130, bottom: 10),
+                              const EdgeInsets.only(right: 130, bottom: 10),
                           child: Container(
                             height: 50,
                             width: 100,
@@ -196,7 +196,6 @@ class _homeState extends State<home> {
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-
               accountName: Text(accountName),
               accountEmail: Text(accountEmail),
               currentAccountPicture: CircleAvatar(
@@ -220,8 +219,7 @@ class _homeState extends State<home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const MyAccount()),
+                  MaterialPageRoute(builder: (context) => const MyAccount()),
                 );
               },
             ),
@@ -259,8 +257,8 @@ class _homeState extends State<home> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => ChatScreen(
-                        receiverId: '',
-                      )),
+                            receiverId: '',
+                          )),
                 );
               },
             ),

@@ -132,7 +132,7 @@ class RecentProductsPage extends StatelessWidget {
           .doc(collectionPath)
           .collection('Items')
           .orderBy('date', descending: true)
-          .limit(100)
+          .limit(20)
           .get();
 
       final collectionProducts =

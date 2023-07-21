@@ -6,6 +6,7 @@ class AdminManagePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green[700],
         title: Text('Admin Management'),
       ),
       body: Container(
