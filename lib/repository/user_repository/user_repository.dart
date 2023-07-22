@@ -16,10 +16,10 @@ class UserRepository extends GetxController {
         .add(user.toJson())
         .whenComplete(
           () => Get.snackbar("Success", "You account has been created.",
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.green.withOpacity(0.1),
-              colorText: Colors.green),
-        )
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green.withOpacity(0.1),
+          colorText: Colors.green),
+    )
         .catchError((error, stackTrace) {
       Get.snackbar("Error", "Something went wrong. Try again",
           snackPosition: SnackPosition.BOTTOM,
@@ -32,7 +32,7 @@ class UserRepository extends GetxController {
   /// Step 2 - Fetch User details
   Future<UserModel> getUserDetails(String email) async {
     final snapshot =
-        await _db.collection("Users").where("Email", isEqualTo: email).get();
+    await _db.collection("Users").where("Email", isEqualTo: email).get();
     final userData = snapshot.docs.map((e) => UserModel.fromSnapshot(e)).single;
     return userData;
   }

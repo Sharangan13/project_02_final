@@ -4,9 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
-import '../controller/profile_controller.dart';
-import '../models/user_model.dart';
 import 'update_profile.dart';
+import '../models/user_model.dart';
 
 class MyAccount extends StatefulWidget {
   const MyAccount({Key? key}) : super(key: key);
@@ -31,11 +30,11 @@ class _MyAccountState extends State<MyAccount> {
       if (user != null) {
         final String currentUserEmail = user.email!;
         final QuerySnapshot<Map<String, dynamic>> snapshot =
-            await FirebaseFirestore.instance
-                .collection('Users')
-                .where('Email', isEqualTo: currentUserEmail)
-                .limit(1)
-                .get();
+        await FirebaseFirestore.instance
+            .collection('Users')
+            .where('Email', isEqualTo: currentUserEmail)
+            .limit(1)
+            .get();
         if (snapshot.docs.isNotEmpty) {
           final userData = snapshot.docs.first.data();
           setState(() {
@@ -92,7 +91,7 @@ class _MyAccountState extends State<MyAccount> {
 
   Future<void> _uploadProfilePicture() async {
     final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       final File imageFile = File(pickedImage.path);
 
@@ -105,7 +104,7 @@ class _MyAccountState extends State<MyAccount> {
               .child('profilePictures/$currentUserEmail.jpg');
           final UploadTask uploadTask = storageReference.putFile(imageFile);
           final TaskSnapshot taskSnapshot =
-              await uploadTask.whenComplete(() => null);
+          await uploadTask.whenComplete(() => null);
           final String downloadURL = await taskSnapshot.ref.getDownloadURL();
 
           await FirebaseFirestore.instance
@@ -126,15 +125,9 @@ class _MyAccountState extends State<MyAccount> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => UpdateProfile(
-            userData: UserModel(
-              username: username ?? "",
-              email: email ?? "",
-              phonenumber: PhoneNumber ?? "",
-              role: '',
-      ),
+          builder: (context) => updateProfile(
 
-      )),
+          )),
     );
   }
   @override
@@ -157,13 +150,13 @@ class _MyAccountState extends State<MyAccount> {
                   : null,
               child: profilePictureURL == null
                   ? IconButton(
-                      onPressed: _uploadProfilePicture,
-                      icon: const Icon(
-                        Icons.camera_alt,
-                        size: 40,
-                        color: Colors.white,
-                      ),
-                    )
+                onPressed: _uploadProfilePicture,
+                icon: const Icon(
+                  Icons.camera_alt,
+                  size: 40,
+                  color: Colors.white,
+                ),
+              )
                   : null,
             ),
             const SizedBox(height: 20),
@@ -184,20 +177,19 @@ class _MyAccountState extends State<MyAccount> {
             const SizedBox(height: 20),
             Row(
               children:[
-                Expanded(
+            Expanded(
             child:ElevatedButton(
               onPressed: changePassword,
               child: Text('Change My Password'),
             ),
-                ),
-            const SizedBox(height: 20),
-        const SizedBox(height: 20),
-        Expanded(
-          child:   ElevatedButton(
-          onPressed: navigateToUpdateProfile,
-          child: Text('Update Profile'),
+      ),
+          const SizedBox(height: 20),
+          Expanded(
+            child:   ElevatedButton(
+              onPressed: navigateToUpdateProfile,
+              child: Text('Update Profile'),
+            ),
           ),
-        ),
               ],
             ),
           ],
