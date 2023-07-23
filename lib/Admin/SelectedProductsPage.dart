@@ -289,6 +289,14 @@ class _SelectedProductsPageState extends State<SelectedProductsPage> {
                     fontWeight: FontWeight.bold,
                     color: Colors.red),
               ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Ok", style: TextStyle(fontSize: 19)),
+                )
+              ],
             );
           });
     } else {

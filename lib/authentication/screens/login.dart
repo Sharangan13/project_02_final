@@ -73,11 +73,37 @@ class _login_screenState extends State<login_screen> {
                 context,
                 MaterialPageRoute(builder: (context) => AdminHome()),
               );
-            } else if (user.role == 'user') {
+            } else if (user.role == 'user' && user.ActiveUser == true) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => home()),
               );
+            } else if (user.role == 'user' && user.ActiveUser == false) {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(
+                        '${user.username}, Your account has been blocked !',
+                        style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Ok", style: TextStyle(fontSize: 19)),
+                        )
+                      ],
+                      content: Text(
+                        'For more information cantact us 0769218508 or psell@gmail.com',
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                      ),
+                    );
+                  });
             } else {
               // Handle other roles or invalid role values here (if needed)
               print('Invalid user role: ${user.role}');

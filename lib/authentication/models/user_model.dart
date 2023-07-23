@@ -20,6 +20,7 @@ class UserModel {
   final String? ProfileUrl;
   final DateTime formattedDate;
   final String role;
+  final bool ActiveUser;
 
   UserModel({
     this.uid,
@@ -27,6 +28,7 @@ class UserModel {
     required this.email,
     required this.phonenumber,
     this.downloadUrl,
+    required this.ActiveUser,
     required this.role,
     this.ProfileUrl,
     DateTime? formattedDate,
@@ -41,7 +43,8 @@ class UserModel {
       "qrCodeUrl": downloadUrl,
       "ProfileUrl": ProfileUrl,
       "Date": formatDate(formattedDate),
-      "role": role
+      "role": role,
+      "ActiveUser": ActiveUser
     };
   }
 
@@ -56,6 +59,7 @@ class UserModel {
         email: data["Email"],
         username: data["UserName"],
         phonenumber: data["PhoneNumber"],
+        ActiveUser: data["ActiveUser"],
         role: data["role"]);
   }
 }
