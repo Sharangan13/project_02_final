@@ -4,7 +4,6 @@ import 'AdminManagePage.dart';
 import 'ConsultancyBookingDetailsPage.dart';
 import 'MyAccountPage.dart';
 import 'QrScannerPage.dart';
-import 'SaleDetails.dart';
 import 'SeeOrdersPage.dart';
 import 'SelectProductsPage.dart';
 import 'UploadPlantsEquipmentsPage.dart';
@@ -177,6 +176,14 @@ class _AdminHomeState extends State<AdminHome> {
                       'Upload Plants & Equipments',
                       CupertinoIcons.chat_bubble_2,
                       Colors.brown,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: itemDashboard(
+                      'Special Offers',
+                      CupertinoIcons.money_dollar_circle,
+                      Colors.indigo,
                     ),
                   ),
                   GestureDetector(

@@ -61,8 +61,7 @@ class _homeState extends State<home> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: NetworkImage(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQi0Xg-k622Sbztlrb-L1o1CAla3zCbVc2lUw&usqp=CAU'),
+                image: AssetImage('assets/category/qwqw.jpg'),
               ),
               color: Colors.red,
               borderRadius: BorderRadius.circular(10),
@@ -75,10 +74,9 @@ class _homeState extends State<home> {
                     child: Column(
                       children: [
                         Padding(
-                          padding:
-                          const EdgeInsets.only(right: 130, bottom: 10),
+                          padding: const EdgeInsets.only(right: 150),
                           child: Container(
-                            height: 50,
+                            height: 70,
                             width: 100,
                             decoration: BoxDecoration(
                               color: Color(0xffd1ad17),
@@ -89,13 +87,14 @@ class _homeState extends State<home> {
                             ),
                             child: Center(
                               child: Text(
-                                'Plants',
+                                'Offer !!',
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                   shadows: [
                                     BoxShadow(
-                                        color: Colors.green,
+                                        color: Colors.black,
                                         blurRadius: 10,
                                         offset: Offset(3, 3))
                                   ],
@@ -107,7 +106,7 @@ class _homeState extends State<home> {
                         Text(
                           '30% Off',
                           style: TextStyle(
-                              fontSize: 40,
+                              fontSize: 28,
                               color: Colors.green[100],
                               fontWeight: FontWeight.bold),
                         ),
@@ -257,8 +256,8 @@ class _homeState extends State<home> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => ChatScreen(
-                        receiverId: '',
-                      )),
+                            receiverId: '',
+                          )),
                 );
               },
             ),
