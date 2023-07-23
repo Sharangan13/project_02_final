@@ -346,7 +346,7 @@ class _UploadPlantsEquipmentsPageState
         if (selectedType == 'plants' && selectedCategory.isNotEmpty) {
           final String category = selectedCategory.replaceAll(' ', '');
 
-          await _firestore
+          final DocumentReference docRef = await _firestore
               .collection(collection)
               .doc(category)
               .collection('Items')
@@ -357,15 +357,19 @@ class _UploadPlantsEquipmentsPageState
             'quantity': quantity,
             'image_url': imageUrl,
             'Category': category,
-            'date': DateTime.now()
+            'date': DateTime.now(),
           });
+
+          // Get the ID of the newly added document and update the product with the ID
+          final String productId = docRef.id;
+          await docRef.update({'productId': productId});
         } else if (selectedType == 'plants' && selectedCategory.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Please select a category for plants')),
           );
           return;
         } else {
-          await _firestore
+          final DocumentReference docRef = await _firestore
               .collection(collection)
               .doc('equipments')
               .collection('Items')
@@ -375,8 +379,13 @@ class _UploadPlantsEquipmentsPageState
             'description': description,
             'quantity': quantity,
             'image_url': imageUrl,
+            'Category': 'equipments',
             'date': DateTime.now(),
           });
+
+          // Get the ID of the newly added document and update the product with the ID
+          final String productId = docRef.id;
+          await docRef.update({'productId': productId});
         }
 
         // Show a success message
@@ -401,7 +410,8 @@ class _UploadPlantsEquipmentsPageState
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Please fill in all fields and select an image')),
+          content: Text('Please fill in all fields and select an image'),
+        ),
       );
     }
   }

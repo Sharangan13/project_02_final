@@ -4,7 +4,9 @@ import 'AdminManagePage.dart';
 import 'ConsultancyBookingDetailsPage.dart';
 import 'MyAccountPage.dart';
 import 'QrScannerPage.dart';
+import 'SaleDetails.dart';
 import 'SeeOrdersPage.dart';
+import 'SelectProductsPage.dart';
 import 'UploadPlantsEquipmentsPage.dart';
 
 class AdminHome extends StatefulWidget {
@@ -93,6 +95,21 @@ class _AdminHomeState extends State<AdminHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
+                          builder: (context) => SelectProductsPage(),
+                        ),
+                      );
+                    },
+                    child: itemDashboard(
+                      'Bill',
+                      CupertinoIcons.book_circle,
+                      Colors.deepOrange,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
                           builder: (context) => SeeOrdersPage(),
                         ),
                       );
@@ -163,10 +180,7 @@ class _AdminHomeState extends State<AdminHome> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      // Handle onTap for sale details
-                      // Add your code here
-                    },
+                    onTap: () {},
                     child: itemDashboard(
                       'Sale Details',
                       CupertinoIcons.money_dollar_circle,
