@@ -14,7 +14,6 @@ class _QrScannerPageState extends State<QrScannerPage> {
   QRViewController? controller;
   bool isCameraGranted = false;
   String qrCode = '';
-
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
@@ -83,44 +82,7 @@ class _QrScannerPageState extends State<QrScannerPage> {
                               ),
                             ),
                             SizedBox(height: 10),
-                            // Text(
-                            //   'Name: ${userDetails?['name'] ?? ''}',
-                            //   style: TextStyle(
-                            //     fontSize: 16,
-                            //     color: Colors.white,
-                            //   ),
-                            // ),
-                            // Text(
-                            //   'Email: ${userDetails?['email'] ?? ''}',
-                            //   style: TextStyle(
-                            //     fontSize: 16,
-                            //     color: Colors.white,
-                            //   ),
-                            // ),
-                            // SizedBox(height: 20),
-                            // Text(
-                            //   'Order Details:',
-                            //   style: TextStyle(
-                            //     fontSize: 18,
-                            //     color: Colors.white,
-                            //     fontWeight: FontWeight.bold,
-                            //   ),
-                            // ),
-                            // SizedBox(height: 10),
-                            // Text(
-                            //   'Order ID: ${userDetails?['order_id'] ?? ''}',
-                            //   style: TextStyle(
-                            //     fontSize: 16,
-                            //     color: Colors.white,
-                            //   ),
-                            // ),
-                            // Text(
-                            //   'Order Date: ${userDetails?['order_date'] ?? ''}',
-                            //   style: TextStyle(
-                            //     fontSize: 16,
-                            //     color: Colors.white,
-                            //   ),
-                            // ),
+                            // Display user details here
                           ],
                         ),
                       );
@@ -138,6 +100,18 @@ class _QrScannerPageState extends State<QrScannerPage> {
                     }
                   },
                 ),
+              ),
+            ),
+          if (isCameraGranted) // Add the focus box widget
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.green,
+                    width: 2.0,
+                  ),
+                ),
+                margin: EdgeInsets.all(20.0),
               ),
             ),
         ],

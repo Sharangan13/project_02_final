@@ -1,22 +1,18 @@
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:project_02_final/authentication/screens/login.dart';
 import 'package:project_02_final/authentication/controller/register_controller.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import '../models/user_model.dart';
-import 'home.dart';
+import '../authentication/models/user_model.dart';
+import 'AddAdmin_ShowAdmin_screen.dart';
 
-class register extends StatefulWidget {
-  const register({Key? key}) : super(key: key);
+class AdminRegister extends StatefulWidget {
+  const AdminRegister({Key? key}) : super(key: key);
 
   @override
-  State<register> createState() => _registerState();
+  State<AdminRegister> createState() => _registerState();
 }
 
-class _registerState extends State<register> {
+class _registerState extends State<AdminRegister> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController usernameController = TextEditingController();
@@ -34,37 +30,6 @@ class _registerState extends State<register> {
     passwordController.clear();
   }
 
-  Future<String?> generateQRCode(String uid) async {
-    try {
-      final qrData = uid;
-      final qrImageData = await QrPainter(
-        data: qrData,
-        version: QrVersions.auto,
-      ).toImageData(200);
-
-      if (qrImageData != null) {
-        print("Successfully generate QR code");
-        final filePath = 'qr_codes/$uid.png'; // Use UID as the file name
-        final Reference storageReference =
-            FirebaseStorage.instance.ref().child(filePath);
-
-        final uploadTask =
-            storageReference.putData(qrImageData.buffer.asUint8List());
-        final TaskSnapshot storageSnapshot = await uploadTask;
-
-        if (storageSnapshot.state == TaskState.success) {
-          final downloadUrl = await storageReference.getDownloadURL();
-          return downloadUrl;
-        }
-      }
-
-      throw Exception('QR code upload failed');
-    } catch (e) {
-      print('Error generating QR code: $e');
-      return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +38,7 @@ class _registerState extends State<register> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          "Register page",
+          "Admin register page",
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
@@ -277,66 +242,57 @@ class _registerState extends State<register> {
                             email: emailController.text,
                             password: passwordController.text,
                           );
-                          // Generate and store the QR code
-
-                          final uid = userCredential.user!.uid;
-                          final downloadUrl = await generateQRCode(uid);
                           final ProfileUrl = "";
-                          final role = "user";
+                          final role = "admin";
                           final ActiveUser = true;
-                          if (downloadUrl != null) {
-                            print('QR Code URL: $downloadUrl');
-                            // Store user data in Firestore
-                            final user = UserModel(
-                                uid: userCredential.user!.uid,
-                                email: emailController.text.trim(),
-                                username: usernameController.text.trim(),
-                                phonenumber: phonenumberController.text.trim(),
-                                downloadUrl: downloadUrl,
-                                ProfileUrl: "",
-                                role: role,
-                                ActiveUser: ActiveUser,
-                                formattedDate: DateTime.now());
 
-                            registerontroller.instance.createUser(user);
+                          // Store user data in Firestore
+                          final user = UserModel(
+                              uid: userCredential.user!.uid,
+                              email: emailController.text.trim(),
+                              username: usernameController.text.trim(),
+                              phonenumber: phonenumberController.text.trim(),
+                              ProfileUrl: "",
+                              role: role,
+                              ActiveUser: ActiveUser,
+                              formattedDate: DateTime.now());
 
-                            await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Registration Successful '),
-                                  titleTextStyle: const TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text(
-                                        'OK',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
+                          registerontroller.instance.createUser(user);
+
+                          await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('New Admin Added'),
+                                titleTextStyle: const TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text(
+                                      'OK',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                  ],
-                                );
-                              },
-                            );
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
 
-                            // Navigation logic
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => login_screen()),
-                            );
-                          } else {
-                            print('Failed to generate QR code');
-                          }
+                          // Navigation logic
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AdminScreen()),
+                          );
                         } catch (error) {
                           // Handle errors
                           print('Error: $error');
@@ -388,35 +344,10 @@ class _registerState extends State<register> {
                                     borderRadius: BorderRadius.circular(30)))),
                     // ... Rest of the button code
                   ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  loginOption(),
                 ],
               ),
             ),
           ))),
-    );
-  }
-
-  Row loginOption() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text("Already have an account?",
-            style: TextStyle(color: Colors.white70, fontSize: 15)),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const login_screen()));
-          },
-          child: const Text(
-            "  Login",
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-        )
-      ],
     );
   }
 }

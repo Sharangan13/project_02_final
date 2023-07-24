@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
-      home: const home(),
+      home: const login_screen(),
     );
   }
 }

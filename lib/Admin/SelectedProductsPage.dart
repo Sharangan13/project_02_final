@@ -32,29 +32,37 @@ class _SelectedProductsPageState extends State<SelectedProductsPage> {
         child: Column(
           children: [
             if (widget.selectedProducts.isNotEmpty)
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: widget.selectedProducts.length,
-                itemBuilder: (context, index) {
-                  final product = widget.selectedProducts[index];
-                  return ListTile(
-                    leading: Image.network(product.imageURL),
-                    title: Text(product.name),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Price: Rs ${product.price.toStringAsFixed(2)}'),
-                        Text('Quantity: ${product.quantity}'),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        _removeProductAtIndex(index);
-                      },
-                    ),
-                  );
-                },
+              Container(
+                height: 300,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: widget.selectedProducts.length,
+                  itemBuilder: (context, index) {
+                    final product = widget.selectedProducts[index];
+                    return Card(
+                      elevation: 3,
+                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      child: ListTile(
+                        leading: Image.network(product.imageURL),
+                        title: Text(product.name),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                'Price: Rs ${product.price.toStringAsFixed(2)}'),
+                            Text('Quantity: ${product.quantity}'),
+                          ],
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            _removeProductAtIndex(index);
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             SizedBox(height: 16.0),
             Row(
@@ -94,12 +102,10 @@ class _SelectedProductsPageState extends State<SelectedProductsPage> {
                 child: Align(
                   alignment: Alignment.center,
                   child: Text(
-                    'Total Amount with Discount: Rs ${_totalAmountWithDiscount.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
+                      'Total Amount with Discount: Rs ${_totalAmountWithDiscount.toStringAsFixed(2)}',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      textAlign: TextAlign.center),
                 ),
               ),
             ),

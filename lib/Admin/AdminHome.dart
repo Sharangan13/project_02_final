@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'AddAdmin_ShowAdmin_screen.dart';
 import 'AdminManagePage.dart';
 import 'ConsultancyBookingDetailsPage.dart';
 import 'MyAccountPage.dart';
@@ -42,7 +43,7 @@ class _AdminHomeState extends State<AdminHome> {
                         ?.copyWith(color: Colors.white),
                   ),
                   subtitle: Text(
-                    'Good Morning',
+                    'Have a nice day',
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium
@@ -85,8 +86,8 @@ class _AdminHomeState extends State<AdminHome> {
                     },
                     child: itemDashboard(
                       'QR Scanner',
-                      CupertinoIcons.phone,
-                      Colors.pinkAccent,
+                      CupertinoIcons.qrcode_viewfinder,
+                      Colors.black45,
                     ),
                   ),
                   GestureDetector(
@@ -100,8 +101,8 @@ class _AdminHomeState extends State<AdminHome> {
                     },
                     child: itemDashboard(
                       'Bill',
-                      CupertinoIcons.book_circle,
-                      Colors.deepOrange,
+                      CupertinoIcons.creditcard,
+                      Colors.lightGreen,
                     ),
                   ),
                   GestureDetector(
@@ -114,9 +115,9 @@ class _AdminHomeState extends State<AdminHome> {
                       );
                     },
                     child: itemDashboard(
-                      'Orders',
-                      CupertinoIcons.book_circle,
-                      Colors.deepOrange,
+                      'See Orders',
+                      CupertinoIcons.square_list,
+                      Colors.teal,
                     ),
                   ),
                   GestureDetector(
@@ -133,8 +134,8 @@ class _AdminHomeState extends State<AdminHome> {
                     },
                     child: itemDashboard(
                       'Consultancy Booking',
-                      CupertinoIcons.graph_circle,
-                      Colors.green,
+                      CupertinoIcons.book_circle,
+                      Colors.teal,
                     ),
                   ),
                   GestureDetector(
@@ -144,8 +145,8 @@ class _AdminHomeState extends State<AdminHome> {
                     },
                     child: itemDashboard(
                       'Chat',
-                      CupertinoIcons.chat_bubble_2,
-                      Colors.teal,
+                      CupertinoIcons.bolt_horizontal_circle,
+                      Colors.purple,
                     ),
                   ),
                   GestureDetector(
@@ -158,9 +159,9 @@ class _AdminHomeState extends State<AdminHome> {
                       );
                     },
                     child: itemDashboard(
-                      'Manage Plants & Equipments',
-                      CupertinoIcons.person_2,
-                      Colors.purple,
+                      'Manage Plants and Equipments',
+                      CupertinoIcons.doc_append,
+                      Colors.grey,
                     ),
                   ),
                   GestureDetector(
@@ -173,8 +174,8 @@ class _AdminHomeState extends State<AdminHome> {
                       );
                     },
                     child: itemDashboard(
-                      'Upload Plants & Equipments',
-                      CupertinoIcons.chat_bubble_2,
+                      'Upload Plants and Equipments',
+                      CupertinoIcons.up_arrow,
                       Colors.brown,
                     ),
                   ),
@@ -182,8 +183,8 @@ class _AdminHomeState extends State<AdminHome> {
                     onTap: () {},
                     child: itemDashboard(
                       'Special Offers',
-                      CupertinoIcons.money_dollar_circle,
-                      Colors.indigo,
+                      CupertinoIcons.tag,
+                      Colors.blue,
                     ),
                   ),
                   GestureDetector(
@@ -205,8 +206,31 @@ class _AdminHomeState extends State<AdminHome> {
                     },
                     child: itemDashboard(
                       'My Account',
-                      CupertinoIcons.question_circle,
-                      Colors.blue,
+                      CupertinoIcons.person,
+                      Colors.green,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: itemDashboard(
+                      'Manage User',
+                      CupertinoIcons.person_3,
+                      Colors.teal,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AdminScreen(),
+                        ),
+                      );
+                    },
+                    child: itemDashboard(
+                      'Add a new Admin',
+                      CupertinoIcons.person_2,
+                      Colors.black38,
                     ),
                   ),
                 ],
@@ -246,11 +270,10 @@ class _AdminHomeState extends State<AdminHome> {
           ),
           const SizedBox(height: 8),
           Text(
-            title.toUpperCase(),
+            title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+                fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
+            textAlign: TextAlign.center,
           )
         ],
       ),
