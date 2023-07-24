@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:project_02_final/authentication/screens/register.dart';
 import 'package:project_02_final/authentication/screens/reset_password.dart';
 import '../../Admin/AdminHome.dart';
 import '../../reusable_widgets/reusable_widgets.dart';
+import '../controller/register_controller.dart';
 import '../models/user_model.dart';
 import 'home.dart';
 
@@ -15,18 +18,8 @@ class login_screen extends StatefulWidget {
 }
 
 class _login_screenState extends State<login_screen> {
+  final controller = Get.put(registerontroller());
   final _formKey = GlobalKey<FormState>();
-
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    // Clear the text fields when the widget is initialized
-    emailController.clear();
-    passwordController.clear();
-  }
 
   bool textvisible = true;
   String? emailError;
@@ -39,8 +32,8 @@ class _login_screenState extends State<login_screen> {
         try {
           userCredential =
               await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: emailController.text,
-            password: passwordController.text,
+            email: controller.email.text,
+            password: controller.password.text,
           );
         } catch (error) {
           // Check if the error is a FirebaseAuthException
@@ -81,11 +74,13 @@ class _login_screenState extends State<login_screen> {
                 context,
                 MaterialPageRoute(builder: (context) => AdminHome()),
               );
+              registerontroller.instance.clearRegisterFields();
             } else if (user.role == 'user' && user.ActiveUser == true) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => home()),
               );
+              registerontroller.instance.clearRegisterFields();
             } else if (user.role == 'user' && user.ActiveUser == false) {
               showDialog(
                   context: context,
@@ -159,7 +154,7 @@ class _login_screenState extends State<login_screen> {
                   logoWidget('assets/images/logo1.png'),
                   const SizedBox(height: 40),
                   TextFormField(
-                    controller: emailController,
+                    controller: controller.email,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
                         prefixIcon: const Icon(
@@ -186,7 +181,7 @@ class _login_screenState extends State<login_screen> {
                   ),
                   const SizedBox(height: 30),
                   TextFormField(
-                    controller: passwordController,
+                    controller: controller.password,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
                         prefixIcon: const Icon(

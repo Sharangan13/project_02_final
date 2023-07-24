@@ -13,6 +13,16 @@ class registerontroller extends GetxController {
   final phonenumber = TextEditingController();
   final userRepo = Get.put(UserRepository());
 
+  @override
+  void onInit() {
+    super.onInit();
+    // Clear the text fields when the widget is initialized
+    username.clear();
+    email.clear();
+    phonenumber.clear();
+    password.clear();
+  }
+
   Future<void> createUser(UserModel user) async {
     await userRepo.createUser(user);
   }
@@ -26,5 +36,19 @@ class registerontroller extends GetxController {
     if (error != null) {
       Get.showSnackbar(GetSnackBar(message: error.toString()));
     }
+  }
+
+  // Call this function to clear login fields
+  void clearLoginFields() {
+    email.clear();
+    password.clear();
+  }
+
+  // Call this function to clear login fields
+  void clearRegisterFields() {
+    username.clear();
+    email.clear();
+    phonenumber.clear();
+    password.clear();
   }
 }

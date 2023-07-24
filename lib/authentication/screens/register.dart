@@ -4,10 +4,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project_02_final/authentication/screens/login.dart';
-import 'package:project_02_final/authentication/controller/register_controller.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import '../controller/register_controller.dart';
 import '../models/user_model.dart';
-import 'home.dart';
 
 class register extends StatefulWidget {
   const register({Key? key}) : super(key: key);
@@ -320,6 +319,7 @@ class _registerState extends State<register> {
                               MaterialPageRoute(
                                   builder: (context) => login_screen()),
                             );
+                            registerontroller.instance.clearLoginFields();
                           } else {
                             print('Failed to generate QR code');
                           }
