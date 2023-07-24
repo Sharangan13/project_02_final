@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:project_02_final/authentication/controller/register_controller.dart';
 import '../authentication/models/user_model.dart';
 import 'AddAdmin_ShowAdmin_screen.dart';
@@ -13,22 +15,8 @@ class AdminRegister extends StatefulWidget {
 }
 
 class _registerState extends State<AdminRegister> {
+  final controller = Get.put(registerontroller());
   final _formKey = GlobalKey<FormState>();
-
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phonenumberController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    // Clear the text fields when the widget is initialized
-    usernameController.clear();
-    emailController.clear();
-    phonenumberController.clear();
-    passwordController.clear();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +50,7 @@ class _registerState extends State<AdminRegister> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: usernameController,
+                    controller: controller.username,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -99,7 +87,7 @@ class _registerState extends State<AdminRegister> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: emailController,
+                    controller: controller.email,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -133,7 +121,7 @@ class _registerState extends State<AdminRegister> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: phonenumberController,
+                    controller: controller.phonenumber,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -166,7 +154,7 @@ class _registerState extends State<AdminRegister> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: passwordController,
+                    controller: controller.password,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -222,7 +210,7 @@ class _registerState extends State<AdminRegister> {
                       if (value!.isEmpty) {
                         return 'Please confirm your password';
                       }
-                      if (value != passwordController.text) {
+                      if (value != controller.password.text) {
                         return 'Passwords do not match';
                       }
                       return null;
@@ -239,8 +227,8 @@ class _registerState extends State<AdminRegister> {
                           final UserCredential userCredential =
                               await FirebaseAuth.instance
                                   .createUserWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text,
+                            email: controller.email.text,
+                            password: controller.password.text,
                           );
                           final ProfileUrl = "";
                           final role = "admin";
@@ -249,9 +237,9 @@ class _registerState extends State<AdminRegister> {
                           // Store user data in Firestore
                           final user = UserModel(
                               uid: userCredential.user!.uid,
-                              email: emailController.text.trim(),
-                              username: usernameController.text.trim(),
-                              phonenumber: phonenumberController.text.trim(),
+                              email: controller.email.text.trim(),
+                              username: controller.username.text.trim(),
+                              phonenumber: controller.phonenumber.text.trim(),
                               ProfileUrl: "",
                               role: role,
                               ActiveUser: ActiveUser,

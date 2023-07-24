@@ -17,22 +17,8 @@ class register extends StatefulWidget {
 }
 
 class _registerState extends State<register> {
+  final controller = Get.put(registerontroller());
   final _formKey = GlobalKey<FormState>();
-
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phonenumberController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    // Clear the text fields when the widget is initialized
-    usernameController.clear();
-    emailController.clear();
-    phonenumberController.clear();
-    passwordController.clear();
-  }
 
   Future<String?> generateQRCode(String uid) async {
     try {
@@ -97,7 +83,7 @@ class _registerState extends State<register> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: usernameController,
+                    controller: controller.username,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -134,7 +120,7 @@ class _registerState extends State<register> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: emailController,
+                    controller: controller.email,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -168,7 +154,7 @@ class _registerState extends State<register> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: phonenumberController,
+                    controller: controller.phonenumber,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -201,7 +187,7 @@ class _registerState extends State<register> {
                     height: 20,
                   ),
                   TextFormField(
-                    controller: passwordController,
+                    controller: controller.password,
                     style: TextStyle(color: Colors.white.withOpacity(0.9)),
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -257,7 +243,7 @@ class _registerState extends State<register> {
                       if (value!.isEmpty) {
                         return 'Please confirm your password';
                       }
-                      if (value != passwordController.text) {
+                      if (value != controller.password.text) {
                         return 'Passwords do not match';
                       }
                       return null;
@@ -274,8 +260,8 @@ class _registerState extends State<register> {
                           final UserCredential userCredential =
                               await FirebaseAuth.instance
                                   .createUserWithEmailAndPassword(
-                            email: emailController.text,
-                            password: passwordController.text,
+                            email: controller.email.text,
+                            password: controller.password.text,
                           );
                           // Generate and store the QR code
 
@@ -289,9 +275,9 @@ class _registerState extends State<register> {
                             // Store user data in Firestore
                             final user = UserModel(
                                 uid: userCredential.user!.uid,
-                                email: emailController.text.trim(),
-                                username: usernameController.text.trim(),
-                                phonenumber: phonenumberController.text.trim(),
+                                email: controller.email.text.trim(),
+                                username: controller.username.text.trim(),
+                                phonenumber: controller.phonenumber.text.trim(),
                                 downloadUrl: downloadUrl,
                                 ProfileUrl: "",
                                 role: role,
