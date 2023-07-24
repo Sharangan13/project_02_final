@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../authentication/screens/login.dart';
 import 'AddAdmin_ShowAdmin_screen.dart';
 import 'AdminManagePage.dart';
 import 'ConsultancyBookingDetailsPage.dart';
@@ -231,6 +232,20 @@ class _AdminHomeState extends State<AdminHome> {
                       'Add a new Admin',
                       CupertinoIcons.person_2,
                       Colors.black38,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const login_screen()),
+                      );
+                    },
+                    child: itemDashboard(
+                      'Logout',
+                      CupertinoIcons.return_icon,
+                      Colors.indigo,
                     ),
                   ),
                 ],
