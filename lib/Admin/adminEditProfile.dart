@@ -64,7 +64,7 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
       key: _scaffoldMessengerKey,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Edit Profile'),
+          title: Text('My Account'),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -74,9 +74,9 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
               children: [
                 Center(
                   child: Text(
-                    'Edit Profile',
+                    'My Details',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -374,7 +374,7 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
               });
             },
             child: Text(
-              _isEditing ? 'Cancel' : 'Edit Profile',
+              _isEditing ? 'Cancel' : 'Edit Details',
               style: TextStyle(
                 color: _isEditing
                     ? Colors.red
@@ -464,7 +464,7 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
           );
         }
       },
-      child: Center(child: const Text('Update Profile')),
+      child: Center(child: const Text('Update Details')),
     );
   }
 }

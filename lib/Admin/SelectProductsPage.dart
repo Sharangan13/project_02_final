@@ -18,7 +18,6 @@ class _SelectProductsPageState extends State<SelectProductsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
         title: Text('Select Products'),
       ),
       body: Column(

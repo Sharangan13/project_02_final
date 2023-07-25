@@ -21,7 +21,6 @@ class _RateUsScreenState extends State<RateUsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
         title: Text('Rate Us'),
       ),
       body: Padding(

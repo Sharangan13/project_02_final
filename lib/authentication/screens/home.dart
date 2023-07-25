@@ -20,33 +20,36 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
-  late User? user;
-  late String accountName = "";
-  late String accountEmail = "";
+  final User? currentUser = FirebaseAuth.instance.currentUser;
+  late String UserName = "";
+  late String email = "";
+  late String ProfileUrl = "";
 
   @override
   void initState() {
     super.initState();
-    fetchUserData();
+    _fetchUserData(); // Call the _fetchUserData method here
   }
 
-  Future<void> fetchUserData() async {
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      final documentId = currentUser.uid;
-      final userSnapshot = await FirebaseFirestore.instance
+  Future<void> _fetchUserData() async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
           .collection('Users')
-          .doc(documentId)
+          .where('Email', isEqualTo: currentUser!.email)
           .get();
 
-      if (userSnapshot.exists) {
-        final userData = userSnapshot.data();
-        setState(() {
-          user = currentUser;
-          accountName = userData?['UserName'] ?? '';
-          accountEmail = userData?['Email'] ?? '';
-        });
+      if (snapshot.docs.isNotEmpty) {
+        final userData = snapshot.docs[0].data();
+        UserName = userData['UserName'] ?? 'Unknown User';
+        email = userData['Email'];
+        ProfileUrl = userData['ProfileUrl'] ??
+            'https://example.com/default_profile_photo.jpg';
+
+        // Call setState to update the UI with the fetched data
+        setState(() {});
       }
+    } catch (e) {
+      print('Error fetching user data: $e');
     }
   }
 
@@ -147,11 +150,11 @@ class _homeState extends State<home> {
     );
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
         iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
           'Home',
-          style: TextStyle(color: Colors.black, fontSize: 17),
+          style: TextStyle(
+              color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold),
         ),
         actions: [
           CircleAvatar(
@@ -189,135 +192,135 @@ class _homeState extends State<home> {
           ),
         ],
       ),
-      drawer: Drawer(
-        elevation: 40,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            UserAccountsDrawerHeader(
-              accountName: Text(accountName),
-              accountEmail: Text(accountEmail),
-              currentAccountPicture: CircleAvatar(
-                radius: 15,
-                backgroundColor: Colors.white,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.person,
-                    size: 40,
-                    color: Colors.black,
-                  ),
+      drawer: SafeArea(
+        child: Drawer(
+          elevation: 40,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              UserAccountsDrawerHeader(
+                accountName: Text(UserName),
+                accountEmail: Text(email),
+                currentAccountPicture: CircleAvatar(
+                  radius: 15,
+                  backgroundColor: Colors.white,
+                  backgroundImage:
+                      NetworkImage(ProfileUrl), // Use the fetched ProfileUrl
+                ),
+                decoration: const BoxDecoration(
+                  color: Colors.grey,
                 ),
               ),
-              decoration: const BoxDecoration(color: Colors.green),
-            ),
-            ListTile(
-              dense: true,
-              title: const Text("My Account"),
-              leading: const Icon(Icons.person),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => UserEditProfilePage()),
-                );
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: const Text("Pre-Orders Bookings"),
-              leading: const Icon(Icons.add_box),
-              onTap: () {},
-            ),
-            ListTile(
-              dense: true,
-              title: const Text("Consultancy Bookings"),
-              leading: const Icon(Icons.add_box),
-              onTap: () {
-                //action when this menu is pressed
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: const Text("Notifications"),
-              leading: const Icon(Icons.notifications_rounded),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyNotification()),
-                ); //action when this menu is pressed
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: const Text("Chat"),
-              leading: const Icon(Icons.chat),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ChatScreen(
-                            receiverId: '',
-                          )),
-                );
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: const Text("About us"),
-              leading: const Icon(Icons.contact_page_rounded),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AboutUsPage()),
-                ); //action when this menu is pressed
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: const Text("Rate us"),
-              leading: const Icon(Icons.star_rate),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RateUsScreen()),
-                ); //action when this menu is pressed
-              },
-            ),
-            ListTile(
-              dense: true,
-              title: const Text("Your QR"),
-              leading: const Icon(Icons.qr_code),
-              onTap: () {
-                // action when this menu is pressed
-                final user = FirebaseAuth.instance.currentUser;
-                if (user != null) {
-                  final uid = user.uid;
+              ListTile(
+                dense: true,
+                title: const Text("My Account"),
+                leading: const Icon(Icons.person),
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => QRCodeRetrieval(uid: uid),
-                    ),
+                        builder: (context) => UserEditProfilePage()),
                   );
-                } else {
-                  print('User authentication failed');
-                  // Handle the error or show an error message to the user
-                }
-              },
-            ),
-            Divider(),
-            ListTile(
-              dense: true,
-              title: const Text("Log out"),
-              leading: const Icon(Icons.arrow_back),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const login_screen()),
-                );
-              },
-            ),
-          ],
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: const Text("Pre-Orders Bookings"),
+                leading: const Icon(Icons.add_box),
+                onTap: () {},
+              ),
+              ListTile(
+                dense: true,
+                title: const Text("Consultancy Bookings"),
+                leading: const Icon(Icons.add_box),
+                onTap: () {
+                  //action when this menu is pressed
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: const Text("Notifications"),
+                leading: const Icon(Icons.notifications_rounded),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyNotification()),
+                  ); //action when this menu is pressed
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: const Text("Chat"),
+                leading: const Icon(Icons.chat),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChatScreen(
+                              receiverId: '',
+                            )),
+                  );
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: const Text("About us"),
+                leading: const Icon(Icons.contact_page_rounded),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AboutUsPage()),
+                  ); //action when this menu is pressed
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: const Text("Rate us"),
+                leading: const Icon(Icons.star_rate),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RateUsScreen()),
+                  ); //action when this menu is pressed
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: const Text("Your QR"),
+                leading: const Icon(Icons.qr_code),
+                onTap: () {
+                  // action when this menu is pressed
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user != null) {
+                    final uid = user.uid;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => QRCodeRetrieval(uid: uid),
+                      ),
+                    );
+                  } else {
+                    print('User authentication failed');
+                    // Handle the error or show an error message to the user
+                  }
+                },
+              ),
+              Divider(),
+              ListTile(
+                dense: true,
+                title: const Text("Log out"),
+                leading: const Icon(Icons.arrow_back),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const login_screen()),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
       body: Padding(

@@ -42,15 +42,28 @@ class _QRCodeRetrievalState extends State<QRCodeRetrieval> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
         title: const Text('Your QR Code'),
       ),
-      body: Center(
-        child: qrCodeUrl != null
-            ? QRCodeShowPage(
-                downloadUrl:
-                    qrCodeUrl!) // Pass downloadUrl instead of qrCodeUrl
-            : CircularProgressIndicator(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'If you book any plants or equipment, you must keep this QR code for your purchase.',
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepOrangeAccent),
+            ),
+          ),
+          const SizedBox(height: 40),
+          qrCodeUrl != null
+              ? QRCodeShowPage(
+                  downloadUrl: qrCodeUrl!,
+                )
+              : CircularProgressIndicator(),
+        ],
       ),
     );
   }

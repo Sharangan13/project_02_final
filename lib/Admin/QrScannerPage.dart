@@ -43,7 +43,6 @@ class _QrScannerPageState extends State<QrScannerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green[700],
       appBar: AppBar(
         title: Text('QR Scanner'),
       ),

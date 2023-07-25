@@ -43,7 +43,6 @@ class _UploadPlantsEquipmentsPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
         title: Text('Upload Plants and Equipments'),
       ),
       body: SingleChildScrollView(

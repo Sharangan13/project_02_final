@@ -15,7 +15,6 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
         title: Text('Available Plants'),
       ),
       body: Column(

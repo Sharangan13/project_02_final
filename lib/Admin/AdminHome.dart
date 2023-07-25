@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../authentication/screens/login.dart';
@@ -18,6 +20,37 @@ class AdminHome extends StatefulWidget {
 }
 
 class _AdminHomeState extends State<AdminHome> {
+  final User? currentUser = FirebaseAuth.instance.currentUser;
+  late String UserName = "";
+  late String ProfileUrl = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData(); // Call the _fetchUserData method here
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('Email', isEqualTo: currentUser!.email)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        final userData = snapshot.docs[0].data();
+        UserName = userData['UserName'] ?? 'Unknown User';
+        ProfileUrl = userData['ProfileUrl'] ??
+            'https://example.com/default_profile_photo.jpg';
+
+        // Call setState to update the UI with the fetched data
+        setState(() {});
+      }
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +70,7 @@ class _AdminHomeState extends State<AdminHome> {
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 30),
                   title: Text(
-                    'Hello Sumo',
+                    'Hello, $UserName',
                     style: Theme.of(context)
                         .textTheme
                         .titleLarge
@@ -51,8 +84,8 @@ class _AdminHomeState extends State<AdminHome> {
                         ?.copyWith(color: Colors.white54),
                   ),
                   trailing: CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage('assets/images/prf.jpg'),
+                    radius: 30,
+                    backgroundImage: NetworkImage(ProfileUrl),
                   ),
                 ),
                 const SizedBox(height: 30)

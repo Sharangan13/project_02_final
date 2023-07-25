@@ -7,13 +7,12 @@ class AboutUsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
         title: Text('Abot Us'),
       ),
-      body:  SafeArea(
+      body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -26,7 +25,6 @@ class AboutUsPage extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               SizedBox(height: 16),
               Text(
                 'Welcome to our company! We are dedicated to providing the best products and services to our customers.',
@@ -114,7 +112,7 @@ class AboutUsPage extends StatelessWidget {
             ],
           ),
         ),
-    ),
+      ),
     );
   }
 }

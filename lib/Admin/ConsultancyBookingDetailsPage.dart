@@ -9,7 +9,6 @@ class ConsultancyBookingDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
         title: Text('Consultancy Booking Details'),
       ),
       body: Center(

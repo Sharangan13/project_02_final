@@ -34,7 +34,6 @@ class _ProductDetailsState extends State<ProductDetails> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[700],
         title: Text(widget.product.name),
       ),
       body: ListView(
