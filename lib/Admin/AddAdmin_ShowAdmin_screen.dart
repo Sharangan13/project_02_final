@@ -36,7 +36,7 @@ class AdminScreen extends StatelessWidget {
                   final adminName = adminData['UserName'] ?? 'Unknown Admin';
                   final adminJoinDate = adminData['Date'] ?? 'Unknown Date';
                   final email = adminData['Email'];
-                  final profilePhotoURL = adminData['profilePhotoURL'] ??
+                  final profilePhotoURL = adminData['ProfileUrl'] ??
                       'https://example.com/default_profile_photo.jpg';
                   final phoneNumber = adminData['PhoneNumber'] ?? 'N/A';
 
