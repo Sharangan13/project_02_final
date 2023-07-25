@@ -65,6 +65,9 @@ class _ProductListPageState extends State<ProductListPage> {
 
                 final products = snapshot.data!.docs
                     .map((doc) => Product.fromSnapshot(doc))
+                    .where((product) =>
+                        product.quantity !=
+                        0) // if product quantity=0 not show in page
                     .toList();
 
                 // Filter products based on the search query

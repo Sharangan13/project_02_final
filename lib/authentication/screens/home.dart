@@ -218,7 +218,8 @@ class _homeState extends State<home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MyAccount()),
+                  MaterialPageRoute(
+                      builder: (context) => UserEditProfilePage()),
                 );
               },
             ),

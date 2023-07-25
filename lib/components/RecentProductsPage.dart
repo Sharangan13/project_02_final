@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../Pages/product_details.dart';
 import '../Pages/Product.dart';
-import '../authentication/screens/ProductListPage.dart';
 
 class RecentProductsPage extends StatelessWidget {
   @override
@@ -135,8 +133,11 @@ class RecentProductsPage extends StatelessWidget {
           .limit(20)
           .get();
 
-      final collectionProducts =
-          querySnapshot.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+      final collectionProducts = querySnapshot.docs
+          .map((doc) => Product.fromSnapshot(doc))
+          .where((product) =>
+              product.quantity != 0) // if product quantity=0 not show in page
+          .toList();
 
       products.addAll(collectionProducts);
     }

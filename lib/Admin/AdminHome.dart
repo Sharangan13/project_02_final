@@ -4,11 +4,11 @@ import '../authentication/screens/login.dart';
 import 'AddAdmin_ShowAdmin_screen.dart';
 import 'AdminManagePage.dart';
 import 'ConsultancyBookingDetailsPage.dart';
-import 'MyAccountPage.dart';
 import 'QrScannerPage.dart';
 import 'SeeOrdersPage.dart';
 import 'SelectProductsPage.dart';
 import 'UploadPlantsEquipmentsPage.dart';
+import 'adminEditProfile.dart';
 
 class AdminHome extends StatefulWidget {
   const AdminHome({Key? key}) : super(key: key);
@@ -51,7 +51,7 @@ class _AdminHomeState extends State<AdminHome> {
                         ?.copyWith(color: Colors.white54),
                   ),
                   trailing: CircleAvatar(
-                    radius: 30,
+                    radius: 40,
                     backgroundImage: AssetImage('assets/images/prf.jpg'),
                   ),
                 ),
@@ -201,7 +201,7 @@ class _AdminHomeState extends State<AdminHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MyAccountPage(),
+                          builder: (context) => AdminEditProfilePage(),
                         ),
                       );
                     },

@@ -5,12 +5,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class UserEditProfilePage extends StatefulWidget {
+class AdminEditProfilePage extends StatefulWidget {
   @override
-  _UserEditProfilePageState createState() => _UserEditProfilePageState();
+  _AdminEditProfilePageState createState() => _AdminEditProfilePageState();
 }
 
-class _UserEditProfilePageState extends State<UserEditProfilePage> {
+class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
@@ -173,7 +173,7 @@ class _UserEditProfilePageState extends State<UserEditProfilePage> {
         // Upload image to Firebase Storage
         final storageRef = FirebaseStorage.instance
             .ref()
-            .child('UserProfilePhoto')
+            .child('AdminProfilePhoto')
             .child(DateTime.now().toString());
 
         try {

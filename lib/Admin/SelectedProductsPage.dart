@@ -268,9 +268,7 @@ class _SelectedProductsPageState extends State<SelectedProductsPage> {
 
     // Store the SaleDetails in Firestore
     final firestore = FirebaseFirestore.instance;
-    if (widget.selectedProducts != null &&
-        widget.selectedProducts!.isNotEmpty &&
-        _totalAmount != 0) {
+    if (widget.selectedProducts.isNotEmpty && _totalAmount != 0) {
       try {
         await firestore
             .collection('SaleDetails')
