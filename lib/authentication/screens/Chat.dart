@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -12,8 +13,13 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController _messageController = TextEditingController();
-  CollectionReference _messagesCollection =
-      FirebaseFirestore.instance.collection('messages');
+  CollectionReference _messagesCollection = FirebaseFirestore.instance.collection('messages');
+
+  Future<String?> _getCurrentUserId() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    return user?.uid;
+  }
+
 
   @override
   void dispose() {
@@ -22,11 +28,26 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _sendMessage(String message) async {
+    String? currentUserId = await _getCurrentUserId();
+    if (currentUserId == null) {
+      // User not authenticated, handle accordingly
+      return;
+    }
     try {
       await _messagesCollection.add({
+        'senderId': currentUserId, // Add the current user ID
         'content': message,
+        'receiverId': widget.receiverId, // Add receiverId to the message
         'timestamp': FieldValue.serverTimestamp(),
       });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatScreen(receiverId: 'Admin'),
+        ),
+      );
+
 
       _messageController.clear();
     } catch (e) {
@@ -59,25 +80,30 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: _messagesCollection.orderBy('timestamp').snapshots(),
+              stream: _messagesCollection
+                  .where('receiverId', isEqualTo: widget.receiverId) // Filter messages by receiverId
+                  .orderBy('timestamp')
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 }
 
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
 
-                List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+                List<QueryDocumentSnapshot> documents =
+                    snapshot.data!.docs;
 
                 return ListView.builder(
                   itemCount: documents.length,
                   itemBuilder: (context, index) {
                     var messageData =
-                        documents[index].data() as Map<String, dynamic>;
+                    documents[index].data() as Map<String, dynamic>;
                     var content = messageData['content'] ?? '';
 
                     return ListTile(
@@ -96,8 +122,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: TextField(
                     controller: _messageController,
-                    decoration:
-                        InputDecoration(labelText: 'Type your message...'),
+                    decoration: InputDecoration(labelText: 'Type your message...'),
                   ),
                 ),
                 IconButton(
@@ -111,15 +136,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ],
             ),
+
           ),
         ],
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: ChatScreen(receiverId: 'Admin'),
-  ));
 }

@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project_02_final/Admin/SpecialOffers.dart';
 import '../authentication/screens/login.dart';
 import 'AddAdmin_ShowAdmin_screen.dart';
+import 'AdminChat.dart';
 import 'AdminManagePage.dart';
 import 'ConsultancyBookingDetailsPage.dart';
 import 'QrScannerPage.dart';
@@ -174,7 +176,12 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      // Handle onTap for Chat
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(),//Admin chat home page
+                        ),
+                      ); // Handle onTap for Chat
                       // Add your code here
                     },
                     child: itemDashboard(
@@ -214,7 +221,14 @@ class _AdminHomeState extends State<AdminHome> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Offers(),
+                        ),
+                      );
+                    },
                     child: itemDashboard(
                       'Special Offers',
                       CupertinoIcons.tag,

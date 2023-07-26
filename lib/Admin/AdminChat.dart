@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -7,7 +8,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text('Admin'),
+        title: Text('Admin Chat'),
       ),
       body: ChatList(),
     );
@@ -193,4 +194,5 @@ class ChatBubble extends StatelessWidget {
       ),
     );
   }
+
 }
