@@ -312,7 +312,6 @@ class _registerState extends State<register> {
                                 );
                               },
                             );
-
                             // Navigation logic
                             Navigator.push(
                               context,
