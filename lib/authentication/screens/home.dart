@@ -106,22 +106,54 @@ class _homeState extends State<home> {
                             ),
                           ),
                         ),
-                        Text(
-                          '30% Off',
-                          style: TextStyle(
-                              fontSize: 28,
-                              color: Colors.green[100],
-                              fontWeight: FontWeight.bold),
+
+                        //Show offers
+                    StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance.collection('offers').doc('percentages').snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData || !snapshot.data!.exists) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  double plantsPercentage = snapshot.data!.get('plantsPercentage') ?? 0.0;
+                  double equipmentPercentage = snapshot.data!.get('equipmentPercentage') ?? 0.0;
+
+                    return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(6.4),
+                        color: Colors.green[30],
+                        child: Text(
+                          'Plants Offer: ${plantsPercentage.toStringAsFixed(2)}%',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Text(
-                            'On all Plants',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(6.4),
+                        color: Colors.blue[30],
+                        child: Text(
+                          'Equipment Offer: ${equipmentPercentage.toStringAsFixed(2)}%',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                         ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 20),
+                        //   child: Text(
+                        //     'On all Plants',
+                        //     style: TextStyle(
+                        //       color: Colors.white,
+                        //     ),
+                        //   ),
+                        // ),
+
                       ],
                     ),
                   ),
