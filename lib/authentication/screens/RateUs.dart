@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class RateUsScreen extends StatefulWidget {
+  final String uid;
+
+  RateUsScreen({required this.uid});
+
   @override
   _RateUsScreenState createState() => _RateUsScreenState();
 }
@@ -8,13 +15,50 @@ class RateUsScreen extends StatefulWidget {
 class _RateUsScreenState extends State<RateUsScreen> {
   double rating = 0.0;
   String comment = '';
+  final TextEditingController _commentController = TextEditingController();
 
-  void submitRating() {
-    // Implement your logic to save the rating and comment to the database or storage solution
-    // You can use the 'rating' and 'comment' variables to access the user's input
-    // Add your code here to perform any additional actions after submitting the rating
-    // For example, displaying a confirmation message or navigating to a different screen
-    // You can also add validation and error handling as per your requirements
+  void submitRating() async {
+    try {
+      // Initialize Firebase and Firestore if not already initialized
+      await Firebase.initializeApp();
+      final firestore = FirebaseFirestore.instance;
+
+
+      // Save the rating and comment data to Firestore
+      await firestore.collection('ratings').add({
+        'userId': widget.uid,
+        'rating': rating,
+        'comment': comment,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      // Show a pop-up message when the rating is submitted
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Rating Submitted'),
+            content: Text('Thank you for your feedback! Your rating has been submitted.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  // Close the dialog
+                  Navigator.of(context).pop();
+                  // Clear the comment field after submission
+                  setState(() {
+                    _commentController.clear();
+                  });
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      print('Error saving rating: $e');
+      // Optionally show an error message if there's an issue saving the rating
+    }
   }
 
   @override
@@ -54,6 +98,7 @@ class _RateUsScreenState extends State<RateUsScreen> {
             ),
             SizedBox(height: 16.0),
             TextField(
+              controller: _commentController,
               decoration: InputDecoration(
                 hintText: 'Leave a comment',
                 border: OutlineInputBorder(),
@@ -68,17 +113,8 @@ class _RateUsScreenState extends State<RateUsScreen> {
             ElevatedButton(
               child: Text('Submit'),
               onPressed: () {
-                print('Pressed');
+                submitRating();  // Call the submitRating method when the button is pressed
               },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                    if (states.contains(MaterialState.pressed))
-                      return Colors.blue;
-                    return Colors.green;
-                  },
-                ),
-              ),
             )
           ],
         ),

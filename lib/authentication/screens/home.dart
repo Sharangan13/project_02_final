@@ -324,7 +324,7 @@ class _homeState extends State<home> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => RateUsScreen()),
+                    MaterialPageRoute(builder: (context) => RateUsScreen(uid: '',)),
                   ); //action when this menu is pressed
                 },
               ),
