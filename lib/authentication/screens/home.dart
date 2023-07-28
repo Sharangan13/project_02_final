@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/Chat.dart';
+import '../../Pages/cart_screen.dart';
 import '../../components/RecentProductsPage.dart';
 import 'AboutUsPage.dart';
 import 'MyAccount.dart';
 import 'ProductSearchScreen.dart';
 import 'QRCodeRetrieval.dart';
 import 'RateUs.dart';
+
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
 import 'notification.dart';
@@ -224,7 +226,15 @@ class _homeState extends State<home> {
               radius: 15,
               backgroundColor: Colors.white,
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CartScreen()),
+                  );
+
+
+
+                },
                 icon: const Icon(
                   Icons.shopping_cart,
                   size: 17,
@@ -388,5 +398,6 @@ class _homeState extends State<home> {
         ),
       ),
     );
+
   }
 }

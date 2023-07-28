@@ -1,48 +1,38 @@
-import 'package:flutter/material.dart';
-
 import 'Product.dart';
 
-class AddToCartPage extends StatefulWidget {
+class CartItem {
   final Product product;
+  final int quantity;
 
-  AddToCartPage({required this.product});
-
-  @override
-  _AddToCartPageState createState() => _AddToCartPageState();
+  CartItem({required this.product, required this.quantity});
 }
 
-class _AddToCartPageState extends State<AddToCartPage> {
-  int selectedQuantity = 1;
+class Cart {
+  static List<CartItem> items = [];
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Add to Cart'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Product: ${widget.product.name}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-              ),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Selected Quantity: $selectedQuantity',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  static void addToCart(Product product, int quantity) {
+    final existingItemIndex =
+    items.indexWhere((item) => item.product.productId == product.productId);
+
+    if (existingItemIndex != -1) {
+      // If the product is already in the cart, update the quantity
+      items[existingItemIndex] =
+          CartItem(product: product, quantity: quantity);
+    } else {
+      // If the product is not in the cart, add it as a new item
+      items.add(CartItem(product: product, quantity: quantity));
+    }
+  }
+
+  static void removeFromCart(String productId) {
+    items.removeWhere((item) => item.product.productId == productId);
+  }
+
+  static double getTotalAmount() {
+    double total = 0;
+    for (var item in items) {
+      total += item.product.price * item.quantity;
+    }
+    return total;
   }
 }

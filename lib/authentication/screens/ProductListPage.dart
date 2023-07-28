@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../Pages/Product.dart';
+import 'package:project_02_final/Pages/Product.dart';
+
 import '../../Pages/product_details.dart';
 
 class ProductListPage extends StatefulWidget {

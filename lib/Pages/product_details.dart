@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'Product.dart';
+import 'cart.dart';
 
 class ProductDetails extends StatefulWidget {
   final Product product;
@@ -13,6 +14,15 @@ class ProductDetails extends StatefulWidget {
 
 class _ProductDetailsState extends State<ProductDetails> {
   int selectedQuantity = 1;
+  void _addToCart() {
+    Cart.addToCart(widget.product, selectedQuantity);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${widget.product.name} added to cart.'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
 
   void _showImageInFullScreen() {
     showDialog(
@@ -110,7 +120,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   ),
                   items: List.generate(
                     widget.product.quantity.toInt(),
-                    (index) => DropdownMenuItem<int>(
+                        (index) => DropdownMenuItem<int>(
                       value: index + 1,
                       child: Text('${index + 1}'),
                     ),
@@ -145,9 +155,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ),
               ),
               IconButton(
-                onPressed: () {
-                  addToCart(widget.product, selectedQuantity);
-                },
+                onPressed:_addToCart,
                 icon: Icon(Icons.add_shopping_cart),
                 color: Colors.green,
               ),

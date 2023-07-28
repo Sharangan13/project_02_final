@@ -1,10 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../../Pages/product_details.dart';
 import '../Pages/Product.dart';
+import '../authentication/screens/ProductListPage.dart';
 
 class RecentProductsPage extends StatelessWidget {
+  final User? currentUser = FirebaseAuth.instance.currentUser;
+  late String UserName = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,7 +146,7 @@ class RecentProductsPage extends StatelessWidget {
 
       products.addAll(collectionProducts);
     }
-    products.sort((a, b) => b.date.compareTo(a.date));
+    products.sort((a, b) => b.name.compareTo(a.name));
 
     return products;
   }
