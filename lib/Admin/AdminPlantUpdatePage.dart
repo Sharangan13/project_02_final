@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class AdminPlantUpdatePage extends StatefulWidget {
   final String category;
@@ -19,6 +22,29 @@ class _AdminPlantUpdatePageState extends State<AdminPlantUpdatePage> {
   TextEditingController _priceController = TextEditingController();
   TextEditingController _quantityController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
+
+  // Function to handle selecting a new image from gallery or camera
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      // Upload the image to Firebase Storage
+      var storageRef = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child('plants/${widget.plantId}.jpg');
+      await storageRef.putFile(File(pickedFile.path));
+      // Get the updated image URL
+      String imageUrl = await storageRef.getDownloadURL();
+      // Update the Firestore document with the new image URL
+      FirebaseFirestore.instance
+          .collection('Plants')
+          .doc(widget.category.replaceAll(' ', ''))
+          .collection('Items')
+          .doc(widget.plantId)
+          .update({'image_url': imageUrl});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +78,15 @@ class _AdminPlantUpdatePageState extends State<AdminPlantUpdatePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: 200,
-                      child: Center(
-                        child: Image.network(
-                          plantData['image_url'],
-                          fit: BoxFit.cover,
+                    GestureDetector(
+                      onTap: _pickImage, // Call the image update function
+                      child: SizedBox(
+                        height: 200,
+                        child: Center(
+                          child: Image.network(
+                            plantData['image_url'],
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
