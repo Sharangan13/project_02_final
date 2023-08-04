@@ -96,7 +96,7 @@ class _SelectProductsPageState extends State<SelectProductsPage> {
                 final filteredProducts = products
                     .where((product) => product.name
                         .toLowerCase()
-                        .startsWith(_searchQuery.toLowerCase()))
+                        .contains(_searchQuery.toLowerCase()))
                     .toList();
 
                 // Products found

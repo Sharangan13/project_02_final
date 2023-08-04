@@ -27,7 +27,7 @@ class _OffersScreenState extends State<Offers> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Offers Percentages'),
+        title: Text('Add Offers'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -67,7 +67,7 @@ class _OffersScreenState extends State<Offers> {
                   SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: addOffers,
-                    child: Text('Add Offers'),
+                    child: Text('Update Offers'),
                   ),
                 ],
               );
@@ -98,8 +98,9 @@ class _OffersScreenState extends State<Offers> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Offers Added'),
-          content: Text('The offers percentages have been successfully added!'),
+          title: Text('Offers Updated'),
+          content:
+              Text('The offers percentages have been successfully Updated!'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

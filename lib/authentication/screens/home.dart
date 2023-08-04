@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project_02_final/authentication/screens/Chat.dart';
+import 'package:project_02_final/authentication/screens/ChatScreen.dart';
 import '../../Pages/cart_screen.dart';
 import '../../components/RecentProductsPage.dart';
 import 'AboutUsPage.dart';
@@ -44,8 +44,7 @@ class _homeState extends State<home> {
         final userData = snapshot.docs[0].data();
         UserName = userData['UserName'] ?? 'Unknown User';
         email = userData['Email'];
-        ProfileUrl = userData['ProfileUrl'] ??
-            'https://example.com/default_profile_photo.jpg';
+        ProfileUrl = userData['ProfileUrl'] ?? '';
 
         // Call setState to update the UI with the fetched data
         setState(() {});
@@ -231,9 +230,6 @@ class _homeState extends State<home> {
                     context,
                     MaterialPageRoute(builder: (context) => CartScreen()),
                   );
-
-
-
                 },
                 icon: const Icon(
                   Icons.shopping_cart,
@@ -286,9 +282,7 @@ class _homeState extends State<home> {
                 dense: true,
                 title: const Text("Consultancy Bookings"),
                 leading: const Icon(Icons.add_box),
-                onTap: () {
-                  //action when this menu is pressed
-                },
+                onTap: () {},
               ),
               ListTile(
                 dense: true,
@@ -306,13 +300,18 @@ class _homeState extends State<home> {
                 title: const Text("Chat"),
                 leading: const Icon(Icons.chat),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChatScreen(
-                              receiverId: '',
-                            )),
-                  );
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user != null) {
+                    final uid = user.uid;
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ChatScreen(userId: uid),
+                      ),
+                    );
+                  } else {
+                    print('User authentication failed');
+                    // Handle the error or show an error message to the user
+                  }
                 },
               ),
               ListTile(
@@ -334,7 +333,10 @@ class _homeState extends State<home> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => RateUsScreen(uid: '',)),
+                    MaterialPageRoute(
+                        builder: (context) => RateUsScreen(
+                              uid: '',
+                            )),
                   ); //action when this menu is pressed
                 },
               ),
@@ -398,6 +400,5 @@ class _homeState extends State<home> {
         ),
       ),
     );
-
   }
 }

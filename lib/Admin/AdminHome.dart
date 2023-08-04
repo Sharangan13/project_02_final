@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project_02_final/Admin/ManageUserPage.dart';
 import 'package:project_02_final/Admin/SpecialOffers.dart';
 import '../authentication/screens/login.dart';
 import 'AddAdmin_ShowAdmin_screen.dart';
@@ -179,7 +180,8 @@ class _AdminHomeState extends State<AdminHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(),//Admin chat home page
+                          builder: (context) =>
+                              HomePage(), //Admin chat home page
                         ),
                       ); // Handle onTap for Chat
                       // Add your code here
@@ -259,7 +261,14 @@ class _AdminHomeState extends State<AdminHome> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ManageUsersPage(),
+                        ),
+                      );
+                    },
                     child: itemDashboard(
                       'Manage User',
                       CupertinoIcons.person_3,

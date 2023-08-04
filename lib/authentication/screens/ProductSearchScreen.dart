@@ -66,7 +66,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                 final filteredProducts = products
                     .where((product) => product.name
                         .toLowerCase()
-                        .startsWith(_searchQuery.toLowerCase()))
+                        .contains(_searchQuery.toLowerCase()))
                     .toList();
 
                 // Products found
