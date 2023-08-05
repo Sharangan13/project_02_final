@@ -5,6 +5,7 @@ import '../../Pages/cart_screen.dart';
 import '../../components/RecentProductsPage.dart';
 import 'AboutUsPage.dart';
 import 'MyAccount.dart';
+import 'PreOrderBookingPage.dart';
 import 'ProductSearchScreen.dart';
 import 'QRCodeRetrieval.dart';
 import 'RateUs.dart';
@@ -276,7 +277,10 @@ class _homeState extends State<home> {
                 dense: true,
                 title: const Text("Pre-Orders Bookings"),
                 leading: const Icon(Icons.add_box),
-                onTap: () {},
+                onTap: () { Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PreOrderBookingPage()),
+                );},
               ),
               ListTile(
                 dense: true,

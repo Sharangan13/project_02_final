@@ -1,7 +1,53 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'Product.dart';
 import 'cart.dart';
+
+class Booking {
+  final String uid;
+  final String category;
+  final String image_url;
+  final String name;
+  final double price;
+  final int quantity;
+
+  Booking({
+    required this.uid,
+    required this.category,
+    required this.image_url,
+    required this.name,
+    required this.price,
+    required this.quantity,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'category': category,
+      'image_url': image_url,
+      'name': name,
+      'price': price,
+      'quantity': quantity,
+    };
+  }
+}
+
+class BookingService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> bookProduct(Booking booking) async {
+    try {
+      await _firestore.collection('booking').add(booking.toMap());
+    } catch (e) {
+      print('Error booking product: $e');
+      // Handle the error as needed
+    }
+  }
+}
+
+
 
 class ProductDetails extends StatefulWidget {
   final Product product;
@@ -37,7 +83,46 @@ class _ProductDetailsState extends State<ProductDetails> {
       },
     );
   }
+  void _handleBookNow() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
 
+    if (user != null) {
+      final Booking booking = Booking(
+        uid: user.uid, // Automatically retrieve user's UID
+        category: widget.product.Category,
+        image_url: widget.product.imageURL,
+        name: widget.product.name,
+        price: widget.product.price,
+        quantity: selectedQuantity,
+      );
+      try {
+        await BookingService().bookProduct(booking);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Successfully booked ${widget.product.name}'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        // Navigate to a success screen if needed
+        // ...
+      } catch (e) {
+        print('Error booking product: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error booking ${widget.product.name}'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+        // Handle the error as needed
+      }
+
+      // Show confirmation or navigate to a success screen
+      // ...
+    }
+  }
   @override
   Widget build(BuildContext context) {
     double totalAmount = selectedQuantity * widget.product.price;
@@ -143,15 +228,15 @@ class _ProductDetailsState extends State<ProductDetails> {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: _handleBookNow,
                     // Handle the Buy Now button tap
-                  },
+
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.green,
                     elevation: 0.2,
                   ),
-                  child: Text("Buy Now"),
+                  child: Text("Book Now"),
                 ),
               ),
               IconButton(
