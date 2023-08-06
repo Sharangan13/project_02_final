@@ -2,12 +2,32 @@ import 'package:flutter/material.dart';
 import 'Product.dart';
 import 'cart.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
+  @override
+  _CartScreenState createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  List<CartItem> cartItems = Cart.items;
+  double totalAmount = Cart.getTotalAmount();
+
+  void _removeItem(CartItem cartItem) {
+    setState(() {
+      Cart.removeItem(cartItem.product);
+      cartItems = Cart.items;
+      totalAmount = Cart.getTotalAmount();
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Item removed from cart.'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final cartItems = Cart.items;
-    double totalAmount = Cart.getTotalAmount();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Cart'),
@@ -20,14 +40,22 @@ class CartScreen extends StatelessWidget {
           return ListTile(
             leading: Image.network(cartItem.product.imageURL),
             title: Text(cartItem.product.name),
-            subtitle: Text('Quantity: ${cartItem.quantity}'),
-            trailing: Text('Rs ${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}'),
-            // Add a button to remove the item from the cart
-            // You can use the removeFromCart method from the Cart class
-            // to remove the item from the cart list.
-            // For simplicity, let's use an icon button here.
-            // onPressed: () => Cart.removeFromCart(cartItem.product.productId),
-            // icon: Icon(Icons.remove_shopping_cart),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Quantity: ${cartItem.quantity}'),
+                Text(
+                  'Total: Rs ${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+            trailing: ElevatedButton(
+              onPressed: () {
+                _removeItem(cartItem);
+              },
+              child: Text('Remove from Cart'),
+            ),
           );
         },
       ),

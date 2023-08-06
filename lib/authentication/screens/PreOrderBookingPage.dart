@@ -61,6 +61,8 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
                     Text('Category: ${bookingData['category']}'),
                     Text('Price: ${bookingData['price']}'),
                     Text('Quantity: ${bookingData['quantity']}'),
+                    Text('uid: ${bookingData['uid']}'),
+
                   ],
                 ),
               );

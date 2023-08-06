@@ -24,9 +24,10 @@ class Cart {
     }
   }
 
-  static void removeFromCart(String productId) {
-    items.removeWhere((item) => item.product.productId == productId);
+  static void removeItem(Product product) {
+    items.removeWhere((cartItem) => cartItem.product == product);
   }
+
 
   static double getTotalAmount() {
     double total = 0;
