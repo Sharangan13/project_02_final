@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project_02_final/authentication/screens/login.dart';
 import 'package:project_02_final/Admin/ManageUserPage.dart';
 import 'package:project_02_final/Admin/SpecialOffers.dart';
-import '../authentication/screens/login.dart';
 import 'AddAdmin_ShowAdmin_screen.dart';
 import 'AdminChat.dart';
 import 'AdminManagePage.dart';
@@ -12,6 +12,7 @@ import 'ConsultancyBookingDetailsPage.dart';
 import 'QrScannerPage.dart';
 import 'SeeOrdersPage.dart';
 import 'SelectProductsPage.dart';
+import 'SessionTimeout.dart';
 import 'UploadPlantsEquipmentsPage.dart';
 import 'adminEditProfile.dart';
 
@@ -27,10 +28,22 @@ class _AdminHomeState extends State<AdminHome> {
   late String UserName = "";
   late String ProfileUrl = "";
 
+  // Initialize the SessionTimeout when the widget is created
+  late SessionTimeout _sessionTimeout;
+
   @override
   void initState() {
     super.initState();
     _fetchUserData(); // Call the _fetchUserData method here
+    _sessionTimeout =
+        SessionTimeout(context, 300); // Initialize the session timeout
+  }
+
+  @override
+  void dispose() {
+    _sessionTimeout
+        ?.dispose(); // Dispose the SessionTimeout when the widget is disposed
+    super.dispose();
   }
 
   Future<void> _fetchUserData() async {
@@ -83,7 +96,7 @@ class _AdminHomeState extends State<AdminHome> {
                     'Have a nice day',
                     style: Theme.of(context)
                         .textTheme
-                        .titleMedium
+                        .titleSmall
                         ?.copyWith(color: Colors.white54),
                   ),
                   trailing: CircleAvatar(
@@ -292,11 +305,8 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const login_screen()),
-                      );
+                      _sessionTimeout.onActivityDetected();
+                      _logout(); // Call the logout function when Logout is tapped
                     },
                     child: itemDashboard(
                       'Logout',
@@ -311,6 +321,18 @@ class _AdminHomeState extends State<AdminHome> {
           const SizedBox(height: 20)
         ],
       ),
+    );
+  }
+
+  void _logout() {
+    // Clear user session or perform any other necessary logout actions here
+    // For example, you can clear the user data from SharedPreferences or Firebase Auth
+    FirebaseAuth.instance.signOut();
+
+    // After the logout actions are performed, navigate to the login screen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => login_screen()),
     );
   }
 
@@ -342,7 +364,7 @@ class _AdminHomeState extends State<AdminHome> {
           const SizedBox(height: 8),
           Text(
             title,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
             textAlign: TextAlign.center,
           )

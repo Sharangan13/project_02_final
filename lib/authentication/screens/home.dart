@@ -11,6 +11,7 @@ import 'ProductSearchScreen.dart';
 import 'QRCodeRetrieval.dart';
 import 'RateUs.dart';
 
+import 'UserConsaltancyBookingDetailsPage.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
 import 'notification.dart';
@@ -278,10 +279,13 @@ class _homeState extends State<home> {
                 dense: true,
                 title: const Text("Pre-Orders Bookings"),
                 leading: const Icon(Icons.add_box),
-                onTap: () { Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PreOrderBookingPage()),
-                );},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PreOrderBookingPage()),
+                  );
+                },
               ),
               ListTile(
                 dense: true,
@@ -290,7 +294,8 @@ class _homeState extends State<home> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BookingPage()),
+                    MaterialPageRoute(
+                        builder: (context) => UserBookingDetailsPage()),
                   ); //action when this menu is pressed
                 },
               ),

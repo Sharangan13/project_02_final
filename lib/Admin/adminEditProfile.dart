@@ -114,7 +114,7 @@ class _AdminEditProfilePageState extends State<AdminEditProfilePage> {
                 radius: 70,
                 backgroundImage: _profileImageUrl.isNotEmpty
                     ? NetworkImage(_profileImageUrl) as ImageProvider<Object>?
-                    : AssetImage('assets/category/prf.jpg'),
+                    : AssetImage('assets/category/white.jpg'),
               ),
             ),
             Center(
