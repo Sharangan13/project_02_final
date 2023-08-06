@@ -37,24 +37,39 @@ class _CartScreenState extends State<CartScreen> {
         itemBuilder: (context, index) {
           final cartItem = cartItems[index];
 
-          return ListTile(
-            leading: Image.network(cartItem.product.imageURL),
-            title: Text(cartItem.product.name),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Quantity: ${cartItem.quantity}'),
-                Text(
-                  'Total: Rs ${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 12),
+          return Card(
+            elevation: 2,
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: ListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              leading: Image.network(cartItem.product.imageURL),
+              title: Text(
+                cartItem.product.name,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 5),
+                  Text('Quantity: ${cartItem.quantity}'),
+                  Text(
+                    'Total: Rs ${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ],
+              ),
+              trailing: ElevatedButton(
+                onPressed: () {
+                  _removeItem(cartItem);
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.red, // Customize button color
                 ),
-              ],
-            ),
-            trailing: ElevatedButton(
-              onPressed: () {
-                _removeItem(cartItem);
-              },
-              child: Text('Remove from Cart'),
+                child: Text(
+                  'Remove',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ),
           );
         },
@@ -65,7 +80,10 @@ class _CartScreenState extends State<CartScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total: Rs ${totalAmount.toStringAsFixed(2)}'),
+              Text(
+                'Total: Rs ${totalAmount.toStringAsFixed(2)}',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
               ElevatedButton(
                 onPressed: () {
                   // Handle the checkout process
@@ -77,7 +95,13 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   );
                 },
-                child: Text('Checkout'),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green, // Customize button color
+                ),
+                child: Text(
+                  'Checkout',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

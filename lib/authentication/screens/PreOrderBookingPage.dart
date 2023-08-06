@@ -22,7 +22,27 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
 
     return total;
   }
+  Future<void> _removeBooking(String bookingId) async {
+    final bookingRef = FirebaseFirestore.instance.collection('booking');
+    try {
+      await bookingRef.doc(bookingId).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Booking removed successfully.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
 
+    } catch (e) {
+      print('Error removing booking: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error removing booking.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +71,7 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
             itemCount: bookings.length,
             itemBuilder: (context, index) {
               final bookingData = bookings[index].data() as Map<String, dynamic>;
+              final bookingId = bookings[index].id;
 
               return ListTile(
                 leading: Image.network(bookingData['image_url']),
@@ -64,6 +85,10 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
                     Text('uid: ${bookingData['uid']}'),
 
                   ],
+                ),
+                trailing: ElevatedButton(
+                  onPressed: () => _removeBooking(bookingId),
+                  child: Text('Remove Booking'),
                 ),
               );
             },
