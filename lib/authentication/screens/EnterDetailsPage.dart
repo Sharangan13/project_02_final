@@ -63,8 +63,8 @@ class _EnterDetailsPageState extends State<EnterDetailsPage> {
         .add({
       'name': name,
       'contact': contact,
-      'selected_date': widget.selectedDate.toLocal().toString().split(' ')[0],
-      'selected_time': widget.selectedTime,
+      'selectedDate': widget.selectedDate.toLocal().toString().split(' ')[0],
+      'selectedTime': widget.selectedTime,
       'uid': uid,
     }).then((value) {
       // Booking data saved successfully

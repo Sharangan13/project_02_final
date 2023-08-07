@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'EnterDetailsPage.dart';
@@ -13,27 +11,20 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   String selectedTime = '';
   DateTime selectedDate = DateTime.now();
-  String uid = '';
 
-  Widget _buildTimeButton(String time, Future<bool> isAvailableFuture) {
-    return FutureBuilder<bool>(
-      future: isAvailableFuture,
-      builder: (context, snapshot) {
-        bool isAvailable = snapshot.data ?? false;
-        return ElevatedButton(
-          onPressed: isAvailable
-              ? () {
-                  setState(() {
-                    selectedTime = time;
-                  });
-                }
-              : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: selectedTime == time ? Colors.blue : null,
-          ),
-          child: Text(time),
-        );
-      },
+  Widget _buildTimeButton(String time, bool isAvailable) {
+    return ElevatedButton(
+      onPressed: isAvailable
+          ? () {
+              setState(() {
+                selectedTime = time;
+              });
+            }
+          : null,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: selectedTime == time ? Colors.blue : null,
+      ),
+      child: Text(time),
     );
   }
 
@@ -108,26 +99,38 @@ class _BookingPageState extends State<BookingPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildTimeButton(
-                      '8AM - 10AM',
-                      _isTimeSlotAvailable('8AM - 10AM'),
+                    FutureBuilder<bool>(
+                      future: _isTimeSlotAvailable('8AM - 10AM'),
+                      builder: (context, snapshot) {
+                        bool isAvailable = snapshot.data ?? false;
+                        return _buildTimeButton('8AM - 10AM', isAvailable);
+                      },
                     ),
-                    _buildTimeButton(
-                      '10AM - 12PM',
-                      _isTimeSlotAvailable('10AM - 12PM'),
+                    FutureBuilder<bool>(
+                      future: _isTimeSlotAvailable('10AM - 12PM'),
+                      builder: (context, snapshot) {
+                        bool isAvailable = snapshot.data ?? false;
+                        return _buildTimeButton('10AM - 12PM', isAvailable);
+                      },
                     ),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildTimeButton(
-                      '1PM - 3PM',
-                      _isTimeSlotAvailable('1PM - 3PM'),
+                    FutureBuilder<bool>(
+                      future: _isTimeSlotAvailable('1PM - 3PM'),
+                      builder: (context, snapshot) {
+                        bool isAvailable = snapshot.data ?? false;
+                        return _buildTimeButton('1PM - 3PM', isAvailable);
+                      },
                     ),
-                    _buildTimeButton(
-                      '3PM - 5PM',
-                      _isTimeSlotAvailable('3PM - 5PM'),
+                    FutureBuilder<bool>(
+                      future: _isTimeSlotAvailable('3PM - 5PM'),
+                      builder: (context, snapshot) {
+                        bool isAvailable = snapshot.data ?? false;
+                        return _buildTimeButton('3PM - 5PM', isAvailable);
+                      },
                     ),
                   ],
                 ),
@@ -190,18 +193,8 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future<void> _checkTimeslotAvailability() async {
-    // Check availability of selected timeslot
-    String uid = FirebaseAuth.instance.currentUser?.uid ?? '';
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('ConsultancyBooking')
-        .doc(uid)
-        .collection("Booking")
-        .where('selected_date',
-            isEqualTo: selectedDate.toLocal().toString().split(' ')[0])
-        .where('selected_time', isEqualTo: selectedTime)
-        .get();
-
-    if (querySnapshot.docs.isNotEmpty) {
+    bool isAvailable = await _isTimeSlotAvailable(selectedTime);
+    if (!isAvailable) {
       // Timeslot is already booked, show dialog to the user
       showDialog(
         context: context,
@@ -227,15 +220,11 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future<bool> _isTimeSlotAvailable(String time) async {
-    // Check the availability of selected time slot based on the selected date
-    String uid = FirebaseAuth.instance.currentUser?.uid ?? '';
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('ConsultancyBooking')
-        .doc(uid)
-        .collection("Booking")
-        .where('selected_date',
+        .collectionGroup('Booking')
+        .where('selectedDate',
             isEqualTo: selectedDate.toLocal().toString().split(' ')[0])
-        .where('selected_time', isEqualTo: time)
+        .where('selectedTime', isEqualTo: time)
         .get();
 
     return querySnapshot.docs.isEmpty;

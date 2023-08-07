@@ -69,12 +69,12 @@ class _UserBookingDetailsPageState extends State<UserBookingDetailsPage> {
                         return Column(
                           children: [
                             Text(
-                              'Date: ${booking['selected_date']}',
+                              'Date: ${booking['selectedDate']}',
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              'Time Slot: ${booking['selected_time']}',
+                              'Time Slot: ${booking['selectedTime']}',
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
