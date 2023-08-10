@@ -9,7 +9,7 @@ import 'AddAdmin_ShowAdmin_screen.dart';
 import 'AdminChat.dart';
 import 'AdminManagePage.dart';
 import 'ConsultancyBookingDetailsPage.dart';
-import 'QrScannerPage.dart';
+import 'QrScannerhomepage.dart';
 import 'SeeOrdersPage.dart';
 import 'SelectProductsPage.dart';
 import 'SessionTimeout.dart';
@@ -36,7 +36,7 @@ class _AdminHomeState extends State<AdminHome> {
     super.initState();
     _fetchUserData(); // Call the _fetchUserData method here
     _sessionTimeout =
-        SessionTimeout(context, 300); // Initialize the session timeout
+        SessionTimeout(context, 3000); // Initialize the session timeout
   }
 
   @override
@@ -130,7 +130,7 @@ class _AdminHomeState extends State<AdminHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => QrScannerPage(),
+                          builder: (context) => QrScannerHome(),
                         ),
                       );
                     },

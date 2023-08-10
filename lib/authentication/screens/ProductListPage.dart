@@ -72,7 +72,7 @@ class _ProductListPageState extends State<ProductListPage> {
 
                 // Filter products based on the search query
                 final filteredProducts = products
-                    .where((product) => product.name.toLowerCase().startsWith(
+                    .where((product) => product.name.toLowerCase().contains(
                           _searchQuery.toLowerCase(),
                         ))
                     .toList();

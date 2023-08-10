@@ -4,7 +4,6 @@ import 'package:project_02_final/authentication/screens/ChatScreen.dart';
 import '../../Pages/cart_screen.dart';
 import '../../components/RecentProductsPage.dart';
 import 'AboutUsPage.dart';
-import 'ConsultancyBookingPage.dart';
 import 'MyAccount.dart';
 import 'PreOrderBookingPage.dart';
 import 'ProductSearchScreen.dart';
@@ -33,7 +32,7 @@ class _homeState extends State<home> {
   @override
   void initState() {
     super.initState();
-    _fetchUserData(); // Call the _fetchUserData method here
+    _fetchUserData();
   }
 
   Future<void> _fetchUserData() async {

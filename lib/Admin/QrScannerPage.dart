@@ -3,6 +3,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'BookingDetailsShowPage.dart';
 
 class QrScannerPage extends StatefulWidget {
   @override
@@ -59,48 +60,6 @@ class _QrScannerPageState extends State<QrScannerPage> {
               ),
             ),
           ),
-          if (qrCode.isNotEmpty)
-            Positioned.fill(
-              child: Container(
-                color: Colors.black54,
-                child: FutureBuilder<DocumentSnapshot>(
-                  future: getUserDetailsFromFirebase(qrCode),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final userDetails = snapshot.data!.data();
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'User Details:',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            // Display user details here
-                          ],
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          'Error fetching data',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      );
-                    } else {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
-                ),
-              ),
-            ),
           if (isCameraGranted) // Add the focus box widget
             Positioned.fill(
               child: Container(
@@ -134,18 +93,27 @@ class _QrScannerPageState extends State<QrScannerPage> {
     );
   }
 
-  Future<DocumentSnapshot> getUserDetailsFromFirebase(String qrCode) async {
-    final collectionRef = _firestore.collection('users');
-    final userDocument = await collectionRef.doc(qrCode).get();
-    return userDocument;
-  }
-
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
+    bool dataFetched = false; // Keep track of whether data has been fetched
+
     controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        qrCode = scanData.code!;
-      });
+      if (!dataFetched) {
+        // Only proceed if data hasn't been fetched yet
+        setState(() {
+          qrCode = scanData.code!;
+        });
+
+        // Fetch data and navigate to BookingDetailsShowPage
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BookingDetailsPage(qrCode: qrCode),
+          ),
+        );
+
+        dataFetched = true; // Mark data as fetched
+      }
     });
   }
 }

@@ -266,7 +266,6 @@ class _registerState extends State<register> {
 
                           final uid = userCredential.user!.uid;
                           final downloadUrl = await generateQRCode(uid);
-                          final ProfileUrl = "";
                           final role = "user";
                           final ActiveUser = true;
                           if (downloadUrl != null) {
