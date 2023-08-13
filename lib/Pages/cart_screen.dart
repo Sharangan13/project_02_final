@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'Product.dart';
 import 'cart.dart';
 
 class CartScreen extends StatefulWidget {
@@ -37,35 +36,49 @@ class _CartScreenState extends State<CartScreen> {
         itemBuilder: (context, index) {
           final cartItem = cartItems[index];
 
-          return ListTile(
-            leading: Image.network(cartItem.product.imageURL),
-            title: Text(cartItem.product.name),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Quantity: ${cartItem.quantity}'),
-                Text(
-                  'Total: Rs ${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 12),
-                ),
-              ],
-            ),
-            trailing: ElevatedButton(
-              onPressed: () {
-                _removeItem(cartItem);
-              },
-              child: Text('Remove from Cart'),
+          return Card(
+            elevation: 4,
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: ListTile(
+              contentPadding: EdgeInsets.all(16),
+              leading: Image.network(
+                cartItem.product.imageURL,
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
+              ),
+              title: Text(cartItem.product.name),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Quantity: ${cartItem.quantity}'),
+                  Text(
+                    'Total: Rs ${(cartItem.product.price * cartItem.quantity).toStringAsFixed(2)}',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              trailing: IconButton(
+                onPressed: () {
+                  _removeItem(cartItem);
+                },
+                icon: Icon(Icons.remove_shopping_cart),
+              ),
             ),
           );
         },
       ),
       bottomNavigationBar: BottomAppBar(
+        elevation: 8,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total: Rs ${totalAmount.toStringAsFixed(2)}'),
+              Text(
+                'Total: Rs ${totalAmount.toStringAsFixed(2)}',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               ElevatedButton(
                 onPressed: () {
                   // Handle the checkout process
@@ -77,7 +90,11 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   );
                 },
-                child: Text('Checkout'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  textStyle: TextStyle(fontSize: 16),
+                ),
+                child: Text('Book now'),
               ),
             ],
           ),

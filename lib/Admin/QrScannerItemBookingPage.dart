@@ -3,14 +3,14 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'BookingDetailsShowPage.dart';
+import 'ItemBookingDetailsShowPage.dart';
 
-class QrScannerPageConsaltancyBooking extends StatefulWidget {
+class QrScannerPageItemBooking extends StatefulWidget {
   @override
   _QrScannerPageState createState() => _QrScannerPageState();
 }
 
-class _QrScannerPageState extends State<QrScannerPageConsaltancyBooking> {
+class _QrScannerPageState extends State<QrScannerPageItemBooking> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   bool isCameraGranted = false;
@@ -108,7 +108,7 @@ class _QrScannerPageState extends State<QrScannerPageConsaltancyBooking> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BookingDetailsPage(qrCode: qrCode),
+            builder: (context) => ItemBookingDetailsPage(qrCode: qrCode),
           ),
         );
 

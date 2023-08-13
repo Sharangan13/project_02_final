@@ -253,8 +253,8 @@ class _AdminHomeState extends State<AdminHome> {
                   GestureDetector(
                     onTap: () {},
                     child: itemDashboard(
-                      'Sale Details',
-                      CupertinoIcons.money_dollar_circle,
+                      'See ratings',
+                      CupertinoIcons.star_fill,
                       Colors.indigo,
                     ),
                   ),

@@ -94,6 +94,10 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                           'Contact: ${bookingData['contact']}',
                           style: TextStyle(fontSize: 16),
                         ),
+                        Text(
+                          'Email: ${bookingData['email']}',
+                          style: TextStyle(fontSize: 16),
+                        ),
                       ],
                     ),
                     trailing: ElevatedButton(

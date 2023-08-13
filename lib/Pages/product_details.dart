@@ -6,48 +6,53 @@ import 'Product.dart';
 import 'cart.dart';
 
 class Booking {
-  final String uid;
+  String status;
   final String category;
   final String image_url;
   final String name;
-  final double price;
+  final double total;
   final int quantity;
+  var email;
 
-  Booking({
-    required this.uid,
-    required this.category,
-    required this.image_url,
-    required this.name,
-    required this.price,
-    required this.quantity,
-  });
+  Booking(
+      {required this.status,
+      required this.category,
+      required this.image_url,
+      required this.name,
+      required this.total,
+      required this.quantity,
+      required this.email});
 
   Map<String, dynamic> toMap() {
     return {
-      'uid': uid,
       'category': category,
       'image_url': image_url,
       'name': name,
-      'price': price,
+      'total': total * quantity,
       'quantity': quantity,
+      'status': status,
+      'UserEmail': email
     };
   }
 }
 
 class BookingService {
+  final user = FirebaseAuth.instance.currentUser;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> bookProduct(Booking booking) async {
     try {
-      await _firestore.collection('booking').add(booking.toMap());
+      await _firestore
+          .collection('Booking')
+          .doc(user!.uid) // Use user.uid here
+          .collection("UserBooking")
+          .add(booking.toMap());
     } catch (e) {
       print('Error booking product: $e');
       // Handle the error as needed
     }
   }
 }
-
-
 
 class ProductDetails extends StatefulWidget {
   final Product product;
@@ -83,46 +88,82 @@ class _ProductDetailsState extends State<ProductDetails> {
       },
     );
   }
+
   void _handleBookNow() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
 
     if (user != null) {
       final Booking booking = Booking(
-        uid: user.uid, // Automatically retrieve user's UID
-        category: widget.product.Category,
-        image_url: widget.product.imageURL,
-        name: widget.product.name,
-        price: widget.product.price,
-        quantity: selectedQuantity,
+          status: "pending",
+          category: widget.product.Category,
+          image_url: widget.product.imageURL,
+          name: widget.product.name,
+          total: widget.product.price * selectedQuantity,
+          quantity: selectedQuantity,
+          email: user.email);
+
+      final confirmed = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirm Booking'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Are you sure you want to book $selectedQuantity ${widget.product.name}?',
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pop(false); // Return false to indicate cancellation
+                },
+                child: Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.of(context)
+                      .pop(true); // Return true to indicate confirmation
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                ),
+                child: Text('Book'),
+              ),
+            ],
+          );
+        },
       );
-      try {
-        await BookingService().bookProduct(booking);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Successfully booked ${widget.product.name}'),
-            duration: Duration(seconds: 2),
-          ),
-        );
+      if (confirmed == true) {
+        try {
+          await BookingService().bookProduct(booking);
 
-        // Navigate to a success screen if needed
-        // ...
-      } catch (e) {
-        print('Error booking product: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error booking ${widget.product.name}'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-        // Handle the error as needed
+          // Show the success message using ScaffoldMessenger
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'Successfully booked $selectedQuantity ${widget.product.name}'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error booking ${widget.product.name}'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
       }
-
-      // Show confirmation or navigate to a success screen
-      // ...
     }
   }
+
   @override
   Widget build(BuildContext context) {
     double totalAmount = selectedQuantity * widget.product.price;
@@ -205,7 +246,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   ),
                   items: List.generate(
                     widget.product.quantity.toInt(),
-                        (index) => DropdownMenuItem<int>(
+                    (index) => DropdownMenuItem<int>(
                       value: index + 1,
                       child: Text('${index + 1}'),
                     ),
@@ -229,7 +270,8 @@ class _ProductDetailsState extends State<ProductDetails> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: _handleBookNow,
-                    // Handle the Buy Now button tap
+
+                  // Handle the Buy Now button tap
 
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
@@ -240,7 +282,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ),
               ),
               IconButton(
-                onPressed:_addToCart,
+                onPressed: _addToCart,
                 icon: Icon(Icons.add_shopping_cart),
                 color: Colors.green,
               ),
@@ -269,9 +311,4 @@ class _ProductDetailsState extends State<ProductDetails> {
       ),
     );
   }
-}
-
-void addToCart(Product product, int quantity) {
-  // Handle the logic to add the product to the cart
-  // You can customize this logic based on your requirements
 }

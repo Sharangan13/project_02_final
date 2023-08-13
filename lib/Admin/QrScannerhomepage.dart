@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'QrScannerItemBookingPage.dart';
 import 'QrScannerPage.dart';
 
 class QrScannerHome extends StatelessWidget {
@@ -28,7 +29,12 @@ class QrScannerHome extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    // Add your button 1 functionality here
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => QrScannerPageItemBooking(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
@@ -51,7 +57,7 @@ class QrScannerHome extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => QrScannerPage(),
+                      builder: (context) => QrScannerPageConsaltancyBooking(),
                     ),
                   );
                 },

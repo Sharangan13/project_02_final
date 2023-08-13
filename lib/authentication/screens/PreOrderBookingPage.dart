@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 class PreOrderBookingPage extends StatefulWidget {
   @override
   _PreOrderBookingPageState createState() => _PreOrderBookingPageState();
@@ -15,9 +14,10 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
     double total = 0;
 
     for (var bookingData in bookings) {
-      final double price = bookingData['price'];
-      final int quantity = bookingData['quantity'];
-      total += price * quantity;
+      double bookingTotal =
+          bookingData['total']; // Fetch the total from bookingData
+
+      total += bookingTotal;
     }
 
     return total;
@@ -31,8 +31,9 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('booking')
-            .where('uid', isEqualTo: currentUser!.uid)
+            .collection('Booking')
+            .doc(currentUser?.uid)
+            .collection("UserBooking")
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -48,49 +49,56 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
           }
 
           return ListView.builder(
-            itemCount: bookings.length,
+            itemCount: bookings.length + 1,
             itemBuilder: (context, index) {
-              final bookingData = bookings[index].data() as Map<String, dynamic>;
+              if (index < bookings.length) {
+                final bookingData =
+                    bookings[index].data() as Map<String, dynamic>;
 
-              return ListTile(
-                leading: Image.network(bookingData['image_url']),
-                title: Text(bookingData['name']),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Category: ${bookingData['category']}'),
-                    Text('Price: ${bookingData['price']}'),
-                    Text('Quantity: ${bookingData['quantity']}'),
-                    Text('uid: ${bookingData['uid']}'),
-
-                  ],
-                ),
-              );
+                return Card(
+                  elevation: 4,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: ListTile(
+                    leading: Image.network(bookingData['image_url']),
+                    title: Text(bookingData['name']),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total: ${bookingData['total']}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          'Quantity: ${bookingData['quantity']}',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 16, bottom: 8),
+                    child: Text(
+                      'Total Amount for all bookings: Rs ${_calculateTotalAmount(bookings).toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                );
+              }
             },
           );
         },
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: FutureBuilder<QuerySnapshot>(
-          future: FirebaseFirestore.instance
-              .collection('booking')
-              .where('uid', isEqualTo: currentUser!.uid)
-              .get(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return CircularProgressIndicator();
-            }
-            final bookings = snapshot.data!.docs;
-            return Text(
-              'Total Amount: Rs ${_calculateTotalAmount(bookings).toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            );
-          },
-        ),
       ),
     );
   }

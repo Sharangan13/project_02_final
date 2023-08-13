@@ -54,6 +54,8 @@ class _EnterDetailsPageState extends State<EnterDetailsPage> {
 
     // Get the current user's UID
     String uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
 
     // Save the booking details to Firestore
     FirebaseFirestore.instance
@@ -65,7 +67,7 @@ class _EnterDetailsPageState extends State<EnterDetailsPage> {
       'contact': contact,
       'selectedDate': widget.selectedDate.toLocal().toString().split(' ')[0],
       'selectedTime': widget.selectedTime,
-      'uid': uid,
+      'email': user?.email,
     }).then((value) {
       // Booking data saved successfully
       print('Booking data saved to Firestore!');
