@@ -5,6 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UploadPlantsEquipmentsPage extends StatefulWidget {
+  const UploadPlantsEquipmentsPage({Key? key}) : super(key: key);
+
   @override
   _UploadPlantsEquipmentsPageState createState() =>
       _UploadPlantsEquipmentsPageState();
@@ -50,79 +52,79 @@ class _UploadPlantsEquipmentsPageState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Upload Image',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildImageUploader(),
-            SizedBox(height: 30),
-            Text(
+            const SizedBox(height: 30),
+            const Text(
               'Select Type',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildTypeSelection(),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             if (selectedType == 'plants') ...[
-              Text(
+              const Text(
                 'Select Category',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildCategorySelection(),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
             ],
-            Text(
+            const Text(
               'Name',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildTextField('Enter Name', _nameController),
-            SizedBox(height: 30),
-            Text(
+            const SizedBox(height: 30),
+            const Text(
               'Price',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildTextField('Enter Price', _priceController),
-            SizedBox(height: 30),
-            Text(
+            const SizedBox(height: 30),
+            const Text(
               'Description',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildTextFieldDescrption(
                 'Enter Description', _descriptionController),
-            SizedBox(height: 30),
-            Text(
+            const SizedBox(height: 30),
+            const Text(
               'Quantity',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildTextField('Enter Quantity', _quantityController),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             ElevatedButton(
               onPressed: _handleUpload,
               child: Text(
@@ -134,7 +136,7 @@ class _UploadPlantsEquipmentsPageState
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   vertical: 16.0,
                   horizontal: 32.0,
                 ),
@@ -170,11 +172,11 @@ class _UploadPlantsEquipmentsPageState
                   ),
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         TextButton.icon(
           onPressed: _selectImage,
           icon: Icon(Icons.cloud_upload),
-          label: Text(
+          label: const Text(
             'Upload Image',
             style: TextStyle(
               fontSize: 16,
@@ -182,7 +184,7 @@ class _UploadPlantsEquipmentsPageState
             ),
           ),
           style: TextButton.styleFrom(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               vertical: 12.0,
               horizontal: 24.0,
             ),
@@ -228,7 +230,7 @@ class _UploadPlantsEquipmentsPageState
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: isSelected ? Colors.green : Colors.grey,
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           vertical: 12.0,
           horizontal: 24.0,
         ),
@@ -268,7 +270,7 @@ class _UploadPlantsEquipmentsPageState
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: isSelected ? Colors.green : Colors.grey,
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           vertical: 12.0,
           horizontal: 24.0,
         ),
@@ -291,7 +293,7 @@ class _UploadPlantsEquipmentsPageState
     return TextFormField(
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
       controller: controller,
     );
@@ -307,7 +309,7 @@ class _UploadPlantsEquipmentsPageState
       maxLines: null,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
       controller: controller,
     );
@@ -364,7 +366,8 @@ class _UploadPlantsEquipmentsPageState
           await docRef.update({'productId': productId});
         } else if (selectedType == 'plants' && selectedCategory.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Please select a category for plants')),
+            const SnackBar(
+                content: Text('Please select a category for plants')),
           );
           return;
         } else {
@@ -408,7 +411,7 @@ class _UploadPlantsEquipmentsPageState
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please fill in all fields and select an image'),
         ),
       );

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -22,8 +23,7 @@ class _QRCodeRetrievalState extends State<QRCodeRetrieval> {
 
   Future<void> retrieveQRCodeUrl() async {
     try {
-      String filePath =
-          'qr_codes/${widget.uid}.png'; // Replace with your file path
+      String filePath = 'qr_codes/${widget.uid}.png';
       firebase_storage.Reference storageReference =
           firebase_storage.FirebaseStorage.instance.ref().child(filePath);
 
@@ -33,8 +33,9 @@ class _QRCodeRetrievalState extends State<QRCodeRetrieval> {
         setState(() {});
       }
     } catch (error) {
-      print('Error retrieving QR code URL: $error');
-      // Handle error
+      if (kDebugMode) {
+        print('Error retrieving QR code URL: $error');
+      }
     }
   }
 
@@ -47,8 +48,8 @@ class _QRCodeRetrievalState extends State<QRCodeRetrieval> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Text(
               'If you book any plants or equipment, you must keep this QR code for your purchase.',
               style: TextStyle(
@@ -62,7 +63,7 @@ class _QRCodeRetrievalState extends State<QRCodeRetrieval> {
               ? QRCodeShowPage(
                   downloadUrl: qrCodeUrl!,
                 )
-              : CircularProgressIndicator(),
+              : const CircularProgressIndicator(),
         ],
       ),
     );

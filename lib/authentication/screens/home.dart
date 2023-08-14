@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/ChatScreen.dart';
+import '../../Pages/cart.dart';
 import '../../Pages/cart_screen.dart';
 import '../../components/RecentProductsPage.dart';
 import 'AboutUsPage.dart';
-import 'ConsultancyBookingPage.dart';
 import 'MyAccount.dart';
 import 'PreOrderBookingPage.dart';
 import 'ProductSearchScreen.dart';
@@ -29,11 +29,11 @@ class _homeState extends State<home> {
   late String UserName = "";
   late String email = "";
   late String ProfileUrl = "";
-
+  int totalItemsInCart = 0;
   @override
   void initState() {
     super.initState();
-    _fetchUserData(); // Call the _fetchUserData method here
+    _fetchUserData();
   }
 
   Future<void> _fetchUserData() async {
@@ -59,6 +59,7 @@ class _homeState extends State<home> {
 
   @override
   Widget build(BuildContext context) {
+    totalItemsInCart = Cart.items.fold(0, (sum, item) => sum + item.quantity);
     Widget image_carousel = Container(
       height: 150.0,
       child: ListView(
@@ -201,7 +202,10 @@ class _homeState extends State<home> {
         title: const Text(
           'Home',
           style: TextStyle(
-              color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold),
+            color: Colors.black,
+            fontSize: 19,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         actions: [
           CircleAvatar(
@@ -212,35 +216,59 @@ class _homeState extends State<home> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ProductSearchScreen()),
+                    builder: (context) => ProductSearchScreen(),
+                  ),
                 );
               },
               icon: const Icon(
                 Icons.search,
-                size: 17,
+                size: 24,
                 color: Colors.black,
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: CircleAvatar(
-              radius: 15,
-              backgroundColor: Colors.white,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CartScreen()),
-                  );
-                },
-                icon: const Icon(
-                  Icons.shopping_cart,
-                  size: 17,
-                  color: Colors.black,
+          const SizedBox(width: 12), // Add spacing between icons
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              CircleAvatar(
+                radius: 18,
+                backgroundColor: Colors.white,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CartScreen()),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.shopping_cart,
+                    size: 24,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-            ),
+              if (totalItemsInCart > 0)
+                Positioned(
+                  top: 2,
+                  right: 2,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red,
+                    ),
+                    child: Text(
+                      totalItemsInCart.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ],
       ),
