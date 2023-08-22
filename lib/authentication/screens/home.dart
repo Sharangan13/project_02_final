@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/ChatScreen.dart';
+import 'package:provider/provider.dart';
 import '../../Pages/cart.dart';
 import '../../Pages/cart_screen.dart';
 import '../../components/RecentProductsPage.dart';
+import '../../reusable_widgets/theme_provider.dart';
 import 'AboutUsPage.dart';
 import 'MyAccount.dart';
 import 'PreOrderBookingPage.dart';
@@ -30,6 +32,10 @@ class _homeState extends State<home> {
   late String email = "";
   late String ProfileUrl = "";
   int totalItemsInCart = 0;
+  bool isDarkMode = false;
+
+
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +65,7 @@ class _homeState extends State<home> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
     totalItemsInCart = Cart.items.fold(0, (sum, item) => sum + item.quantity);
     Widget image_carousel = Container(
       height: 150.0,
@@ -270,8 +277,24 @@ class _homeState extends State<home> {
                 ),
             ],
           ),
+
+          IconButton(
+            icon: Icon(
+              themeProvider.themeMode == ThemeMode.light
+                  ? Icons.dark_mode
+                  : Icons.light_mode,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              themeProvider.toggleTheme(); // Toggle the theme mode
+            },
+          ),
         ],
+
       ),
+
+
+
       drawer: SafeArea(
         child: Drawer(
           elevation: 40,
@@ -404,7 +427,7 @@ class _homeState extends State<home> {
                   }
                 },
               ),
-              Divider(),
+
               ListTile(
                 dense: true,
                 title: const Text("Log out"),
@@ -421,7 +444,9 @@ class _homeState extends State<home> {
           ),
         ),
       ),
-      body: Padding(
+    body: Theme(
+    data: isDarkMode ? ThemeData.dark() : ThemeData.light(),
+    child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
         child: new ListView(
           children: [
@@ -442,6 +467,7 @@ class _homeState extends State<home> {
           ],
         ),
       ),
+    ),
     );
   }
 }
