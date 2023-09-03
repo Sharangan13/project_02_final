@@ -308,7 +308,7 @@ class _homeState extends State<home> {
                   radius: 15,
                   backgroundColor: Colors.white,
                   backgroundImage:
-                      NetworkImage(ProfileUrl), // Use the fetched ProfileUrl
+                  NetworkImage(ProfileUrl), // Use the fetched ProfileUrl
                 ),
                 decoration: const BoxDecoration(
                   color: Colors.grey,
@@ -334,7 +334,9 @@ class _homeState extends State<home> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => PreOrderBookingPage()),
+                        builder: (context) => PreOrderBookingPage(
+                          
+                        )),
                   );
                 },
               ),
@@ -401,8 +403,8 @@ class _homeState extends State<home> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => RateUsScreen(
-                              uid: '',
-                            )),
+                          uid: '',
+                        )),
                   ); //action when this menu is pressed
                 },
               ),
@@ -444,30 +446,30 @@ class _homeState extends State<home> {
           ),
         ),
       ),
-    body: Theme(
-    data: isDarkMode ? ThemeData.dark() : ThemeData.light(),
-    child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-        child: new ListView(
-          children: [
-            image_carousel,
-            new Padding(
-              padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
-              child: Center(child: new Text("SHOP FOR")),
-            ),
-            HorizontalList(),
-            new Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Center(child: new Text("Recent Plants")),
-            ),
-            Container(
-              height: 340.0,
-              child: RecentProductsPage(),
-            )
-          ],
+      body: Theme(
+        data: isDarkMode ? ThemeData.dark() : ThemeData.light(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+          child: new ListView(
+            children: [
+              image_carousel,
+              new Padding(
+                padding: EdgeInsets.symmetric(vertical: 3, horizontal: 5),
+                child: Center(child: new Text("SHOP FOR")),
+              ),
+              HorizontalList(),
+              new Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Center(child: new Text("Recent Plants")),
+              ),
+              Container(
+                height: 340.0,
+                child: RecentProductsPage(),
+              )
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 }

@@ -2,14 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../Pages/product_details.dart';
 import '../Pages/Product.dart';
+import '../reusable_widgets/theme_provider.dart';
 
 class RecentProductsPage extends StatelessWidget {
   final User? currentUser = FirebaseAuth.instance.currentUser;
   late String UserName = "";
   @override
   Widget build(BuildContext context) {
+    ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
       body: FutureBuilder<List<Product>>(
         future: fetchProducts(),
@@ -114,6 +118,12 @@ class RecentProductsPage extends StatelessWidget {
         },
       ),
     );
+  }
+  Future<void> updateProductQuantity(String productId, int newQuantity) async {
+    await FirebaseFirestore.instance
+        .collection('Plants')
+        .doc(productId) // Use the product ID as the document ID
+        .update({'quantity': newQuantity});
   }
 
   Future<List<Product>> fetchProducts() async {
