@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
 import '../authentication/screens/ProductListPage.dart';
-// Import the product list page
 
 class HorizontalList extends StatelessWidget {
   const HorizontalList({Key? key}) : super(key: key);

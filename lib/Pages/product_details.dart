@@ -14,14 +14,15 @@ class Booking {
   final int quantity;
   var email;
 
-  Booking(
-      {required this.status,
-      required this.category,
-      required this.image_url,
-      required this.name,
-      required this.total,
-      required this.quantity,
-      required this.email});
+  Booking({
+    required this.status,
+    required this.category,
+    required this.image_url,
+    required this.name,
+    required this.total,
+    required this.quantity,
+    required this.email,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -65,6 +66,7 @@ class ProductDetails extends StatefulWidget {
 
 class _ProductDetailsState extends State<ProductDetails> {
   int selectedQuantity = 1;
+
   void _addToCart() {
     Cart.addToCart(widget.product, selectedQuantity);
     ScaffoldMessenger.of(context).showSnackBar(
@@ -89,19 +91,72 @@ class _ProductDetailsState extends State<ProductDetails> {
     );
   }
 
+  Future<void> _updateProductQuantities(
+      Product product, int bookedQuantity) async {
+    final firestore = FirebaseFirestore.instance;
+    final batch = firestore.batch();
+    DocumentReference?
+        productDoc; // Declare productDoc outside the if-else block
+
+    try {
+      if (widget.product.Category.trim() == "equipments") {
+        productDoc = firestore
+            .collection('Equipments')
+            .doc("equipments")
+            .collection('Items')
+            .doc(product.productId);
+      } else {
+        productDoc = firestore
+            .collection('Plants')
+            .doc(widget.product.Category)
+            .collection('Items')
+            .doc(product.productId);
+      }
+
+      final docSnapshot = await productDoc.get();
+
+      if (docSnapshot.exists) {
+        // Get the current available quantity from the Firestore document
+        int currentAvailableQuantity =
+            int.parse(docSnapshot['quantity'] ?? '0');
+
+        // Calculate the new available quantity after deducting the selected quantity
+        int newAvailableQuantity = currentAvailableQuantity - bookedQuantity;
+
+        // Add the update operation to the batch
+        batch.update(productDoc, {'quantity': newAvailableQuantity.toString()});
+
+        // Update the product's availableQuantity property in memory to reflect the change
+        product.quantity = newAvailableQuantity;
+      }
+    } catch (error) {
+      print('Error updating quantity for ${product.name}: $error');
+      // Handle the error as needed
+    }
+
+    // Commit the batch write
+    try {
+      await batch.commit();
+    } catch (error) {
+      print('Error committing batch write: $error');
+      // Handle the error as needed
+    }
+  }
+
   void _handleBookNow() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
 
     if (user != null) {
       final Booking booking = Booking(
-          status: "pending",
-          category: widget.product.Category,
-          image_url: widget.product.imageURL,
-          name: widget.product.name,
-          total: widget.product.price * selectedQuantity,
-          quantity: selectedQuantity,
-          email: user.email);
+        status: "pending",
+        category: widget.product.Category,
+        image_url: widget.product.imageURL,
+        name: widget.product.name,
+        total: widget.product.price * selectedQuantity,
+        quantity: selectedQuantity,
+        email: user.email,
+      );
 
       final confirmed = await showDialog(
         context: context,
@@ -113,7 +168,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Are you sure you want to book $selectedQuantity ${widget.product.name}?',
+                  'Are you sure you want to book $selectedQuantity  ${widget.product.name}?',
                 ),
               ],
             ),
@@ -142,13 +197,18 @@ class _ProductDetailsState extends State<ProductDetails> {
 
       if (confirmed == true) {
         try {
-          await BookingService().bookProduct(booking);
+          final BookingService bookingService = BookingService();
+          await bookingService.bookProduct(booking);
+
+          // Update the product quantity in Firestore and in memory
+          await _updateProductQuantities(widget.product, selectedQuantity);
 
           // Show the success message using ScaffoldMessenger
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                  'Successfully booked $selectedQuantity ${widget.product.name}'),
+                'Successfully booked $selectedQuantity ${widget.product.name}',
+              ),
               duration: Duration(seconds: 2),
             ),
           );
@@ -270,9 +330,6 @@ class _ProductDetailsState extends State<ProductDetails> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: _handleBookNow,
-
-                  // Handle the Buy Now button tap
-
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.green,
@@ -284,13 +341,6 @@ class _ProductDetailsState extends State<ProductDetails> {
               IconButton(
                 onPressed: _addToCart,
                 icon: Icon(Icons.add_shopping_cart),
-                color: Colors.green,
-              ),
-              IconButton(
-                onPressed: () {
-                  // Handle the favorite button tap
-                },
-                icon: Icon(Icons.favorite_border),
                 color: Colors.green,
               ),
             ],
