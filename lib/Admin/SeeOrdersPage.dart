@@ -68,7 +68,7 @@ class _OrdersListState extends State<OrdersList> {
           padding: const EdgeInsets.all(8.0),
           child: TextField(
             decoration: InputDecoration(
-              labelText: 'Search here', // Update the label
+              labelText: 'Search Here', // Update the label
               suffixIcon: Icon(Icons.search),
             ),
             onChanged: (value) {
