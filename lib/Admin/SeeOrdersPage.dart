@@ -8,36 +8,88 @@ class SeeOrdersPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('See Orders'),
       ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collectionGroup("UserBooking").snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: TextStyle(fontSize: 18),
-              ),
-            );
-          }
+      body: OrdersList(),
+    );
+  }
+}
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(
-              child: Text(
-                'No Orders',
-                style: TextStyle(fontSize: 18),
-              ),
-            );
-          }
+class OrdersList extends StatefulWidget {
+  @override
+  _OrdersListState createState() => _OrdersListState();
+}
 
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
+class _OrdersListState extends State<OrdersList> {
+  String _searchQuery = '';
+  late QuerySnapshot _ordersSnapshot;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOrders();
+  }
+
+  Future<void> _loadOrders() async {
+    final snapshot = await FirebaseFirestore.instance.collectionGroup("UserBooking").get();
+    setState(() {
+      _ordersSnapshot = snapshot;
+    });
+  }
+
+  List<DocumentSnapshot> _filterOrders() {
+    if (_searchQuery.isEmpty) {
+      return _ordersSnapshot.docs; // Return all orders if the search query is empty
+    }
+
+    return _ordersSnapshot.docs.where((order) {
+      final orderData = order.data() as Map<String, dynamic>;
+      final userEmail = orderData['UserEmail'].toString().toLowerCase(); // Modify the field name here
+      final searchQuery = _searchQuery.toLowerCase();
+
+      // Check if the User Email contains the search query
+      return userEmail.contains(searchQuery);
+    }).toList();
+  }
+
+  Future<void> _markAsFinished(DocumentSnapshot orderDocument) async {
+    // Delete the order from Firestore
+    await orderDocument.reference.delete();
+
+    // Reload the orders after deletion
+    await _loadOrders();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final filteredOrders = _filterOrders();
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: 'Search here', // Update the label
+              suffixIcon: Icon(Icons.search),
+            ),
+            onChanged: (value) {
+              setState(() {
+                _searchQuery = value;
+              });
+            },
+          ),
+        ),
+        Expanded(
+          child: filteredOrders.isEmpty
+              ? Center(
+            child: Text(
+              'No matching orders found',
+              style: TextStyle(fontSize: 18),
+            ),
+          )
+              : ListView.builder(
+            itemCount: filteredOrders.length,
             itemBuilder: (context, index) {
-              DocumentSnapshot userBookingDocument = snapshot.data!.docs[index];
+              DocumentSnapshot userBookingDocument = filteredOrders[index];
               // Assuming you have a model class for your orders
               // Replace 'YourOrderModel' with your actual model class
               YourOrderModel order = YourOrderModel(
@@ -49,7 +101,6 @@ class SeeOrdersPage extends StatelessWidget {
                 status: userBookingDocument['status'],
               );
 
-              // Render your order details here, including the image
               return ListTile(
                 title: Text('User Email: ${order.userEmail}'),
                 subtitle: Column(
@@ -61,13 +112,18 @@ class SeeOrdersPage extends StatelessWidget {
                     Text('Status: ${order.status}'),
                   ],
                 ),
-                leading: Image.network(order.imageUrl ?? ''), // Display the product image
-                // Add other fields here
+                leading: Image.network(order.imageUrl ?? ''),
+                trailing: ElevatedButton(
+                  onPressed: () {
+                    _markAsFinished(userBookingDocument);
+                  },
+                  child: Text('Finished'),
+                ),
               );
             },
-          );
-        },
-      ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -88,4 +144,8 @@ class YourOrderModel {
     this.quantity,
     this.status,
   });
+}
+
+void main() {
+  runApp(MaterialApp(home: SeeOrdersPage()));
 }
