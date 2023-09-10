@@ -15,6 +15,7 @@ import 'SelectProductsPage.dart';
 import 'SessionTimeout.dart';
 import 'UploadPlantsEquipmentsPage.dart';
 import 'adminEditProfile.dart';
+import 'notification_admin.dart';
 
 class AdminHome extends StatefulWidget {
   const AdminHome({Key? key}) : super(key: key);
@@ -178,7 +179,7 @@ class _AdminHomeState extends State<AdminHome> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ConsultancyBookingDetailsPage(
-                              bookingId: bookingId),
+                              ),
                         ),
                       );
                     },
@@ -203,6 +204,23 @@ class _AdminHomeState extends State<AdminHome> {
                       'Chat',
                       CupertinoIcons.bolt_horizontal_circle,
                       Colors.purple,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              NotificationAdmin(), //Admin chat home page
+                        ),
+                      ); // Handle onTap for Chat
+                      // Add your code here
+                    },
+                    child: itemDashboard(
+                      'Notification',
+                      CupertinoIcons.mail,
+                      Colors.greenAccent,
                     ),
                   ),
                   GestureDetector(
