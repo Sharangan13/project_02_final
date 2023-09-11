@@ -13,23 +13,73 @@ class RateUsScreen extends StatefulWidget {
 }
 
 class _RateUsScreenState extends State<RateUsScreen> {
-  final user = FirebaseAuth.instance.currentUser;
+  User? user;
   double rating = 0.0;
   String comment = '';
   final TextEditingController _commentController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    // Initialize Firebase once in the initState
+    Firebase.initializeApp().whenComplete(() {
+      setState(() {
+        user = FirebaseAuth.instance.currentUser;
+      });
+    });
+    // Load ratings when the screen is initialized
+    loadRatings();
+  }
+
+  List<RatingItem> recentRatings = [];
+
+  Future<void> loadRatings() async {
+    try {
+      final firestore = FirebaseFirestore.instance;
+
+      // Fetch recent ratings data from Firestore (including user's own ratings)
+      final querySnapshot = await firestore
+          .collection('ratings')
+          .orderBy('timestamp', descending: true)
+          .get();
+
+      final List<RatingItem> loadedRecentRatings = [];
+      for (final doc in querySnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        loadedRecentRatings.add(RatingItem(
+          userId: data['userId'],
+          rating: data['rating'].toDouble(),
+          comment: data['comment'] ?? '',
+        ));
+      }
+
+      // Reverse the order of recentRatings to display recent ratings at the top
+      loadedRecentRatings.sort((a, b) => b.timestamp!.compareTo(a.timestamp!));
+
+      // Update the state to display the loaded recent ratings
+      setState(() {
+        recentRatings = loadedRecentRatings;
+      });
+    } catch (e) {
+      print('Error loading ratings: $e');
+      // Optionally show an error message if there's an issue loading ratings
+    }
+  }
+
+  // Widget to display a single rating item
+  Widget buildRatingItem(RatingItem item) {
+    return ListTile(
+      title: Text('Rating: ${item.rating}'),
+      subtitle: Text(item.comment ?? ''),
+    );
+  }
+
   void submitRating() async {
     try {
-      // Initialize Firebase and Firestore if not already initialized
-      await Firebase.initializeApp();
       final firestore = FirebaseFirestore.instance;
 
       // Save the rating and comment data to Firestore
-      await firestore
-          .collection('ratings')
-          .doc(user?.uid)
-          .collection("user")
-          .add({
+      await firestore.collection('ratings').add({
         'userId': user?.uid,
         'rating': rating,
         'comment': comment,
@@ -60,6 +110,9 @@ class _RateUsScreenState extends State<RateUsScreen> {
           );
         },
       );
+
+      // Refresh the recent ratings list after submitting a new rating
+      loadRatings();
     } catch (e) {
       print('Error saving rating: $e');
       // Optionally show an error message if there's an issue saving the rating
@@ -120,10 +173,38 @@ class _RateUsScreenState extends State<RateUsScreen> {
               onPressed: () {
                 submitRating(); // Call the submitRating method when the button is pressed
               },
-            )
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Recent Ratings:',
+              style: TextStyle(fontSize: 18.0),
+            ),
+            // Display the list of recent ratings
+            Expanded(
+              child: ListView.builder(
+                itemCount: recentRatings.length,
+                itemBuilder: (context, index) {
+                  return buildRatingItem(recentRatings[index]);
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+}
+
+class RatingItem {
+  final String? userId;
+  final double? rating;
+  final String? comment; // Comment is still nullable
+  final Timestamp? timestamp;
+
+  RatingItem({
+    this.userId,
+    this.rating,
+    required this.comment,
+    this.timestamp,
+  });
 }
