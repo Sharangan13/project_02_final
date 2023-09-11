@@ -10,6 +10,7 @@ import 'AdminChat.dart';
 import 'AdminManagePage.dart';
 import 'ConsultancyBookingDetailsPage.dart';
 import 'QrScannerhomepage.dart';
+import 'RatingListScreen.dart';
 import 'SeeOrdersPage.dart';
 import 'SelectProductsPage.dart';
 import 'SessionTimeout.dart';
@@ -269,7 +270,14 @@ class _AdminHomeState extends State<AdminHome> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RatingListScreen(),
+                        ),
+                      );
+                    },
                     child: itemDashboard(
                       'See ratings',
                       CupertinoIcons.star_fill,

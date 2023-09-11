@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:project_02_final/authentication/screens/home.dart';
 
 class AboutUsPage extends StatelessWidget {
@@ -10,7 +12,7 @@ class AboutUsPage extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Abot Us'),
+        title: Text('About Us'),
       ),
       body: SafeArea(
         child: Padding(
@@ -19,7 +21,7 @@ class AboutUsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Company Name',
+                'Thumi Agro Engineering & Consultancy',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -60,7 +62,9 @@ class AboutUsPage extends StatelessWidget {
                     child: Container(
                       color: Colors.white,
                       child: IconButton(
-                        onPressed: null,
+                        onPressed: () {
+                          launch("tel://0705759523");
+                        },
                         icon: Icon(
                           Icons.phone,
                           color: Colors.blue,
@@ -73,7 +77,10 @@ class AboutUsPage extends StatelessWidget {
                     child: Container(
                       color: Colors.white,
                       child: IconButton(
-                        onPressed: null,
+                        onPressed: () {
+                          launch(
+                              "https://www.templatemonster.com/website-templates/tag/plants/r");
+                        },
                         icon: Icon(
                           Icons.web,
                           color: Colors.blue,
@@ -86,7 +93,10 @@ class AboutUsPage extends StatelessWidget {
                     child: Container(
                       color: Colors.white,
                       child: IconButton(
-                        onPressed: null,
+                        onPressed: () {
+                          launch(
+                              "https://www.facebook.com/thars.sujan?mibextid=2JQ9oc");
+                        },
                         icon: Icon(
                           Icons.facebook,
                           color: Colors.blue,
@@ -99,7 +109,16 @@ class AboutUsPage extends StatelessWidget {
                     child: Container(
                       color: Colors.white,
                       child: IconButton(
-                        onPressed: null,
+                        onPressed: () async {
+                          final Uri _emailLaunchUri = Uri(
+                            scheme: 'mailto',
+                            path: 'thumi@gmail.com',
+                            queryParameters: {'subject': 'Hello from our app'},
+                          );
+                          final String _emailLaunchString =
+                              _emailLaunchUri.toString();
+                          await launch(_emailLaunchString);
+                        },
                         icon: Icon(
                           Icons.email,
                           color: Colors.blue,
