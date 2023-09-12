@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -24,6 +25,23 @@ class _login_screenState extends State<login_screen> {
   bool textvisible = true;
   String? emailError;
   String? passwordError;
+
+  Future<void> saveFcmToken(String userEmail, String fcmToken) async {
+    try {
+      // Get a reference to the Firestore collection 'fcm_token'
+      CollectionReference<Map<String, dynamic>> fcmTokenCollection =
+      FirebaseFirestore.instance.collection('fcm_token');
+
+      // Create a document with the user's email as the document ID
+      await fcmTokenCollection.doc(userEmail).set({
+        'email': userEmail,
+        'fcm': fcmToken,
+      });
+    } catch (error) {
+      print('Error saving FCM token: ${error.toString()}');
+    }
+  }
+
 
   Future<void> signIn() async {
     if (_formKey.currentState!.validate()) {
@@ -76,6 +94,13 @@ class _login_screenState extends State<login_screen> {
               );
               registerontroller.instance.clearRegisterFields();
             } else if (user.role == 'user' && user.ActiveUser == true) {
+
+    // Fetch the FCM token
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    String? fcmToken = await messaging.getToken();
+    // Save the FCM token to Firestore
+    await saveFcmToken(user.email, fcmToken!);
+
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => home()),
@@ -121,6 +146,8 @@ class _login_screenState extends State<login_screen> {
       }
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
