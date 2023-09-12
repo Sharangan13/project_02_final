@@ -13,6 +13,8 @@ class Booking {
   final double total;
   final int quantity;
   var email;
+  String? bookingId;
+  String? productId;
 
   Booking({
     required this.status,
@@ -22,6 +24,8 @@ class Booking {
     required this.total,
     required this.quantity,
     required this.email,
+    this.bookingId,
+    this.productId,
   });
 
   Map<String, dynamic> toMap() {
@@ -32,7 +36,9 @@ class Booking {
       'total': total * quantity,
       'quantity': quantity,
       'status': status,
-      'UserEmail': email
+      'UserEmail': email,
+      'bookingId': bookingId,
+      'productId': productId,
     };
   }
 }
@@ -41,13 +47,21 @@ class BookingService {
   final user = FirebaseAuth.instance.currentUser;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> bookProduct(Booking booking) async {
+  Future<String?> bookProduct(Booking booking) async {
     try {
-      await _firestore
+      final DocumentReference docRef = await _firestore
           .collection('Booking')
           .doc(user!.uid) // Use user.uid here
           .collection("UserBooking")
           .add(booking.toMap());
+
+      final bookingId = docRef.id;
+      booking.bookingId = bookingId;
+
+      // Update the 'bookingId' field in Firestore
+      await docRef.update({'bookingId': bookingId});
+
+      return bookingId;
     } catch (e) {
       print('Error booking product: $e');
       // Handle the error as needed
@@ -149,14 +163,14 @@ class _ProductDetailsState extends State<ProductDetails> {
 
     if (user != null) {
       final Booking booking = Booking(
-        status: "pending",
-        category: widget.product.Category,
-        image_url: widget.product.imageURL,
-        name: widget.product.name,
-        total: widget.product.price * selectedQuantity,
-        quantity: selectedQuantity,
-        email: user.email,
-      );
+          status: "pending",
+          category: widget.product.Category,
+          image_url: widget.product.imageURL,
+          name: widget.product.name,
+          total: widget.product.price * selectedQuantity,
+          quantity: selectedQuantity,
+          email: user.email,
+          productId: widget.product.productId);
 
       final confirmed = await showDialog(
         context: context,
