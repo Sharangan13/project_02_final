@@ -34,18 +34,17 @@ class ConsultancyBookingDetailsPage extends StatelessWidget {
             itemCount: bookingDocs.length,
             itemBuilder: (context, index) {
               final bookingData =
-              bookingDocs[index].data() as Map<String, dynamic>;
+                  bookingDocs[index].data() as Map<String, dynamic>;
 
               // Extract the specific fields you want to display
               final contact = bookingData['contact'];
               final name = bookingData['name'];
 
               // Check if the Firestore fields might be null
-              final selectedDate = bookingData['selected_date'] ;
+              final selectedDate = bookingData['selected_date'];
               final selectedTime = bookingData['selected_time'] as String?;
               print('Selected Date Timestamp: $selectedDate');
               print('Selected Time: $selectedTime');
-
 
               // Convert the Firestore timestamp to a formatted date if it's not null
               String formattedDate = 'N/A';
@@ -62,8 +61,8 @@ class ConsultancyBookingDetailsPage extends StatelessWidget {
                     children: [
                       Text('Name: $name'),
                       Text('Date: $formattedDate'),
-                      Text('Time: ${selectedTime ?? 'N/A'}'), // Use 'N/A' if selectedTime is null
-
+                      Text(
+                          'Time: ${selectedTime ?? 'N/A'}'), // Use 'N/A' if selectedTime is null
                     ],
                   ),
                 ),

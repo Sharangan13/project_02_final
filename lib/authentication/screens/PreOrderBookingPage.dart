@@ -48,55 +48,54 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
             );
           }
 
-          return ListView.builder(
-            itemCount: bookings.length + 1,
-            itemBuilder: (context, index) {
-              if (index < bookings.length) {
-                final bookingData =
-                    bookings[index].data() as Map<String, dynamic>;
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: bookings.length,
+                  itemBuilder: (context, index) {
+                    final bookingData =
+                        bookings[index].data() as Map<String, dynamic>;
 
-                return Card(
-                  elevation: 4,
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: ListTile(
-                    leading: Image.network(bookingData['image_url']),
-                    title: Text(bookingData['name']),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Total: ${bookingData['total']}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
-                          ),
+                    return Card(
+                      elevation: 4,
+                      margin: EdgeInsets.all(8),
+                      child: ListTile(
+                        leading: Image.network(bookingData['image_url']),
+                        title: Text(bookingData['name']),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Total: ${bookingData['total']}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Text(
+                              'Quantity: ${bookingData['quantity']}',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
                         ),
-                        Text(
-                          'Quantity: ${bookingData['quantity']}',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              } else {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    padding: EdgeInsets.only(right: 16, bottom: 8),
-                    child: Text(
-                      'Total Amount for all bookings: Rs ${_calculateTotalAmount(bookings).toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
                       ),
-                    ),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Total Amount for all bookings: Rs ${_calculateTotalAmount(bookings).toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                );
-              }
-            },
+                ),
+              ),
+            ],
           );
         },
       ),

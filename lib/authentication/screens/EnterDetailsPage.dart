@@ -21,7 +21,7 @@ class _EnterDetailsPageState extends State<EnterDetailsPage> {
   TextEditingController contactController = TextEditingController();
 
   bool _validatePhoneNumber(String value) {
-    // Regular expression to check for 10-digit phone number without any special characters
+    // Regular expression to check for a 10-digit phone number without any special characters
     RegExp regex = RegExp(r'^[0-9]{10}$');
     return regex.hasMatch(value);
   }
@@ -57,12 +57,18 @@ class _EnterDetailsPageState extends State<EnterDetailsPage> {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
 
-    // Save the booking details to Firestore
+    // Generate a new document ID
+    String documentId =
+        FirebaseFirestore.instance.collection('ConsultancyBooking').doc().id;
+
+    // Save the booking details to Firestore with the document ID
     FirebaseFirestore.instance
         .collection('ConsultancyBooking')
         .doc(uid)
         .collection("Booking")
-        .add({
+        .doc(documentId) // Use the generated document ID
+        .set({
+      'id': documentId, // Store the document ID as a field
       'name': name,
       'contact': contact,
       'selectedDate': widget.selectedDate.toLocal().toString().split(' ')[0],
@@ -70,7 +76,7 @@ class _EnterDetailsPageState extends State<EnterDetailsPage> {
       'email': user?.email,
     }).then((value) {
       // Booking data saved successfully
-      print('Booking data saved to Firestore!');
+      print('Booking data saved to Firestore with ID: $documentId');
       _showSuccessDialog(); // Show success dialog
       _resetFields(); // Clear all fields
       // Refresh the user's bookings list after saving a new booking

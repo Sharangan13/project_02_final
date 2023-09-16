@@ -35,6 +35,24 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     }
   }
 
+  Future<void> deleteBookingDetail(String bookingId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('ConsultancyBooking')
+          .doc(widget.qrCode)
+          .collection('Booking')
+          .doc(bookingId)
+          .delete();
+
+      // Refresh the list of booking data after deletion
+      setState(() {
+        _bookingDataList = fetchBookingData();
+      });
+    } catch (e) {
+      print('Error deleting booking detail: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,44 +86,104 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
               itemCount: bookingDataList.length,
               itemBuilder: (context, index) {
                 final bookingData = bookingDataList[index];
+                final bookingId = snapshot.data![index]
+                    ['id']; // Use the bookingId from the data
+
                 return Card(
                   elevation: 3,
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(16),
-                    title: Text(
-                      'Name: ${bookingData['name']}',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 8),
-                        Text(
-                          'Date: ${bookingData['selectedDate']}',
-                          style: TextStyle(fontSize: 16),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          'Name: ${bookingData['name']}',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        Text(
-                          'Time: ${bookingData['selectedTime']}',
-                          style: TextStyle(fontSize: 16),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Date: ${bookingData['selectedDate']}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            Text(
+                              'Time: ${bookingData['selectedTime']}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            Text(
+                              'Contact: ${bookingData['contact']}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            Text(
+                              'Email: ${bookingData['email']}',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
                         ),
-                        Text(
-                          'Contact: ${bookingData['contact']}',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Text(
-                          'Email: ${bookingData['email']}',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                    trailing: ElevatedButton(
-                      onPressed: () {
-                        // Handle complete button action here
-                      },
-                      child: Text('Complete'),
-                    ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              // Show a confirmation dialog
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text(
+                                      'Confirm Completion',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    content: Text(
+                                        'Are you sure you want to mark this booking as complete?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          // Handle complete button action here
+                                          deleteBookingDetail(bookingId);
+                                        },
+                                        child: Text(
+                                          'Yes',
+                                          style: TextStyle(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(
+                                              context); // Close the dialog
+                                        },
+                                        child: Text(
+                                          'No',
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Colors.green, // Change button color
+                            ),
+                            child: Text(
+                              'Complete',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 );
               },
