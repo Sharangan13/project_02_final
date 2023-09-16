@@ -11,56 +11,18 @@ class BookingDetailsPage extends StatefulWidget {
 }
 
 class _BookingDetailsPageState extends State<BookingDetailsPage> {
-  late Future<List<Map<String, dynamic>>> _bookingDataList;
-
-  @override
-  void initState() {
-    super.initState();
-    _bookingDataList = fetchBookingData();
-  }
-
-  Future<List<Map<String, dynamic>>> fetchBookingData() async {
-    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await FirebaseFirestore.instance
-            .collection('ConsultancyBooking')
-            .doc(widget.qrCode)
-            .collection('Booking')
-            .get();
-
-    if (querySnapshot.docs.isNotEmpty) {
-      // Convert each DocumentSnapshot to a Map and create a list
-      return querySnapshot.docs.map((doc) => doc.data()!).toList();
-    } else {
-      return []; // Return an empty list if no data is found
-    }
-  }
-
-  Future<void> deleteBookingDetail(String bookingId) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('ConsultancyBooking')
-          .doc(widget.qrCode)
-          .collection('Booking')
-          .doc(bookingId)
-          .delete();
-
-      // Refresh the list of booking data after deletion
-      setState(() {
-        _bookingDataList = fetchBookingData();
-      });
-    } catch (e) {
-      print('Error deleting booking detail: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Booking Details'),
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _bookingDataList,
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('ConsultancyBooking')
+            .doc(widget.qrCode)
+            .collection('Booking')
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -69,11 +31,11 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
           } else if (snapshot.hasError) {
             return Center(
               child: Text(
-                'Error fetching data',
+                'Error: ${snapshot.error}',
                 style: TextStyle(fontSize: 18, color: Colors.red),
               ),
             );
-          } else if (snapshot.data!.isEmpty) {
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
               child: Text(
                 'No booking data found',
@@ -81,110 +43,18 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
               ),
             );
           } else {
-            final bookingDataList = snapshot.data!;
+            final bookingDocs = snapshot.data!.docs;
             return ListView.builder(
-              itemCount: bookingDataList.length,
+              itemCount: bookingDocs.length,
               itemBuilder: (context, index) {
-                final bookingData = bookingDataList[index];
-                final bookingId = snapshot.data![index]
-                    ['id']; // Use the bookingId from the data
+                final bookingData =
+                    bookingDocs[index].data() as Map<String, dynamic>;
+                final bookingId = bookingDocs[index].id;
 
-                return Card(
-                  elevation: 3,
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: Text(
-                          'Name: ${bookingData['name']}',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Date: ${bookingData['selectedDate']}',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Text(
-                              'Time: ${bookingData['selectedTime']}',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Text(
-                              'Contact: ${bookingData['contact']}',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Text(
-                              'Email: ${bookingData['email']}',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              // Show a confirmation dialog
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(
-                                      'Confirm Completion',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    content: Text(
-                                        'Are you sure you want to mark this booking as complete?'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          // Handle complete button action here
-                                          deleteBookingDetail(bookingId);
-                                        },
-                                        child: Text(
-                                          'Yes',
-                                          style: TextStyle(
-                                              color: Colors.green,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(
-                                              context); // Close the dialog
-                                        },
-                                        child: Text(
-                                          'No',
-                                          style: TextStyle(
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Colors.green, // Change button color
-                            ),
-                            child: Text(
-                              'Complete',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                return BookingCard(
+                  bookingData: bookingData,
+                  bookingId: bookingId,
+                  qrCode: widget.qrCode,
                 );
               },
             );
@@ -192,5 +62,127 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
         },
       ),
     );
+  }
+}
+
+class BookingCard extends StatelessWidget {
+  final Map<String, dynamic> bookingData;
+  final String bookingId;
+  final String qrCode;
+
+  BookingCard({
+    required this.bookingData,
+    required this.bookingId,
+    required this.qrCode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(
+              'Name: ${bookingData['name']}',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Date: ${bookingData['selectedDate']}',
+                  style: TextStyle(fontSize: 16),
+                ),
+                Text(
+                  'Time: ${bookingData['selectedTime']}',
+                  style: TextStyle(fontSize: 16),
+                ),
+                Text(
+                  'Contact: ${bookingData['contact']}',
+                  style: TextStyle(fontSize: 16),
+                ),
+                Text(
+                  'Email: ${bookingData['email']}',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  // Show a confirmation dialog
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text(
+                          'Confirm Completion',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        content: Text(
+                          'Are you sure you want to mark this booking as complete?',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context); // Close the dialog
+                              // Handle complete button action here
+                              deleteBookingDetail(bookingId);
+                            },
+                            child: Text(
+                              'Yes',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context); // Close the dialog
+                            },
+                            child: Text('No',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red)),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                ),
+                child: Text(
+                  'Complete',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> deleteBookingDetail(String bookingId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('ConsultancyBooking')
+          .doc(qrCode)
+          .collection('Booking')
+          .doc(bookingId)
+          .delete();
+    } catch (e) {
+      print('Error deleting booking detail: $e');
+    }
   }
 }
