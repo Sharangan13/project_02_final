@@ -16,6 +16,7 @@ import 'SelectProductsPage.dart';
 import 'SessionTimeout.dart';
 import 'UploadPlantsEquipmentsPage.dart';
 import 'adminEditProfile.dart';
+import 'fcm_token_page.dart';
 import 'notification_admin.dart';
 
 class AdminHome extends StatefulWidget {
@@ -204,6 +205,23 @@ class _AdminHomeState extends State<AdminHome> {
                       'Chat',
                       CupertinoIcons.bolt_horizontal_circle,
                       Colors.purple,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              FcmTokenPage(), //Admin chat home page
+                        ),
+                      ); // Handle onTap for Chat
+                      // Add your code here
+                    },
+                    child: itemDashboard(
+                      'FCM Token',
+                      CupertinoIcons.device_desktop,
+                      Colors.lightGreen,
                     ),
                   ),
                   GestureDetector(
