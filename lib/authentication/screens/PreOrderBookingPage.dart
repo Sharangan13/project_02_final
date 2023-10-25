@@ -16,11 +16,21 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
     for (var bookingData in bookings) {
       double bookingTotal =
           bookingData['total']; // Fetch the total from bookingData
-
       total += bookingTotal;
     }
 
     return total;
+  }
+
+  int _calculateTotalQuantity(List<QueryDocumentSnapshot> bookings) {
+    int totalQuantity = 0;
+
+    for (var bookingData in bookings) {
+      int quantity = bookingData['quantity'];
+      totalQuantity += quantity;
+    }
+
+    return totalQuantity;
   }
 
   @override
@@ -67,6 +77,13 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
+                              'Date: ${bookingData['date']}', // Display the booking date
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Text(
                               'Total: ${bookingData['total']}',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -86,13 +103,25 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'Total Amount for all bookings: Rs ${_calculateTotalAmount(bookings).toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                child: Column(
+                  children: [
+                    Text(
+                      'Total Quantity of Items: ${_calculateTotalQuantity(bookings).toInt()}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                    Text(
+                      'Total Amount for all bookings: Rs ${_calculateTotalAmount(bookings).toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'Product.dart';
 import 'cart.dart';
@@ -15,6 +16,8 @@ class Booking {
   var email;
   String? bookingId;
   String? productId;
+
+  String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   Booking({
     required this.status,
@@ -39,6 +42,7 @@ class Booking {
       'UserEmail': email,
       'bookingId': bookingId,
       'productId': productId,
+      'date': formattedDate,
     };
   }
 }
@@ -163,79 +167,151 @@ class _ProductDetailsState extends State<ProductDetails> {
 
     if (user != null) {
       final Booking booking = Booking(
-          status: "pending",
-          category: widget.product.Category,
-          image_url: widget.product.imageURL,
-          name: widget.product.name,
-          total: widget.product.price * selectedQuantity,
-          quantity: selectedQuantity,
-          email: user.email,
-          productId: widget.product.productId);
-
-      final confirmed = await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Confirm Booking'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Are you sure you want to book $selectedQuantity  ${widget.product.name}?',
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pop(false); // Return false to indicate cancellation
-                },
-                child: Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.of(context)
-                      .pop(true); // Return true to indicate confirmation
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                ),
-                child: Text('Book'),
-              ),
-            ],
-          );
-        },
+        status: "pending",
+        category: widget.product.Category,
+        image_url: widget.product.imageURL,
+        name: widget.product.name,
+        total: widget.product.price * selectedQuantity,
+        quantity: selectedQuantity,
+        email: user.email,
+        productId: widget.product.productId,
       );
 
-      if (confirmed == true) {
-        try {
-          final BookingService bookingService = BookingService();
-          await bookingService.bookProduct(booking);
+      final bookingService = BookingService();
+      final isAllowed = await checkBookingCriteria(booking);
 
-          // Update the product quantity in Firestore and in memory
-          await _updateProductQuantities(widget.product, selectedQuantity);
-
-          // Show the success message using ScaffoldMessenger
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Successfully booked $selectedQuantity ${widget.product.name}',
+      if (isAllowed) {
+        final confirmed = await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Confirm Booking'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Are you sure you want to book $selectedQuantity ${widget.product.name}?',
+                  ),
+                ],
               ),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error booking ${widget.product.name}'),
-              duration: Duration(seconds: 2),
-            ),
-          );
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pop(false); // Return false to indicate cancellation
+                  },
+                  child: Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context)
+                        .pop(true); // Return true to indicate confirmation
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                  ),
+                  child: Text('Book'),
+                ),
+              ],
+            );
+          },
+        );
+
+        if (confirmed == true) {
+          try {
+            await bookingService.bookProduct(booking);
+
+            // Update the product quantity in Firestore and in memory
+            await _updateProductQuantities(widget.product, selectedQuantity);
+
+            // Show the success message using ScaffoldMessenger
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Successfully booked $selectedQuantity ${widget.product.name}',
+                ),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error booking ${widget.product.name}'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
         }
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Payment Required'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'You must make the payment before booking because you have reached the maximum total amount or the maximum number of items allowed for booking',
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                  ),
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
       }
     }
+  }
+
+  Future<bool> checkBookingCriteria(Booking newBooking) async {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+
+    // Fetch the user's existing bookings
+    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Booking')
+        .doc(currentUser!.uid)
+        .collection("UserBooking")
+        .get();
+
+    double totalAmount = 0.0;
+    int totalQuantity = 0;
+
+    for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
+      final bookingData = doc.data() as Map<String, dynamic>;
+      final quantity =
+          (bookingData['quantity'] ?? 0) as int; // Ensure it's an int
+      final total =
+          (bookingData['total'] ?? 0) as double; // Ensure it's a double
+
+      totalQuantity += quantity;
+      totalAmount += total;
+    }
+
+    // Calculate the total amount of the new booking as a double
+    double newBookingTotal = newBooking.total * newBooking.quantity;
+
+    if ((totalQuantity + newBooking.quantity) > 15 ||
+        (totalAmount + newBookingTotal) > 15000.0) {
+      return false; // Criteria not met
+    }
+    // print("QQQQQQQ");
+    // print(totalQuantity + newBooking.quantity);
+    // print("QQQQQQQ");
+    // print(totalAmount + newBookingTotal);
+
+    return true; // Criteria met, booking is allowed
   }
 
   @override
