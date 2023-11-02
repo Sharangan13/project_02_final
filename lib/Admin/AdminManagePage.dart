@@ -169,6 +169,7 @@ class AdminPlantDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String searchQuery = '';
     return Scaffold(
       appBar: AppBar(
         title: Text(category),
@@ -186,6 +187,9 @@ class AdminPlantDetailsPage extends StatelessWidget {
                 ),
                 prefixIcon: Icon(Icons.search),
               ),
+              onChanged: (value) {
+                searchQuery = value;
+              },
             ),
           ),
         ),
@@ -200,6 +204,7 @@ class AdminPlantDetailsPage extends StatelessWidget {
                     .collection('Plants')
                     .doc(category.replaceAll(' ', ''))
                     .collection('Items')
+                    .where('name', isGreaterThanOrEqualTo: searchQuery)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
@@ -378,6 +383,7 @@ class AdminPlantDetailsPage extends StatelessWidget {
 class AdminEquipmentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    String searchQuery = '';
     return Scaffold(
       appBar: AppBar(
         title: Text('Equipments'),
@@ -395,6 +401,9 @@ class AdminEquipmentPage extends StatelessWidget {
                 ),
                 prefixIcon: Icon(Icons.search),
               ),
+              onChanged: (value) {
+                searchQuery = value;
+              },
             ),
           ),
         ),
@@ -409,6 +418,7 @@ class AdminEquipmentPage extends StatelessWidget {
                     .collection('Equipments')
                     .doc('equipments')
                     .collection('Items')
+                    .where('name', isGreaterThanOrEqualTo: searchQuery)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
