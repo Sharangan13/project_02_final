@@ -34,8 +34,6 @@ class _homeState extends State<home> {
   int totalItemsInCart = 0;
   bool isDarkMode = false;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -146,7 +144,7 @@ class _homeState extends State<home> {
                                     padding: EdgeInsets.all(6.4),
                                     color: Colors.green[30],
                                     child: Text(
-                                      'Plants Offer: ${plantsPercentage.toStringAsFixed(2)}%',
+                                      'Special Offer ${plantsPercentage.toStringAsFixed(2)}% Off For All Plants',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold),
@@ -157,7 +155,7 @@ class _homeState extends State<home> {
                                     padding: EdgeInsets.all(6.4),
                                     color: Colors.blue[30],
                                     child: Text(
-                                      'Equipment Offer: ${equipmentPercentage.toStringAsFixed(2)}%',
+                                      'Special Offer ${equipmentPercentage.toStringAsFixed(2)}% Off For All Equipments',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold),
@@ -290,11 +288,7 @@ class _homeState extends State<home> {
             },
           ),
         ],
-
       ),
-
-
-
       drawer: SafeArea(
         child: Drawer(
           elevation: 40,
@@ -308,7 +302,7 @@ class _homeState extends State<home> {
                   radius: 15,
                   backgroundColor: Colors.white,
                   backgroundImage:
-                  NetworkImage(ProfileUrl), // Use the fetched ProfileUrl
+                      NetworkImage(ProfileUrl), // Use the fetched ProfileUrl
                 ),
                 decoration: const BoxDecoration(
                   color: Colors.grey,
@@ -334,9 +328,7 @@ class _homeState extends State<home> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => PreOrderBookingPage(
-                          
-                        )),
+                        builder: (context) => PreOrderBookingPage()),
                   );
                 },
               ),
@@ -403,8 +395,8 @@ class _homeState extends State<home> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => RateUsScreen(
-                          uid: '',
-                        )),
+                              uid: '',
+                            )),
                   ); //action when this menu is pressed
                 },
               ),
@@ -429,7 +421,6 @@ class _homeState extends State<home> {
                   }
                 },
               ),
-
               ListTile(
                 dense: true,
                 title: const Text("Log out"),

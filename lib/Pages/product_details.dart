@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'Product.dart';
 import 'cart.dart';
 
@@ -161,17 +160,70 @@ class _ProductDetailsState extends State<ProductDetails> {
     }
   }
 
+  Future<Map<String, double>> fetchPercentages() async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final Map<String, double> percentages = {};
+
+    try {
+      // Reference to the "offers" collection and "percentages" document
+      final DocumentReference docRef =
+          _firestore.collection('offers').doc('percentages');
+
+      // Get the document data
+      final DocumentSnapshot docSnapshot = await docRef.get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data() as Map<String, dynamic>;
+
+        // Access the fields "equipmentPercentage" and "plantsPercentage"
+        final double equipmentPercentage = data['equipmentPercentage'] ?? 0.0;
+        final double plantsPercentage = data['plantsPercentage'] ?? 0.0;
+
+        percentages['equipmentPercentage'] = equipmentPercentage;
+        percentages['plantsPercentage'] = plantsPercentage;
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+
+    return percentages;
+  }
+
   void _handleBookNow() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
 
     if (user != null) {
+      // Fetch the percentages data
+      final percentages = await fetchPercentages();
+
+      // Use the fetched values to calculate the adjusted total
+      double equipmentPercentage = percentages['equipmentPercentage'] ?? 0.0;
+      double plantsPercentage = percentages['plantsPercentage'] ?? 0.0;
+
+      // Declare the adjustedTotal variable outside of the if-else block
+      double adjustedTotal;
+
+      if (widget.product.Category.trim() == "equipments") {
+        adjustedTotal = (widget.product.price * selectedQuantity) -
+            (widget.product.price *
+                selectedQuantity *
+                equipmentPercentage /
+                100.0);
+      } else {
+        adjustedTotal = (widget.product.price * selectedQuantity) -
+            (widget.product.price *
+                selectedQuantity *
+                plantsPercentage /
+                100.0);
+      }
+
       final Booking booking = Booking(
         status: "pending",
         category: widget.product.Category,
         image_url: widget.product.imageURL,
         name: widget.product.name,
-        total: widget.product.price * selectedQuantity,
+        total: adjustedTotal,
         quantity: selectedQuantity,
         email: user.email,
         productId: widget.product.productId,

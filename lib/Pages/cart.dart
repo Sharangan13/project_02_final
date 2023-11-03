@@ -36,6 +36,7 @@ class Cart extends ChangeNotifier {
     double total = 0;
     for (var item in items) {
       total += item.product.price * item.quantity;
+      cartUpdatedCallback?.call();
     }
     return total;
   }

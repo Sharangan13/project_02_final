@@ -84,7 +84,7 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
                               ),
                             ),
                             Text(
-                              'Total: ${bookingData['total']}',
+                              'Total with Discount: ${bookingData['total']}',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey,
