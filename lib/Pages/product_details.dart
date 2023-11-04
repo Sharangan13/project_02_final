@@ -205,17 +205,11 @@ class _ProductDetailsState extends State<ProductDetails> {
       double adjustedTotal;
 
       if (widget.product.Category.trim() == "equipments") {
-        adjustedTotal = (widget.product.price * selectedQuantity) -
-            (widget.product.price *
-                selectedQuantity *
-                equipmentPercentage /
-                100.0);
+        adjustedTotal = (widget.product.price) -
+            (widget.product.price * equipmentPercentage / 100.0);
       } else {
-        adjustedTotal = (widget.product.price * selectedQuantity) -
-            (widget.product.price *
-                selectedQuantity *
-                plantsPercentage /
-                100.0);
+        adjustedTotal = (widget.product.price) -
+            (widget.product.price * plantsPercentage / 100.0);
       }
 
       final Booking booking = Booking(

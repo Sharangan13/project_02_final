@@ -144,7 +144,7 @@ class _homeState extends State<home> {
                                     padding: EdgeInsets.all(6.4),
                                     color: Colors.green[30],
                                     child: Text(
-                                      'Special Offer ${plantsPercentage.toStringAsFixed(2)}% Off For All Plants',
+                                      'Special Offer ${plantsPercentage.toStringAsFixed(2)}% For All Plants',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold),
@@ -155,7 +155,7 @@ class _homeState extends State<home> {
                                     padding: EdgeInsets.all(6.4),
                                     color: Colors.blue[30],
                                     child: Text(
-                                      'Special Offer ${equipmentPercentage.toStringAsFixed(2)}% Off For All Equipments',
+                                      'Special Offer ${equipmentPercentage.toStringAsFixed(2)}% For All Equipments',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold),
