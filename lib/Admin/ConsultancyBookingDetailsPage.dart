@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart'; // Import the intl package for date formatting
 
 class ConsultancyBookingDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Consultancy Booking Details (Admin)'),
+        title: Text('Consultancy Booking Details'),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -28,7 +27,22 @@ class ConsultancyBookingDetailsPage extends StatelessWidget {
             );
           }
 
+          // Extract the documents and sort them by date and time
           final bookingDocs = snapshot.data!.docs;
+          bookingDocs.sort((a, b) {
+            final aDate = DateTime.parse(a['selectedDate'] as String);
+            final bDate = DateTime.parse(b['selectedDate'] as String);
+            final aTime = a['selectedTime'] as String;
+            final bTime = b['selectedTime'] as String;
+
+            if (aDate.isBefore(bDate)) {
+              return -1;
+            } else if (aDate.isAfter(bDate)) {
+              return 1;
+            } else {
+              return aTime.compareTo(bTime);
+            }
+          });
 
           return ListView.builder(
             itemCount: bookingDocs.length,
@@ -39,30 +53,135 @@ class ConsultancyBookingDetailsPage extends StatelessWidget {
               // Extract the specific fields you want to display
               final contact = bookingData['contact'];
               final name = bookingData['name'];
+              final time = bookingData['selectedTime'];
+              final date = bookingData['selectedDate'];
+              final id = bookingData['id'];
 
               // Check if the Firestore fields might be null
               final selectedDate = bookingData['selected_date'];
               final selectedTime = bookingData['selected_time'] as String?;
-              print('Selected Date Timestamp: $selectedDate');
-              print('Selected Time: $selectedTime');
-
-              // Convert the Firestore timestamp to a formatted date if it's not null
-              String formattedDate = 'N/A';
-              if (selectedDate != null) {
-                formattedDate = DateFormat('MM-dd-yyyy').format(selectedDate);
-              }
 
               return Card(
                 margin: EdgeInsets.all(8.0),
+                elevation: 5,
                 child: ListTile(
                   title: Text('Contact: $contact'),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Name: $name'),
-                      Text('Date: $formattedDate'),
-                      Text(
-                          'Time: ${selectedTime ?? 'N/A'}'), // Use 'N/A' if selectedTime is null
+                      Text('Date: $date'),
+                      Text('Time: $time'),
+                    ],
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          // Show a confirmation dialog
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(
+                                  'Confirm Completion',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                content: Text(
+                                  'Are you sure you want to mark this booking as complete?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context); // Close the dialog
+                                      // Handle complete button action here
+                                      deleteBookingDetail(id);
+                                    },
+                                    child: Text(
+                                      'Yes',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context); // Close the dialog
+                                    },
+                                    child: Text('No',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red)),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                        ),
+                        child: Text(
+                          'Complete',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Show a confirmation dialog
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text(
+                                  'Confirm Completion',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                content: Text(
+                                  'Are you sure you want cancel this booking?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context); // Close the dialog
+                                      // Handle complete button action here
+                                      deleteBookingDetail(id);
+                                    },
+                                    child: Text(
+                                      'Yes',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context); // Close the dialog
+                                    },
+                                    child: Text('No',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red)),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                        ),
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -72,5 +191,25 @@ class ConsultancyBookingDetailsPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> deleteBookingDetail(String id) async {
+    try {
+      // Query the 'Booking' sub-collection for the document with a matching 'id'
+      QuerySnapshot bookingQuery = await FirebaseFirestore.instance
+          .collectionGroup('Booking')
+          .where('id', isEqualTo: id)
+          .get();
+
+      if (bookingQuery.docs.isNotEmpty) {
+        // Assuming there's only one document with the specified 'id'
+        var documentReference = bookingQuery.docs.first.reference;
+        await documentReference.delete();
+      } else {
+        print('Document not found with id: $id');
+      }
+    } catch (e) {
+      print('Error deleting booking detail: $e');
+    }
   }
 }
