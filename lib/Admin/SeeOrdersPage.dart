@@ -50,14 +50,95 @@ class _OrdersListState extends State<OrdersList> {
     }).toList();
   }
 
+  // Future<void> _markAsDeleted(DocumentSnapshot orderDocument) async {
+  //   // Delete the order from Firestore
+  //   await orderDocument.reference.delete();
+  //
+  //   // Reload the orders after deletion
+  //   await _loadOrders();
+  // }
+
+  // finished key function
   Future<void> _markAsFinished(DocumentSnapshot orderDocument) async {
-    // Delete the order from Firestore
-    await orderDocument.reference.delete();
+    // Show a confirmation dialog
+    bool confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Mark'),
+          content: Text('Are you sure you want to mark As Finished this order?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // Return false when cancel button is pressed
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // Return true when OK button is pressed
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
 
-    // Reload the orders after deletion
-    await _loadOrders();
+    if (confirmDelete ?? false) {
+      // User confirmed deletion, proceed with deletion
+      await orderDocument.reference.delete();
+
+      // Reload the orders after deletion
+      await _loadOrders();
+    }
   }
+     // end of delete function
+  // delete button function
+  Future<void> _performOrderAction(DocumentSnapshot orderDocument) async {
+    bool isCancellation = orderDocument['status'] == 'Pending';
 
+    String dialogMessage = isCancellation ? 'Are you sure you want to cancel this order?' : 'Are you sure you want to delete the order?';
+    String buttonLabel = isCancellation ? 'Cancel Order' : 'delete';
+
+    bool confirmAction = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(isCancellation ? 'Confirm Cancel' : 'Confirm delete'),
+          content: Text(dialogMessage),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text(buttonLabel),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmAction ?? false) {
+      if (isCancellation) {
+        // Cancel order logic here
+        await orderDocument.reference.update({'status': 'Cancelled'});
+      } else {
+        // Mark order as finished logic here
+        await orderDocument.reference.update({'status': 'Finished'});
+      }
+
+      // Reload orders after the action
+      await _loadOrders();
+    }
+  }  // end delete button function
+  // end of delete button function
   @override
   Widget build(BuildContext context) {
     final filteredOrders = _filterOrders();
@@ -86,12 +167,10 @@ class _OrdersListState extends State<OrdersList> {
               style: TextStyle(fontSize: 18),
             ),
           )
-              : ListView.builder(
+          : ListView.builder(
             itemCount: filteredOrders.length,
             itemBuilder: (context, index) {
               DocumentSnapshot userBookingDocument = filteredOrders[index];
-              // Assuming you have a model class for your orders
-              // Replace 'YourOrderModel' with your actual model class
               YourOrderModel order = YourOrderModel(
                 userEmail: userBookingDocument['UserEmail'],
                 category: userBookingDocument['category'],
@@ -113,15 +192,29 @@ class _OrdersListState extends State<OrdersList> {
                   ],
                 ),
                 leading: Image.network(order.imageUrl ?? ''),
-                trailing: ElevatedButton(
-                  onPressed: () {
-                    _markAsFinished(userBookingDocument);
-                  },
-                  child: Text('Finished'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        _markAsFinished(userBookingDocument);
+                      },
+                      child: Text('Finished'),
+                    ),
+                    SizedBox(width: 10), // Add some spacing between buttons
+                    ElevatedButton(
+                      onPressed: () {
+                        _performOrderAction(userBookingDocument);
+                      },
+                      style: ElevatedButton.styleFrom(primary: Colors.red), // Set button color to red
+                      child: Text('Delete'),
+                    ),
+                  ],
                 ),
               );
             },
           ),
+
         ),
       ],
     );
