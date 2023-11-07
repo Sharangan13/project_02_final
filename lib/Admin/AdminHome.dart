@@ -6,8 +6,9 @@ import 'package:project_02_final/authentication/screens/login.dart';
 import 'package:project_02_final/Admin/ManageUserPage.dart';
 import 'package:project_02_final/Admin/SpecialOffers.dart';
 import 'AddAdmin_ShowAdmin_screen.dart';
-import 'AdminChat.dart';
+
 import 'AdminManagePage.dart';
+import 'Adminchatscreen.dart';
 import 'ConsultancyBookingDetailsPage.dart';
 import 'QrScannerhomepage.dart';
 import 'RatingListScreen.dart';
@@ -176,7 +177,7 @@ class _AdminHomeState extends State<AdminHome> {
                   GestureDetector(
                     onTap: () {
                       String bookingId =
-                          "ABC123"; // Replace with the actual booking ID
+                          "ABC345"; // Replace with the actual booking ID
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -195,11 +196,9 @@ class _AdminHomeState extends State<AdminHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              HomePage(), //Admin chat home page
+                          builder: (context) => AdminChatScreen(),
                         ),
-                      ); // Handle onTap for Chat
-                      // Add your code here
+                      );
                     },
                     child: itemDashboard(
                       'Chat',

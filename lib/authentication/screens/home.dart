@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project_02_final/authentication/screens/ChatScreen.dart';
 import 'package:provider/provider.dart';
 import '../../Pages/cart.dart';
 import '../../Pages/cart_screen.dart';
@@ -14,6 +13,7 @@ import 'QRCodeRetrieval.dart';
 import 'RateUs.dart';
 
 import 'UserConsaltancyBookingDetailsPage.dart';
+import 'chat.dart';
 import 'login.dart';
 import 'package:project_02_final/components/horizontal_listview.dart';
 import 'notification.dart';
@@ -363,11 +363,10 @@ class _homeState extends State<home> {
                   final user = FirebaseAuth.instance.currentUser;
                   if (user != null) {
                     final uid = user.uid;
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ChatScreen(userId: uid),
-                      ),
-                    );
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ChatScreen(
+                              userId: '',
+                            )));
                   } else {
                     print('User authentication failed');
                     // Handle the error or show an error message to the user

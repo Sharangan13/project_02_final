@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -25,9 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: FirebaseFirestore.instance
-                  .collection('conversations')
-                  .doc(widget.userId)
-                  .collection('messages')
+                  .collection('chat')
                   .orderBy('timestamp', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
@@ -43,12 +41,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemCount: messages?.length,
                   itemBuilder: (context, index) {
                     final message = messages?[index].get('message');
-                    final senderId = messages?[index].get('senderId');
-                    final isUserMessage = senderId == user?.uid;
+                    final email = messages?[index].get('email');
+                    final isUserMessage = email == user?.email;
+                    final reply = messages?[index].get('reply');
 
                     return MessageBubble(
                       message: message,
                       isUserMessage: isUserMessage,
+                      reply: reply,
                     );
                   },
                 );
@@ -82,13 +82,10 @@ class _ChatScreenState extends State<ChatScreen> {
   void _sendMessage(String userId) {
     final message = _messageController.text.trim();
     if (message.isNotEmpty) {
-      FirebaseFirestore.instance
-          .collection('conversations')
-          .doc(userId)
-          .collection('messages')
-          .add({
-        'senderId': userId,
+      FirebaseFirestore.instance.collection('chat').add({
+        'email': FirebaseAuth.instance.currentUser!.email,
         'message': message,
+        'reply': '', // Admin can fill this in later
         'timestamp': DateTime.now(),
       });
       _messageController.clear();
@@ -99,25 +96,49 @@ class _ChatScreenState extends State<ChatScreen> {
 class MessageBubble extends StatelessWidget {
   final String message;
   final bool isUserMessage;
+  final String reply;
 
-  MessageBubble({required this.message, required this.isUserMessage});
+  MessageBubble({
+    required this.message,
+    required this.isUserMessage,
+    required this.reply,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final bgColor = isUserMessage ? Colors.green : Colors.grey;
+    final textColor = isUserMessage ? Colors.white : Colors.black;
+    final alignment =
+        isUserMessage ? Alignment.centerRight : Alignment.centerLeft;
+
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Align(
-        alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
+        alignment: alignment,
         child: Container(
-          padding: EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(12.0),
           decoration: BoxDecoration(
-            color: isUserMessage ? Colors.green : Colors.grey,
+            color: bgColor,
             borderRadius: BorderRadius.circular(16.0),
           ),
-          child: Text(
-            message,
-            style:
-                TextStyle(color: isUserMessage ? Colors.white : Colors.black),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                message,
+                style: TextStyle(color: textColor),
+              ),
+              if (reply.isNotEmpty)
+                Container(
+                  color: Colors.blueGrey,
+                  padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    'Admin Reply: $reply',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
