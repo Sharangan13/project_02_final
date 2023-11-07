@@ -50,14 +50,6 @@ class _OrdersListState extends State<OrdersList> {
     }).toList();
   }
 
-  // Future<void> _markAsDeleted(DocumentSnapshot orderDocument) async {
-  //   // Delete the order from Firestore
-  //   await orderDocument.reference.delete();
-  //
-  //   // Reload the orders after deletion
-  //   await _loadOrders();
-  // }
-
   // finished key function
   Future<void> _markAsFinished(DocumentSnapshot orderDocument) async {
     // Show a confirmation dialog
