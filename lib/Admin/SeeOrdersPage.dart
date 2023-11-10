@@ -29,7 +29,8 @@ class _OrdersListState extends State<OrdersList> {
   }
 
   Future<void> _loadOrders() async {
-    final snapshot = await FirebaseFirestore.instance.collectionGroup("UserBooking").get();
+    final snapshot =
+        await FirebaseFirestore.instance.collectionGroup("UserBooking").get();
     setState(() {
       _ordersSnapshot = snapshot;
     });
@@ -37,12 +38,15 @@ class _OrdersListState extends State<OrdersList> {
 
   List<DocumentSnapshot> _filterOrders() {
     if (_searchQuery.isEmpty) {
-      return _ordersSnapshot.docs; // Return all orders if the search query is empty
+      return _ordersSnapshot
+          .docs; // Return all orders if the search query is empty
     }
 
     return _ordersSnapshot.docs.where((order) {
       final orderData = order.data() as Map<String, dynamic>;
-      final userEmail = orderData['UserEmail'].toString().toLowerCase(); // Modify the field name here
+      final userEmail = orderData['UserEmail']
+          .toString()
+          .toLowerCase(); // Modify the field name here
       final searchQuery = _searchQuery.toLowerCase();
 
       // Check if the User Email contains the search query
@@ -58,17 +62,20 @@ class _OrdersListState extends State<OrdersList> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirm Mark'),
-          content: Text('Are you sure you want to mark As Finished this order?'),
+          content:
+              Text('Are you sure you want to mark As Finished this order?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // Return false when cancel button is pressed
+                Navigator.of(context)
+                    .pop(false); // Return false when cancel button is pressed
               },
               child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // Return true when OK button is pressed
+                Navigator.of(context)
+                    .pop(true); // Return true when OK button is pressed
               },
               child: Text('OK'),
             ),
@@ -85,12 +92,15 @@ class _OrdersListState extends State<OrdersList> {
       await _loadOrders();
     }
   }
-     // end of delete function
+
+  // end of delete function
   // delete button function
   Future<void> _performOrderAction(DocumentSnapshot orderDocument) async {
     bool isCancellation = orderDocument['status'] == 'Pending';
 
-    String dialogMessage = isCancellation ? 'Are you sure you want to cancel this order?' : 'Are you sure you want to delete the order?';
+    String dialogMessage = isCancellation
+        ? 'Are you sure you want to cancel this order?'
+        : 'Are you sure you want to delete the order?';
     String buttonLabel = isCancellation ? 'Cancel Order' : 'delete';
 
     bool confirmAction = await showDialog(
@@ -129,7 +139,8 @@ class _OrdersListState extends State<OrdersList> {
       // Reload orders after the action
       await _loadOrders();
     }
-  }  // end delete button function
+  } // end delete button function
+
   // end of delete button function
   @override
   Widget build(BuildContext context) {
@@ -154,59 +165,61 @@ class _OrdersListState extends State<OrdersList> {
         Expanded(
           child: filteredOrders.isEmpty
               ? Center(
-            child: Text(
-              'No matching orders found',
-              style: TextStyle(fontSize: 18),
-            ),
-          )
-          : ListView.builder(
-            itemCount: filteredOrders.length,
-            itemBuilder: (context, index) {
-              DocumentSnapshot userBookingDocument = filteredOrders[index];
-              YourOrderModel order = YourOrderModel(
-                userEmail: userBookingDocument['UserEmail'],
-                category: userBookingDocument['category'],
-                imageUrl: userBookingDocument['image_url'],
-                name: userBookingDocument['name'],
-                quantity: userBookingDocument['quantity'],
-                status: userBookingDocument['status'],
-              );
+                  child: Text(
+                    'No matching orders found',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: filteredOrders.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot userBookingDocument =
+                        filteredOrders[index];
+                    YourOrderModel order = YourOrderModel(
+                      userEmail: userBookingDocument['UserEmail'],
+                      category: userBookingDocument['category'],
+                      imageUrl: userBookingDocument['image_url'],
+                      name: userBookingDocument['name'],
+                      quantity: userBookingDocument['quantity'],
+                      status: userBookingDocument['status'],
+                    );
 
-              return ListTile(
-                title: Text('User Email: ${order.userEmail}'),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Category: ${order.category}'),
-                    Text('Name: ${order.name}'),
-                    Text('Quantity: ${order.quantity}'),
-                    Text('Status: ${order.status}'),
-                  ],
+                    return ListTile(
+                      title: Text('User Email: ${order.userEmail}'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Category: ${order.category}'),
+                          Text('Name: ${order.name}'),
+                          Text('Quantity: ${order.quantity}'),
+                          Text('Status: ${order.status}'),
+                        ],
+                      ),
+                      leading: Image.network(order.imageUrl ?? ''),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              _markAsFinished(userBookingDocument);
+                            },
+                            child: Text('Finished'),
+                          ),
+                          SizedBox(
+                              width: 10), // Add some spacing between buttons
+                          ElevatedButton(
+                            onPressed: () {
+                              _performOrderAction(userBookingDocument);
+                            },
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.red), // Set button color to red
+                            child: Text('Delete'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-                leading: Image.network(order.imageUrl ?? ''),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _markAsFinished(userBookingDocument);
-                      },
-                      child: Text('Finished'),
-                    ),
-                    SizedBox(width: 10), // Add some spacing between buttons
-                    ElevatedButton(
-                      onPressed: () {
-                        _performOrderAction(userBookingDocument);
-                      },
-                      style: ElevatedButton.styleFrom(primary: Colors.red), // Set button color to red
-                      child: Text('Delete'),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-
         ),
       ],
     );
@@ -230,6 +243,7 @@ class YourOrderModel {
     this.status,
   });
 }
+
 void main() {
   runApp(MaterialApp(home: SeeOrdersPage()));
 }

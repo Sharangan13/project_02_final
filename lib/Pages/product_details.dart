@@ -294,24 +294,34 @@ class _ProductDetailsState extends State<ProductDetails> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Payment Required'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'You must make the payment before booking because you have reached the maximum total amount or the maximum number of items allowed for booking',
-                  ),
-                ],
+              title: Text('Booking Criteria Not Met'),
+              content: Text(
+                'Kindly note that you have reached the maximum booking limit. If you would like to proceed with the booking, we kindly request you to pay the full booking amount.',
               ),
-              actions: [
-                ElevatedButton(
+              actions: <Widget>[
+                TextButton(
                   onPressed: () {
+                    // Add your logic for the "Continue Booking" option here
+                    Navigator.of(context).pop();
+                    // Call the function to handle the continuation of booking
+                    // e.g., _continueBooking();
+                  },
+                  child: Text(
+                    'Continue Booking',
+                    style: TextStyle(
+                        color: Colors.green, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Add your logic for the "Cancel" option here
                     Navigator.of(context).pop();
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold),
                   ),
-                  child: Text('OK'),
                 ),
               ],
             );
@@ -454,7 +464,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           ),
           SizedBox(height: 16.0),
           Text(
-            'Total Amount: Rs ${totalAmount.toStringAsFixed(2)}',
+            'Total Without Discount: Rs ${totalAmount.toStringAsFixed(2)}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16.0,

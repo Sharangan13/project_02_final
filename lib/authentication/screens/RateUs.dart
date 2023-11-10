@@ -43,18 +43,15 @@ class _RateUsScreenState extends State<RateUsScreen> {
           .orderBy('timestamp', descending: true)
           .get();
 
-      final List<RatingItem> loadedRecentRatings = [];
-      for (final doc in querySnapshot.docs) {
+      final List<RatingItem> loadedRecentRatings =
+          querySnapshot.docs.map((doc) {
         final data = doc.data() as Map<String, dynamic>;
-        loadedRecentRatings.add(RatingItem(
-          userId: data['userId'],
+        return RatingItem(
+          email: data['email'],
           rating: data['rating'].toDouble(),
           comment: data['comment'] ?? '',
-        ));
-      }
-
-      // Reverse the order of recentRatings to display recent ratings at the top
-      loadedRecentRatings.sort((a, b) => b.timestamp!.compareTo(a.timestamp!));
+        );
+      }).toList();
 
       // Update the state to display the loaded recent ratings
       setState(() {
@@ -68,9 +65,16 @@ class _RateUsScreenState extends State<RateUsScreen> {
 
   // Widget to display a single rating item
   Widget buildRatingItem(RatingItem item) {
-    return ListTile(
-      title: Text('Rating: ${item.rating}'),
-      subtitle: Text(item.comment ?? ''),
+    return Card(
+      elevation: 2.0,
+      margin: EdgeInsets.symmetric(vertical: 8.0),
+      child: ListTile(
+        title: Text(
+          '${item.rating?.toInt()} STAR',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(item.comment ?? ''),
+      ),
     );
   }
 
@@ -78,9 +82,39 @@ class _RateUsScreenState extends State<RateUsScreen> {
     try {
       final firestore = FirebaseFirestore.instance;
 
-      // Save the rating and comment data to Firestore
+      // Check if a rating has been selected
+      if (rating == 0.0) {
+        // Show an alert if no rating has been selected
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                'Rating Required',
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              content: Text(
+                'Please select a rating before submitting.',
+                style: TextStyle(color: Colors.red),
+              ),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        return; // Exit the method if no rating has been selected
+      }
+
+      // Save the rating, user ID, user name, and comment data to Firestore
       await firestore.collection('ratings').add({
-        'userId': user?.uid,
+        'email': user?.email,
         'rating': rating,
         'comment': comment,
         'timestamp': FieldValue.serverTimestamp(),
@@ -91,9 +125,15 @@ class _RateUsScreenState extends State<RateUsScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Rating Submitted'),
+            title: Text(
+              'Rating Submitted',
+              style:
+                  TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+            ),
             content: Text(
-                'Thank you for your feedback! Your rating has been submitted.'),
+              'Thank you for your feedback! Your rating has been submitted.',
+              style: TextStyle(color: Colors.green),
+            ),
             actions: [
               TextButton(
                 child: Text('OK'),
@@ -132,7 +172,7 @@ class _RateUsScreenState extends State<RateUsScreen> {
           children: [
             Text(
               'Rate our Plant Management and Consultancy Services:',
-              style: TextStyle(fontSize: 18.0),
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16.0),
             Row(
@@ -148,7 +188,7 @@ class _RateUsScreenState extends State<RateUsScreen> {
                     },
                     child: Icon(
                       i <= rating.floor() ? Icons.star : Icons.star_border,
-                      color: Colors.yellow,
+                      color: Colors.orange,
                       size: 40.0,
                     ),
                   ),
@@ -169,6 +209,9 @@ class _RateUsScreenState extends State<RateUsScreen> {
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green, // Change button color to green
+              ),
               child: Text('Submit'),
               onPressed: () {
                 submitRating(); // Call the submitRating method when the button is pressed
@@ -176,17 +219,21 @@ class _RateUsScreenState extends State<RateUsScreen> {
             ),
             SizedBox(height: 16.0),
             Text(
-              'Recent Ratings:',
-              style: TextStyle(fontSize: 18.0),
+              'Recent Ratings',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             // Display the list of recent ratings
             Expanded(
-              child: ListView.builder(
-                itemCount: recentRatings.length,
-                itemBuilder: (context, index) {
-                  return buildRatingItem(recentRatings[index]);
-                },
-              ),
+              child: recentRatings.isEmpty
+                  ? Center(
+                      child: Text('No ratings available.'),
+                    )
+                  : ListView.builder(
+                      itemCount: recentRatings.length,
+                      itemBuilder: (context, index) {
+                        return buildRatingItem(recentRatings[index]);
+                      },
+                    ),
             ),
           ],
         ),
@@ -196,13 +243,13 @@ class _RateUsScreenState extends State<RateUsScreen> {
 }
 
 class RatingItem {
-  final String? userId;
+  final String? email;
   final double? rating;
   final String? comment; // Comment is still nullable
   final Timestamp? timestamp;
 
   RatingItem({
-    this.userId,
+    this.email,
     this.rating,
     required this.comment,
     this.timestamp,
