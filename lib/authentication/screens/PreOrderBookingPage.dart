@@ -44,6 +44,8 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
             .collection('Booking')
             .doc(currentUser?.uid)
             .collection("UserBooking")
+            .where('status', isEqualTo: 'pending')
+            .where('payment', isEqualTo: 'incomplete')
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {

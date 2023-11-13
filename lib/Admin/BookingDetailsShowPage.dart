@@ -21,7 +21,8 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
         stream: FirebaseFirestore.instance
             .collection('ConsultancyBooking')
             .doc(widget.qrCode)
-            .collection('Booking')
+            .collection('ConsaltBooking')
+            .where('status', isEqualTo: 'pending')
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -135,7 +136,7 @@ class BookingCard extends StatelessWidget {
                             onPressed: () {
                               Navigator.pop(context); // Close the dialog
                               // Handle complete button action here
-                              deleteBookingDetail(bookingId);
+                              updateBookingDetail(bookingId);
                             },
                             child: Text(
                               'Yes',
@@ -173,14 +174,14 @@ class BookingCard extends StatelessWidget {
     );
   }
 
-  Future<void> deleteBookingDetail(String bookingId) async {
+  Future<void> updateBookingDetail(String bookingId) async {
     try {
       await FirebaseFirestore.instance
           .collection('ConsultancyBooking')
           .doc(qrCode)
-          .collection('Booking')
+          .collection('ConsaltBooking')
           .doc(bookingId)
-          .delete();
+          .update({'status': 'finished'});
     } catch (e) {
       print('Error deleting booking detail: $e');
     }

@@ -10,7 +10,8 @@ class ConsultancyBookingDetailsPage extends StatelessWidget {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collectionGroup('Booking') // Root collection
+            .collectionGroup('ConsaltBooking')
+            .where('status', isEqualTo: 'pending')
             .snapshots(), // Fetch all documents in the 'ConsultancyBooking' collection
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -97,7 +98,7 @@ class ConsultancyBookingDetailsPage extends StatelessWidget {
                                       Navigator.pop(
                                           context); // Close the dialog
                                       // Handle complete button action here
-                                      deleteBookingDetail(id);
+                                      completeBookingDetail(id);
                                     },
                                     child: Text(
                                       'Yes',
@@ -197,7 +198,7 @@ class ConsultancyBookingDetailsPage extends StatelessWidget {
     try {
       // Query the 'Booking' sub-collection for the document with a matching 'id'
       QuerySnapshot bookingQuery = await FirebaseFirestore.instance
-          .collectionGroup('Booking')
+          .collectionGroup('ConsaltBooking')
           .where('id', isEqualTo: id)
           .get();
 
@@ -209,7 +210,27 @@ class ConsultancyBookingDetailsPage extends StatelessWidget {
         print('Document not found with id: $id');
       }
     } catch (e) {
-      print('Error deleting booking detail: $e');
+      print('Error Delete booking detail: $e');
+    }
+  }
+
+  Future<void> completeBookingDetail(String id) async {
+    try {
+      // Query the 'Booking' sub-collection for the document with a matching 'id'
+      QuerySnapshot bookingQuery = await FirebaseFirestore.instance
+          .collectionGroup('ConsaltBooking')
+          .where('id', isEqualTo: id)
+          .get();
+
+      if (bookingQuery.docs.isNotEmpty) {
+        // Assuming there's only one document with the specified 'id'
+        var documentReference = bookingQuery.docs.first.reference;
+        await documentReference.update({'status': 'finished'});
+      } else {
+        print('Document not found with id: $id');
+      }
+    } catch (e) {
+      print('Error cancelled booking detail: $e');
     }
   }
 }

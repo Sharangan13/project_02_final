@@ -26,7 +26,8 @@ class _UserBookingDetailsPageState extends State<UserBookingDetailsPage> {
           await FirebaseFirestore.instance
               .collection('ConsultancyBooking')
               .doc(uid)
-              .collection("Booking")
+              .collection("ConsaltBooking")
+              .where('status', isEqualTo: 'pending')
               .get();
 
       if (querySnapshot.docs.isNotEmpty) {

@@ -65,7 +65,7 @@ class _EnterDetailsPageState extends State<EnterDetailsPage> {
     FirebaseFirestore.instance
         .collection('ConsultancyBooking')
         .doc(uid)
-        .collection("Booking")
+        .collection("ConsaltBooking")
         .doc(documentId) // Use the generated document ID
         .set({
       'id': documentId, // Store the document ID as a field
@@ -74,6 +74,7 @@ class _EnterDetailsPageState extends State<EnterDetailsPage> {
       'selectedDate': widget.selectedDate.toLocal().toString().split(' ')[0],
       'selectedTime': widget.selectedTime,
       'email': user?.email,
+      'status': "pending"
     }).then((value) {
       // Booking data saved successfully
       print('Booking data saved to Firestore with ID: $documentId');

@@ -348,7 +348,9 @@ class _AdminHomeState extends State<AdminHome> {
                   GestureDetector(
                     onTap: () {
                       _sessionTimeout.onActivityDetected();
-                      _logout(); // Call the logout function when Logout is tapped
+                      Future.delayed(Duration(seconds: 1), () {
+                        _logout(); // Call the logout function after a delay
+                      });
                     },
                     child: itemDashboard(
                       'Logout',

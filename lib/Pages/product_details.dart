@@ -7,6 +7,7 @@ import 'cart.dart';
 
 class Booking {
   String status;
+  String payment;
   final String category;
   final String image_url;
   final String name;
@@ -20,6 +21,7 @@ class Booking {
 
   Booking({
     required this.status,
+    required this.payment,
     required this.category,
     required this.image_url,
     required this.name,
@@ -38,6 +40,7 @@ class Booking {
       'total': total * quantity,
       'quantity': quantity,
       'status': status,
+      'payment': payment,
       'UserEmail': email,
       'bookingId': bookingId,
       'productId': productId,
@@ -214,6 +217,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
       final Booking booking = Booking(
         status: "pending",
+        payment: "incomplete",
         category: widget.product.Category,
         image_url: widget.product.imageURL,
         name: widget.product.name,

@@ -221,7 +221,7 @@ class _BookingPageState extends State<BookingPage> {
 
   Future<bool> _isTimeSlotAvailable(String time) async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collectionGroup('Booking')
+        .collectionGroup('ConsaltBooking')
         .where('selectedDate',
             isEqualTo: selectedDate.toLocal().toString().split(' ')[0])
         .where('selectedTime', isEqualTo: time)

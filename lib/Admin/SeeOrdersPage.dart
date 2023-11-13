@@ -20,7 +20,8 @@ class OrdersList extends StatefulWidget {
 
 class _OrdersListState extends State<OrdersList> {
   String _searchQuery = '';
-  late QuerySnapshot _ordersSnapshot;
+  List<DocumentSnapshot> _ordersList = [];
+  bool _loading = true;
 
   @override
   void initState() {
@@ -29,119 +30,118 @@ class _OrdersListState extends State<OrdersList> {
   }
 
   Future<void> _loadOrders() async {
-    final snapshot =
-        await FirebaseFirestore.instance.collectionGroup("UserBooking").get();
-    setState(() {
-      _ordersSnapshot = snapshot;
-    });
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collectionGroup("UserBooking")
+          .where('status', isEqualTo: 'pending')
+          .get();
+
+      setState(() {
+        _ordersList = snapshot.docs;
+        _loading = false; // Set loading to false after data is loaded
+      });
+    } catch (e) {
+      print('Error loading orders: $e');
+      // Handle the error, show a message, or retry the operation
+      setState(() {
+        _loading = false; // Set loading to false even in case of an error
+      });
+    }
   }
 
   List<DocumentSnapshot> _filterOrders() {
     if (_searchQuery.isEmpty) {
-      return _ordersSnapshot
-          .docs; // Return all orders if the search query is empty
+      return _ordersList;
     }
 
-    return _ordersSnapshot.docs.where((order) {
+    return _ordersList.where((order) {
       final orderData = order.data() as Map<String, dynamic>;
-      final userEmail = orderData['UserEmail']
-          .toString()
-          .toLowerCase(); // Modify the field name here
+      final userEmail = orderData['UserEmail'].toString().toLowerCase();
       final searchQuery = _searchQuery.toLowerCase();
 
-      // Check if the User Email contains the search query
       return userEmail.contains(searchQuery);
     }).toList();
   }
 
-  // finished key function
   Future<void> _markAsFinished(DocumentSnapshot orderDocument) async {
-    // Show a confirmation dialog
-    bool confirmDelete = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirm Mark'),
-          content:
-              Text('Are you sure you want to mark As Finished this order?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // Return false when cancel button is pressed
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // Return true when OK button is pressed
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (confirmDelete ?? false) {
-      // User confirmed deletion, proceed with deletion
-      await orderDocument.reference.delete();
-
-      // Reload the orders after deletion
-      await _loadOrders();
-    }
-  }
-
-  // end of delete function
-  // delete button function
-  Future<void> _performOrderAction(DocumentSnapshot orderDocument) async {
-    bool isCancellation = orderDocument['status'] == 'Pending';
-
-    String dialogMessage = isCancellation
-        ? 'Are you sure you want to cancel this order?'
-        : 'Are you sure you want to delete the order?';
-    String buttonLabel = isCancellation ? 'Cancel Order' : 'delete';
-
     bool confirmAction = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(isCancellation ? 'Confirm Cancel' : 'Confirm delete'),
-          content: Text(dialogMessage),
+          title: Text(
+            "Finished Order",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Text("Are you sure you want to finished this order?"),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              child: Text('Cancel'),
+              child: Text(
+                'No',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              child: Text(buttonLabel),
+              child: Text("Yes"),
             ),
           ],
         );
       },
     );
 
-    if (confirmAction ?? false) {
-      if (isCancellation) {
-        // Cancel order logic here
-        await orderDocument.reference.update({'status': 'Cancelled'});
-      } else {
-        // Mark order as finished logic here
-        await orderDocument.reference.update({'status': 'Finished'});
-      }
+    if (confirmAction ?? true) {
+      await orderDocument.reference.update({'payment': 'complete'});
+      await orderDocument.reference.update({'status': 'complete'});
 
-      // Reload orders after the action
       await _loadOrders();
     }
-  } // end delete button function
+  }
 
-  // end of delete button function
+  Future<void> _cancellOrderAction(DocumentSnapshot orderDocument) async {
+    bool confirmAction = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Cancel Order",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Text("Are you sure you want to cancel this order?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text(
+                'No',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text("Yes"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmAction ?? true) {
+      if (orderDocument['status'] == 'pending') {
+        await orderDocument.reference.update({'status': 'cancelled'});
+      }
+
+      await _loadOrders();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredOrders = _filterOrders();
@@ -152,7 +152,7 @@ class _OrdersListState extends State<OrdersList> {
           padding: const EdgeInsets.all(8.0),
           child: TextField(
             decoration: InputDecoration(
-              labelText: 'Search Here', // Update the label
+              labelText: 'Search using Customer email..',
               suffixIcon: Icon(Icons.search),
             ),
             onChanged: (value) {
@@ -163,87 +163,98 @@ class _OrdersListState extends State<OrdersList> {
           ),
         ),
         Expanded(
-          child: filteredOrders.isEmpty
-              ? Center(
-                  child: Text(
-                    'No matching orders found',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: filteredOrders.length,
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot userBookingDocument =
-                        filteredOrders[index];
-                    YourOrderModel order = YourOrderModel(
-                      userEmail: userBookingDocument['UserEmail'],
-                      category: userBookingDocument['category'],
-                      imageUrl: userBookingDocument['image_url'],
-                      name: userBookingDocument['name'],
-                      quantity: userBookingDocument['quantity'],
-                      status: userBookingDocument['status'],
-                    );
+          child: _loading
+              ? Center(child: CircularProgressIndicator()) // Loading indicator
+              : filteredOrders.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No matching orders found',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: filteredOrders.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot userBookingDocument =
+                            filteredOrders[index];
+                        OrderModel order = OrderModel(
+                          userEmail: userBookingDocument['UserEmail'],
+                          imageUrl: userBookingDocument['image_url'],
+                          name: userBookingDocument['name'],
+                          quantity: userBookingDocument['quantity'],
+                          payment: userBookingDocument['payment'],
+                        );
 
-                    return ListTile(
-                      title: Text('User Email: ${order.userEmail}'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Category: ${order.category}'),
-                          Text('Name: ${order.name}'),
-                          Text('Quantity: ${order.quantity}'),
-                          Text('Status: ${order.status}'),
-                        ],
-                      ),
-                      leading: Image.network(order.imageUrl ?? ''),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              _markAsFinished(userBookingDocument);
-                            },
-                            child: Text('Finished'),
+                        return Card(
+                          elevation: 3,
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: ListTile(
+                            title: Text(
+                              '${order.userEmail}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Name: ${order.name}'),
+                                Text('Quantity: ${order.quantity}'),
+                                Text('Payment: ${order.payment}'),
+                              ],
+                            ),
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(order.imageUrl ?? ''),
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _markAsFinished(userBookingDocument);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                  ),
+                                  child: Text('Finished'),
+                                ),
+                                SizedBox(width: 10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _cancellOrderAction(userBookingDocument);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                  ),
+                                  child: Text('Delete'),
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(
-                              width: 10), // Add some spacing between buttons
-                          ElevatedButton(
-                            onPressed: () {
-                              _performOrderAction(userBookingDocument);
-                            },
-                            style: ElevatedButton.styleFrom(
-                                primary: Colors.red), // Set button color to red
-                            child: Text('Delete'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                        );
+                      },
+                    ),
         ),
       ],
     );
   }
 }
 
-class YourOrderModel {
+class OrderModel {
   final String? userEmail;
-  final String? category;
   final String? imageUrl;
   final String? name;
   final int? quantity;
+  final String? payment;
   final String? status;
 
-  YourOrderModel({
-    this.userEmail,
-    this.category,
-    this.imageUrl,
-    this.name,
-    this.quantity,
-    this.status,
-  });
-}
-
-void main() {
-  runApp(MaterialApp(home: SeeOrdersPage()));
+  OrderModel(
+      {this.userEmail,
+      this.imageUrl,
+      this.name,
+      this.quantity,
+      this.payment,
+      this.status});
 }

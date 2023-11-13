@@ -13,6 +13,7 @@ class CartScreen extends StatefulWidget {
 // Define a Booking class to represent booking information
 class Booking {
   String status;
+  String payment;
   final String category;
   final String image_url;
   final String name;
@@ -25,6 +26,7 @@ class Booking {
 
   Booking({
     required this.status,
+    required this.payment,
     required this.category,
     required this.image_url,
     required this.name,
@@ -45,6 +47,7 @@ class Booking {
       'total': total * quantity,
       'quantity': quantity,
       'status': status,
+      'payment': payment,
       'UserEmail': email,
       'bookingId': bookingId,
       'productId': productId,
@@ -201,7 +204,8 @@ class _CartScreenState extends State<CartScreen> {
 
       // Create a Booking object with the total amount and quantity of the cart
       Booking newBooking = Booking(
-        status: 'Pending',
+        status: 'pending',
+        payment: 'payment',
         category: 'Combined', // Update with an appropriate category
         image_url: '', // Update with an appropriate image URL
         name: 'Combined Booking', // Update with an appropriate name
@@ -311,7 +315,8 @@ class _CartScreenState extends State<CartScreen> {
 
         // Create a Booking object with the calculated total
         Booking booking = Booking(
-          status: 'Pending',
+          status: 'pending',
+          payment: 'incomplete',
           category: product.Category,
           image_url: product.imageURL,
           name: product.name,

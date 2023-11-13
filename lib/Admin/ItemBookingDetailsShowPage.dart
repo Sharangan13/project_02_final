@@ -25,6 +25,7 @@ class _BookingDetailsPageState extends State<ItemBookingDetailsPage> {
             .collection('Booking')
             .doc(widget.qrCode)
             .collection('UserBooking')
+            .where('status', isEqualTo: 'pending')
             .get();
 
     if (querySnapshot.docs.isNotEmpty) {
@@ -91,7 +92,10 @@ class _BookingDetailsPageState extends State<ItemBookingDetailsPage> {
             .doc(widget.qrCode)
             .collection('UserBooking')
             .doc(bookingId)
-            .delete();
+            .update({
+          'status': 'complete',
+          'payment': 'complete',
+        });
 
         // Fetch and refresh data after completion
         setState(() {
@@ -164,7 +168,7 @@ class _BookingDetailsPageState extends State<ItemBookingDetailsPage> {
             .doc(widget.qrCode)
             .collection('UserBooking')
             .doc(bookingId)
-            .delete();
+            .update({'status': 'cancelled'});
 
         // Increase the product quantity by the canceled quantity
 

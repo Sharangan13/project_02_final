@@ -15,20 +15,21 @@ class SessionTimeout {
   void _resetTimer() {
     _timer?.cancel();
     _timer = Timer(Duration(seconds: timeoutInSeconds), _onTimeout);
+    print("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
   }
 
   void _onTimeout() {
     if (!_userInteracted) {
-      _logout(); // Perform the logout action if user didn't interact
+      _logout(); // Perform the logout action if the user didn't interact
     } else {
       _userInteracted =
           false; // Reset the userInteracted flag for the next timeout
-      _resetTimer(); // Restart the timer if user has interacted
+      _resetTimer(); // Restart the timer if the user has interacted
     }
   }
 
   void _logout() {
-    // Perform the logout action here (e.g., clear user session, go to login screen)
+    // Perform the logout action here (e.g., clear user session, go to the login screen)
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => login_screen()),
@@ -37,13 +38,12 @@ class SessionTimeout {
 
   void onUserInteraction() {
     _userInteracted = true;
+    _resetTimer(); // Reset the timer on user interaction
   }
 
-  // Call this method to reset the timer on user activity
+  // This method is named onActivityDetected, consistent with AdminHome usage
   void onActivityDetected() {
-    _userInteracted =
-        true; // Set the userInteracted flag to true on user activity
-    _resetTimer();
+    onUserInteraction();
   }
 
   void dispose() {
