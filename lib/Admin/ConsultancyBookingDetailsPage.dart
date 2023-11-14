@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'SessionTimeout.dart';
+
 class ConsultancyBookingDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -80,6 +82,8 @@ class ConsultancyBookingDetailsPage extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
+                          SessionTimeout().onUserInteraction();
+
                           // Show a confirmation dialog
                           showDialog(
                             context: context,

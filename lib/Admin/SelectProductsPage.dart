@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../Pages/Product.dart';
 import 'SelectedProductsPage.dart';
+import 'SessionTimeout.dart';
 
 class SelectProductsPage extends StatefulWidget {
   @override
@@ -27,6 +28,7 @@ class _SelectProductsPageState extends State<SelectProductsPage> {
             children: [
               ElevatedButton(
                 onPressed: () {
+                  SessionTimeout().onUserInteraction();
                   _changeCollection('Plants');
                 },
                 style: ElevatedButton.styleFrom(
@@ -38,6 +40,7 @@ class _SelectProductsPageState extends State<SelectProductsPage> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  SessionTimeout().onUserInteraction();
                   _changeCollection('Equipments');
                 },
                 style: ElevatedButton.styleFrom(
@@ -62,7 +65,9 @@ class _SelectProductsPageState extends State<SelectProductsPage> {
                   radius: 15,
                   backgroundColor: Colors.white,
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      SessionTimeout().onUserInteraction();
+                    },
                     icon: const Icon(
                       Icons.search,
                       size: 20,
@@ -118,6 +123,7 @@ class _SelectProductsPageState extends State<SelectProductsPage> {
                         ),
                         trailing: ElevatedButton(
                           onPressed: () {
+                            SessionTimeout().onUserInteraction();
                             _showQuantityDialog(product);
                           },
                           child: Text('Choose Quantity'),

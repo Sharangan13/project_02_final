@@ -2,37 +2,36 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:project_02_final/authentication/screens/login.dart';
 
-class SessionTimeout {
-  final BuildContext context;
-  final int timeoutInSeconds;
+class SessionTimeout extends NavigatorObserver {
+  static final SessionTimeout _instance = SessionTimeout._internal();
+  factory SessionTimeout() => _instance;
+
+  SessionTimeout._internal();
+
+  final int timeoutInSeconds = 300; // Set 5 mins session time out
   Timer? _timer;
   bool _userInteracted = false;
 
-  SessionTimeout(this.context, this.timeoutInSeconds) {
-    _resetTimer();
-  }
-
   void _resetTimer() {
     _timer?.cancel();
-    _timer = Timer(Duration(seconds: timeoutInSeconds), _onTimeout);
-    print("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
-  }
-
-  void _onTimeout() {
-    if (!_userInteracted) {
-      _logout(); // Perform the logout action if the user didn't interact
-    } else {
-      _userInteracted =
-          false; // Reset the userInteracted flag for the next timeout
-      _resetTimer(); // Restart the timer if the user has interacted
-    }
+    _timer = Timer(Duration(seconds: timeoutInSeconds), () {
+      if (!_userInteracted) {
+        _logout();
+      } else {
+        _userInteracted = false;
+        _resetTimer();
+      }
+    });
+    print("Timer reset successfully..........................");
   }
 
   void _logout() {
     // Perform the logout action here (e.g., clear user session, go to the login screen)
     Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => login_screen()),
+      navigator!.context, // Change this line
+      MaterialPageRoute(
+        builder: (context) => login_screen(),
+      ),
     );
   }
 
@@ -46,7 +45,21 @@ class SessionTimeout {
     onUserInteraction();
   }
 
-  void dispose() {
-    _timer?.cancel();
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    onActivityDetected();
+    super.didPush(route, previousRoute);
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    onActivityDetected();
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    onActivityDetected();
+    super.didPop(route, previousRoute);
   }
 }

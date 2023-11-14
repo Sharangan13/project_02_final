@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'QrScannerItemBookingPage.dart';
 import 'QrScannerPage.dart';
+import 'SessionTimeout.dart';
 
 class QrScannerHome extends StatelessWidget {
   @override
@@ -29,6 +30,8 @@ class QrScannerHome extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
                   onPressed: () {
+                    SessionTimeout().onUserInteraction();
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -54,6 +57,8 @@ class QrScannerHome extends StatelessWidget {
               SizedBox(height: 20), // Add some spacing between the buttons
               ElevatedButton(
                 onPressed: () {
+                  SessionTimeout().onUserInteraction();
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(

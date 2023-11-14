@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../Pages/Product.dart';
 import 'SaleDetails.dart';
+import 'SessionTimeout.dart';
 
 class SelectedProductsPage extends StatefulWidget {
   late final List<Product> selectedProducts;
@@ -70,12 +71,17 @@ class _SelectedProductsPageState extends State<SelectedProductsPage> {
               children: [
                 ElevatedButton(
                   onPressed: () {
+                    SessionTimeout().onUserInteraction();
+
                     _showDiscountDialog();
                   },
                   child: Text('Add Discount'),
                 ),
                 ElevatedButton(
-                  onPressed: _calculateTotalAmount,
+                  onPressed: () {
+                    _calculateTotalAmount;
+                    SessionTimeout().onUserInteraction();
+                  },
                   child: Text('Calculate Total Amount'),
                 ),
               ],
@@ -114,7 +120,10 @@ class _SelectedProductsPageState extends State<SelectedProductsPage> {
               child: Center(
                 child: Container(
                   child: ElevatedButton(
-                    onPressed: _handlePaymentComplete,
+                    onPressed: () {
+                      _handlePaymentComplete;
+                      SessionTimeout().onUserInteraction();
+                    },
                     child: Text('Payment Complete'),
                   ),
                 ),

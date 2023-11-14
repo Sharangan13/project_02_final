@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'SessionTimeout.dart';
+
 class SeeOrdersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -76,6 +78,8 @@ class _OrdersListState extends State<OrdersList> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
+                SessionTimeout().onUserInteraction();
+
                 Navigator.of(context).pop(false);
               },
               child: Text(
@@ -85,6 +89,8 @@ class _OrdersListState extends State<OrdersList> {
             ),
             TextButton(
               onPressed: () {
+                SessionTimeout().onUserInteraction();
+
                 Navigator.of(context).pop(true);
               },
               child: Text("Yes"),
@@ -115,6 +121,8 @@ class _OrdersListState extends State<OrdersList> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
+                SessionTimeout().onUserInteraction();
+
                 Navigator.of(context).pop(false);
               },
               child: Text(
@@ -124,6 +132,8 @@ class _OrdersListState extends State<OrdersList> {
             ),
             TextButton(
               onPressed: () {
+                SessionTimeout().onUserInteraction();
+
                 Navigator.of(context).pop(true);
               },
               child: Text("Yes"),
@@ -213,6 +223,8 @@ class _OrdersListState extends State<OrdersList> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
+                                    SessionTimeout().onUserInteraction();
+
                                     _markAsFinished(userBookingDocument);
                                   },
                                   style: ElevatedButton.styleFrom(
