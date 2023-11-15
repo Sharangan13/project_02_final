@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../Pages/cart.dart';
 import '../../Pages/cart_screen.dart';
+import '../../Pages/payment.dart';
 import '../../components/RecentProductsPage.dart';
 import '../../reusable_widgets/theme_provider.dart';
 import 'AboutUsPage.dart';
@@ -397,6 +398,20 @@ class _homeState extends State<home> {
                               uid: '',
                             )),
                   ); //action when this menu is pressed
+                },
+              ),
+              ListTile(
+                dense: true,
+                title: const Text("Pay here"),
+                leading: const Icon(Icons.paypal),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => paymentpage(
+                                title: '',
+                              )));
+                  //action when this menu is pressed
                 },
               ),
               ListTile(
