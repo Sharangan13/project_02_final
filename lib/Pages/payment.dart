@@ -116,6 +116,17 @@ class _paymentState extends State<paymentpage> {
                             print("onSuccess: $params");
                             // Perform actions after a successful PayPal transaction
                             _handleSuccess();
+
+                            // Show a success message using a SnackBar
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    Text('Payment successfully completed!'),
+                                duration: Duration(
+                                    seconds:
+                                        3), // Adjust the duration as needed
+                              ),
+                            );
                           },
                           onError: (error) {
                             print("onError: $error");
