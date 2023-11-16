@@ -34,13 +34,21 @@ class FcmTokenList extends StatelessWidget {
         return ListView.builder(
           itemCount: fcmTokens.length,
           itemBuilder: (context, index) {
-            final fcmTokenData = fcmTokens[index].data() as Map<String, dynamic>;
+            final fcmTokenData =
+                fcmTokens[index].data() as Map<String, dynamic>;
             final email = fcmTokenData['email'] ?? 'Unknown Email';
             final fcmToken = fcmTokenData['fcm'] ?? 'Unknown FCM Token';
 
-            return ListTile(
-              title: Text('Email: $email'),
-              subtitle: Text('FCM Token: $fcmToken'),
+            return Card(
+              elevation: 3,
+              margin: EdgeInsets.all(8),
+              child: ListTile(
+                title: Text(
+                  'Email: $email',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text('FCM Token: $fcmToken'),
+              ),
             );
           },
         );

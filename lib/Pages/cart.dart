@@ -39,4 +39,12 @@ class Cart extends ChangeNotifier {
     }
     return total;
   }
+
+  static int getTotalQuantity() {
+    int totalQuantity = 0;
+    for (var item in items) {
+      totalQuantity += item.quantity;
+    }
+    return totalQuantity;
+  }
 }

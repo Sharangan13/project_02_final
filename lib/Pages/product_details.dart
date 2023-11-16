@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:project_02_final/Pages/payment.dart';
 import 'Product.dart';
 import 'cart.dart';
 
@@ -294,6 +295,13 @@ class _ProductDetailsState extends State<ProductDetails> {
           }
         }
       } else {
+        double finalTotal = await getAmount(); // Call the getAmount method
+        double convert_srilankan_ammount_to_USD = finalTotal / 340;
+        String formattedAmount =
+            convert_srilankan_ammount_to_USD.toStringAsFixed(2);
+
+// Parse the formatted string back to a double
+        double parsedAmount = double.parse(formattedAmount);
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -305,10 +313,11 @@ class _ProductDetailsState extends State<ProductDetails> {
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
-                    // Add your logic for the "Continue Booking" option here
-                    Navigator.of(context).pop();
-                    // Call the function to handle the continuation of booking
-                    // e.g., _continueBooking();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => paymentpage(amount: parsedAmount),
+                      ),
+                    );
                   },
                   child: Text(
                     'Continue Booking',
@@ -335,7 +344,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     }
   }
 
-  Future<bool> checkBookingCriteria(Booking newBooking) async {
+  Future<bool> checkBookingCriteria(Booking previousBooking) async {
     final User? currentUser = FirebaseAuth.instance.currentUser;
 
     // Fetch the user's existing bookings
@@ -345,25 +354,29 @@ class _ProductDetailsState extends State<ProductDetails> {
         .collection("UserBooking")
         .get();
 
-    double totalAmount = 0.0;
-    int totalQuantity = 0;
+    double pewviousTotalAmount = 0.0;
+    int previousTotalQuantity = 0;
 
     for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
       final bookingData = doc.data() as Map<String, dynamic>;
-      final quantity =
-          (bookingData['quantity'] ?? 0) as int; // Ensure it's an int
-      final total =
-          (bookingData['total'] ?? 0) as double; // Ensure it's a double
 
-      totalQuantity += quantity;
-      totalAmount += total;
+      String status = bookingData['status'];
+      String payment = bookingData['payment'];
+      if (status == "pending" && payment == "incomplete") {
+        final quantity =
+            (bookingData['quantity'] ?? 0) as int; // Ensure it's an int
+        final total =
+            (bookingData['total'] ?? 0) as double; // Ensure it's a double
+
+        previousTotalQuantity += quantity;
+        pewviousTotalAmount += total;
+      }
     }
-
+    double selectProductPrice = (widget.product.price * selectedQuantity);
     // Calculate the total amount of the new booking as a double
-    double newBookingTotal = newBooking.total * newBooking.quantity;
 
-    if ((totalQuantity + newBooking.quantity) > 15 ||
-        (totalAmount + newBookingTotal) > 15000.0) {
+    if ((previousTotalQuantity + selectedQuantity) >= 16 ||
+        (pewviousTotalAmount + selectProductPrice) >= 15001.0) {
       return false; // Criteria not met
     }
     // print("QQQQQQQ");
@@ -372,6 +385,36 @@ class _ProductDetailsState extends State<ProductDetails> {
     // print(totalAmount + newBookingTotal);
 
     return true; // Criteria met, booking is allowed
+  }
+
+  Future<double> getAmount() async {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+
+    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Booking')
+        .doc(currentUser!.uid)
+        .collection("UserBooking")
+        .get();
+
+    double previousTotalAmount = 0.0;
+
+    for (final QueryDocumentSnapshot doc in querySnapshot.docs) {
+      final bookingData = doc.data() as Map<String, dynamic>;
+
+      String status = bookingData['status'];
+      String payment = bookingData['payment'];
+
+      if (status == "pending" && payment == "incomplete") {
+        final total = bookingData['total'] as double;
+
+        previousTotalAmount += total;
+      }
+    }
+    double selectProductPrice = (widget.product.price * selectedQuantity);
+    // Calculate finalTotal outside of the loop
+    double finalTotal = previousTotalAmount + selectProductPrice;
+
+    return finalTotal;
   }
 
   @override

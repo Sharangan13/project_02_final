@@ -45,7 +45,6 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
             .doc(currentUser?.uid)
             .collection("UserBooking")
             .where('status', isEqualTo: 'pending')
-            .where('payment', isEqualTo: 'incomplete')
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -94,6 +93,10 @@ class _PreOrderBookingPageState extends State<PreOrderBookingPage> {
                             ),
                             Text(
                               'Quantity: ${bookingData['quantity']}',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            Text(
+                              'Payment: ${bookingData['payment']}',
                               style: TextStyle(color: Colors.grey),
                             ),
                           ],

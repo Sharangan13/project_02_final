@@ -402,20 +402,6 @@ class _homeState extends State<home> {
               ),
               ListTile(
                 dense: true,
-                title: const Text("Pay here"),
-                leading: const Icon(Icons.paypal),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => paymentpage(
-                                title: '',
-                              )));
-                  //action when this menu is pressed
-                },
-              ),
-              ListTile(
-                dense: true,
                 title: const Text("Your QR"),
                 leading: const Icon(Icons.qr_code),
                 onTap: () {

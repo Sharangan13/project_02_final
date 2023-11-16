@@ -8,7 +8,7 @@ class SessionTimeout extends NavigatorObserver {
 
   SessionTimeout._internal();
 
-  final int timeoutInSeconds = 300; // Set 5 mins session time out
+  final int timeoutInSeconds = 420; // Set 7 mins session time out
   Timer? _timer;
   bool _userInteracted = false;
 
