@@ -67,7 +67,7 @@ class _paymentState extends State<paymentpage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('PayPal Integration Example'),
+        title: Text('PayPal Integration'),
         backgroundColor: Colors.blue,
       ),
       body: Padding(
@@ -116,17 +116,6 @@ class _paymentState extends State<paymentpage> {
                             print("onSuccess: $params");
                             // Perform actions after a successful PayPal transaction
                             _handleSuccess();
-
-                            // Show a success message using a SnackBar
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content:
-                                    Text('Payment successfully completed!'),
-                                duration: Duration(
-                                    seconds:
-                                        3), // Adjust the duration as needed
-                              ),
-                            );
                           },
                           onError: (error) {
                             print("onError: $error");
@@ -223,7 +212,7 @@ class _paymentState extends State<paymentpage> {
     return percentages;
   }
 
-  Future<String> _handleSuccess() async {
+  Future<void> _handleSuccess() async {
     final user = FirebaseAuth.instance.currentUser;
 
     await _updateProductQuantities(cartItems);
@@ -242,7 +231,13 @@ class _paymentState extends State<paymentpage> {
 
     await _processBooking(user);
 
-    return 'Booking successful';
+    // Show a SnackBar with a success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Booking successful'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   Future<void> _processBooking(User? user) async {
