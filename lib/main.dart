@@ -6,7 +6,6 @@ import 'package:project_02_final/authentication/screens/login.dart';
 import 'package:project_02_final/reusable_widgets/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'Admin/FirebaseApi.dart';
-import 'Admin/Sample.dart';
 import 'Admin/SessionTimeout.dart';
 import 'firebase_options.dart';
 

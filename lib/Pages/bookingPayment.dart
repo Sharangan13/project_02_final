@@ -6,17 +6,8 @@ import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:intl/intl.dart';
 import '../authentication/screens/home.dart';
 import 'Product.dart';
-import 'cart.dart';
+
 import 'constants.dart';
-
-class paymentpage extends StatefulWidget {
-  const paymentpage({super.key, required this.amount});
-
-  final double amount;
-
-  @override
-  State<paymentpage> createState() => _paymentState();
-}
 
 class Booking {
   String status;
@@ -27,9 +18,11 @@ class Booking {
   final double total;
   final int quantity;
   var email;
+  String date;
   String? bookingId;
   String? productId;
-  String date;
+
+  String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   Booking({
     required this.status,
@@ -57,28 +50,54 @@ class Booking {
       'UserEmail': email,
       'bookingId': bookingId,
       'productId': productId,
-      'date': date,
+      'date': formattedDate,
     };
   }
 }
 
-class _paymentState extends State<paymentpage> {
-  void _removeItem(CartItem cartItem) {
-    setState(() {
-      Cart.removeItem(cartItem.product);
-      cartItems = Cart.items;
-      cardTotalAmount = Cart.getTotalAmount();
-      cardTotalQuantity = Cart.getTotalQuantity();
-    });
+class BookingService {
+  final user = FirebaseAuth.instance.currentUser;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Item removed from cart.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+  Future<String?> bookProduct(Booking booking) async {
+    try {
+      final DocumentReference docRef = await _firestore
+          .collection('Booking')
+          .doc(user!.uid) // Use user.uid here
+          .collection("UserBooking")
+          .add(booking.toMap());
+
+      final bookingId = docRef.id;
+      booking.bookingId = bookingId;
+
+      // Update the 'bookingId' field in Firestore
+      await docRef.update({'bookingId': bookingId});
+
+      return bookingId;
+    } catch (e) {
+      print('Error booking product: $e');
+      // Handle the error as needed
+    }
   }
+}
 
+class singleProductBookingPaymentpage extends StatefulWidget {
+  const singleProductBookingPaymentpage({
+    Key? key,
+    required this.amount,
+    required this.product,
+    required this.selectedQuantity,
+  }) : super(key: key);
+
+  final double amount;
+  final Product product;
+  final int selectedQuantity;
+
+  @override
+  State<singleProductBookingPaymentpage> createState() => _paymentState();
+}
+
+class _paymentState extends State<singleProductBookingPaymentpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,7 +150,7 @@ class _paymentState extends State<paymentpage> {
                           onSuccess: (Map params) async {
                             print("onSuccess: $params");
                             // Perform actions after a successful PayPal transaction
-                            _handleSuccess();
+                            _handleBookNow();
                           },
                           onError: (error) {
                             print("onError: $error");
@@ -160,45 +179,55 @@ class _paymentState extends State<paymentpage> {
     );
   }
 
-  List<CartItem> cartItems = Cart.items;
-  double cardTotalAmount = Cart.getTotalAmount();
-  int cardTotalQuantity = Cart.getTotalQuantity();
+  Future<void> _updateProductQuantities(
+      Product product, int bookedQuantity) async {
+    final firestore = FirebaseFirestore.instance;
+    final batch = firestore.batch();
+    DocumentReference?
+        productDoc; // Declare productDoc outside the if-else block
 
-  Future<void> _updateProductQuantities(List<CartItem> cartItems) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    for (CartItem cartItem in cartItems) {
-      try {
-        final DocumentReference productDoc = FirebaseFirestore.instance
-            .collection(cartItem.product.Category.trim() == "equipments"
-                ? 'Equipments'
-                : 'Plants')
-            .doc(cartItem.product.Category.trim() == "equipments"
-                ? "equipments"
-                : cartItem.product.Category)
+    try {
+      if (widget.product.Category.trim() == "equipments") {
+        productDoc = firestore
+            .collection('Equipments')
+            .doc("equipments")
             .collection('Items')
-            .doc(cartItem.product.productId);
-
-        final docSnapshot = await productDoc.get();
-
-        if (docSnapshot.exists) {
-          int currentAvailableQuantity =
-              int.parse(docSnapshot['quantity'] ?? '0');
-          int newAvailableQuantity =
-              currentAvailableQuantity - cartItem.quantity;
-
-          cartItem.product.quantity = newAvailableQuantity;
-
-          await productDoc
-              .update({'quantity': newAvailableQuantity.toString()});
-
-          print('Quantity updated successfully for ${cartItem.product.name}');
-        } else {
-          print('Document does not exist for ${cartItem.product.name}');
-        }
-      } catch (error) {
-        print('Error updating quantity for ${cartItem.product.name}: $error');
+            .doc(product.productId);
+      } else {
+        productDoc = firestore
+            .collection('Plants')
+            .doc(widget.product.Category)
+            .collection('Items')
+            .doc(product.productId);
       }
+
+      final docSnapshot = await productDoc.get();
+
+      if (docSnapshot.exists) {
+        // Get the current available quantity from the Firestore document
+        int currentAvailableQuantity =
+            int.parse(docSnapshot['quantity'] ?? '0');
+
+        // Calculate the new available quantity after deducting the selected quantity
+        int newAvailableQuantity = currentAvailableQuantity - bookedQuantity;
+
+        // Add the update operation to the batch
+        batch.update(productDoc, {'quantity': newAvailableQuantity.toString()});
+
+        // Update the product's availableQuantity property in memory to reflect the change
+        product.quantity = newAvailableQuantity;
+      }
+    } catch (error) {
+      print('Error updating quantity for ${product.name}: $error');
+      // Handle the error as needed
+    }
+
+    // Commit the batch write
+    try {
+      await batch.commit();
+    } catch (error) {
+      print('Error committing batch write: $error');
+      // Handle the error as needed
     }
   }
 
@@ -228,106 +257,72 @@ class _paymentState extends State<paymentpage> {
     return percentages;
   }
 
-  Future<void> _handleSuccess() async {
-    final user = FirebaseAuth.instance.currentUser;
+  void _handleBookNow() async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
 
-    await _updateProductQuantities(cartItems);
+    if (user != null) {
+      // Fetch the percentages data
+      final percentages = await fetchPercentages();
 
-    Booking newBooking = Booking(
-      status: 'pending',
-      payment: 'payment',
-      category: 'Combined',
-      image_url: '',
-      name: 'Combined Booking',
-      total: cardTotalAmount,
-      quantity: cardTotalQuantity,
-      email: user?.email ?? '',
-      date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-    );
+      // Use the fetched values to calculate the adjusted total
+      double equipmentPercentage = percentages['equipmentPercentage'] ?? 0.0;
+      double plantsPercentage = percentages['plantsPercentage'] ?? 0.0;
 
-    await _processBooking(user);
+      // Declare the adjustedTotal variable outside of the if-else block
+      double adjustedTotal;
 
-    // Show a SnackBar with a success message
+      if (widget.product.Category.trim() == "equipments") {
+        adjustedTotal = (widget.product.price) -
+            (widget.product.price * equipmentPercentage / 100.0);
+      } else {
+        adjustedTotal = (widget.product.price) -
+            (widget.product.price * plantsPercentage / 100.0);
+      }
+
+      final Booking booking = Booking(
+        status: "pending",
+        payment: "incomplete",
+        category: widget.product.Category,
+        image_url: widget.product.imageURL,
+        name: widget.product.name,
+        total: adjustedTotal,
+        quantity: widget.selectedQuantity,
+        email: user.email,
+        productId: widget.product.productId,
+        date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+      );
+
+      final bookingService = BookingService();
+
+      await bookingService.bookProduct(booking);
+
+      // Update the product quantity in Firestore and in memory
+      await _updateProductQuantities(widget.product, widget.selectedQuantity);
+
+      // Query for documents where status is "pending" and payment is "incomplete"
+      final QuerySnapshot userBookingsQuery = await _firestore
+          .collection('Booking')
+          .doc(user.uid)
+          .collection("UserBooking")
+          .where('status', isEqualTo: 'pending')
+          .where('payment', isEqualTo: 'incomplete')
+          .get();
+
+      for (QueryDocumentSnapshot doc in userBookingsQuery.docs) {
+        // Update the payment status to "complete"
+        await doc.reference.update({'payment': 'complete'});
+      }
+    }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Booking successful'),
         duration: Duration(seconds: 2),
       ),
     );
-    _removeItem(CartItem as CartItem);
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => home()),
     );
-  }
-
-  Future<void> _processBooking(User? user) async {
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-    if (user != null) {
-      final percentages = await fetchPercentages();
-
-      for (CartItem cartItem in cartItems) {
-        Product product = cartItem.product;
-
-        double equipmentPercentage = percentages['equipmentPercentage'] ?? 0.0;
-        double plantsPercentage = percentages['plantsPercentage'] ?? 0.0;
-
-        double adjustedTotal;
-
-        if (cartItem.product.Category.trim() == "equipments") {
-          adjustedTotal = (cartItem.product.price) -
-              (cartItem.product.price * equipmentPercentage / 100.0);
-        } else {
-          adjustedTotal = (cartItem.product.price) -
-              (cartItem.product.price * plantsPercentage / 100.0);
-        }
-
-        Booking booking = Booking(
-          status: 'pending',
-          payment: 'complete',
-          category: product.Category,
-          image_url: product.imageURL,
-          name: product.name,
-          total: adjustedTotal,
-          quantity: cartItem.quantity,
-          email: user.email,
-          productId: product.productId,
-          date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        );
-
-        try {
-          final DocumentReference docRef = await _firestore
-              .collection('Booking')
-              .doc(user.uid)
-              .collection("UserBooking")
-              .add(booking.toMap());
-
-          final bookingId = docRef.id;
-          booking.bookingId = bookingId;
-
-          await docRef.update({'bookingId': bookingId});
-
-          // Query for documents where status is "pending" and payment is "incomplete"
-          final QuerySnapshot userBookingsQuery = await _firestore
-              .collection('Booking')
-              .doc(user.uid)
-              .collection("UserBooking")
-              .where('status', isEqualTo: 'pending')
-              .where('payment', isEqualTo: 'incomplete')
-              .get();
-
-          for (QueryDocumentSnapshot doc in userBookingsQuery.docs) {
-            // Update the payment status to "complete"
-            await doc.reference.update({'payment': 'complete'});
-          }
-        } catch (e) {
-          print('Error booking product: $e');
-        }
-      }
-      setState(() {
-        Cart.items.clear();
-        Cart.cartUpdatedCallback?.call();
-      });
-    }
   }
 }

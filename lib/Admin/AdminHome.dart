@@ -208,7 +208,7 @@ class _AdminHomeState extends State<AdminHome> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              FcmTokenPage(), //Admin chat home page
+                              FcmTokenList(), //Admin chat home page
                         ),
                       ); // Handle onTap for Chat
                       // Add your code here

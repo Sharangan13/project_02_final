@@ -155,7 +155,11 @@ class _CartScreenState extends State<CartScreen> {
     }
 
     bool bookingAllowed = await checkBookingCriteria();
-    double finalTotal = await getAmount(); // Call the getAmount method
+
+    double allProductTotalWithDiscount =
+        await _allProductTotalWithDiscount(user);
+    double finalTotal = await getAmount(
+        allProductTotalWithDiscount); // Call the getAmount method
     double convert_srilankan_ammount_to_USD = finalTotal / 340;
     String formattedAmount =
         convert_srilankan_ammount_to_USD.toStringAsFixed(2);
@@ -281,11 +285,12 @@ class _CartScreenState extends State<CartScreen> {
     return 'Booking canceled';
   }
 
-  Future<void> _processBooking(User? user) async {
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  Future<double> _allProductTotalWithDiscount(User? user) async {
     if (user != null) {
       final percentages = await fetchPercentages();
+      double plantTotal = 0.0;
+      double equpmentsTotal = 0.0;
+      double allProductTotalWithDiscount = 0.0; // Initialize with 0.0
 
       for (CartItem cartItem in cartItems) {
         Product product = cartItem.product;
@@ -298,9 +303,50 @@ class _CartScreenState extends State<CartScreen> {
         if (cartItem.product.Category.trim() == "equipments") {
           adjustedTotal = (cartItem.product.price) -
               (cartItem.product.price * equipmentPercentage / 100.0);
+          equpmentsTotal =
+              (equpmentsTotal + (adjustedTotal) * cartItem.quantity);
         } else {
           adjustedTotal = (cartItem.product.price) -
               (cartItem.product.price * plantsPercentage / 100.0);
+          plantTotal = (plantTotal + (adjustedTotal * cartItem.quantity));
+        }
+      }
+
+      // Calculate the total with discount
+      allProductTotalWithDiscount = plantTotal + equpmentsTotal;
+
+      return allProductTotalWithDiscount;
+    }
+
+    // Return a default value if the user is null
+    return 0.0;
+  }
+
+  Future<void> _processBooking(User? user) async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    if (user != null) {
+      final percentages = await fetchPercentages();
+      double plantTotal = 0.0;
+      double equpmentsTotal = 0.0;
+      double allProductTotalWithDiscount;
+
+      for (CartItem cartItem in cartItems) {
+        Product product = cartItem.product;
+
+        double equipmentPercentage = percentages['equipmentPercentage'] ?? 0.0;
+        double plantsPercentage = percentages['plantsPercentage'] ?? 0.0;
+
+        double adjustedTotal;
+
+        if (cartItem.product.Category.trim() == "equipments") {
+          adjustedTotal = (cartItem.product.price) -
+              (cartItem.product.price * equipmentPercentage / 100.0);
+          equpmentsTotal += adjustedTotal;
+        } else {
+          adjustedTotal = (cartItem.product.price) -
+              (cartItem.product.price * plantsPercentage / 100.0);
+          plantTotal += adjustedTotal;
         }
 
         Booking booking = Booking(
@@ -331,6 +377,11 @@ class _CartScreenState extends State<CartScreen> {
           print('Error booking product: $e');
         }
       }
+      ////////////////////////////////////////////////////////////////////
+
+      allProductTotalWithDiscount = plantTotal + equpmentsTotal;
+
+      /////////////////////////////////////////////////////////////////////
 
       setState(() {
         Cart.items.clear();
@@ -374,7 +425,7 @@ class _CartScreenState extends State<CartScreen> {
     return true;
   }
 
-  Future<double> getAmount() async {
+  Future<double> getAmount(double allProductTotalWithDiscount) async {
     final User? currentUser = FirebaseAuth.instance.currentUser;
 
     final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -399,7 +450,11 @@ class _CartScreenState extends State<CartScreen> {
     }
 
     // Calculate finalTotal outside of the loop
-    double finalTotal = previousTotalAmount + cardTotalAmount;
+    double finalTotal = previousTotalAmount + allProductTotalWithDiscount;
+    print("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
+    print("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
+    print("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
+    print(allProductTotalWithDiscount);
 
     return finalTotal;
   }

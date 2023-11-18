@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:project_02_final/Pages/payment.dart';
 import 'Product.dart';
+import 'bookingPayment.dart';
 import 'cart.dart';
 
 class Booking {
@@ -15,6 +15,7 @@ class Booking {
   final double total;
   final int quantity;
   var email;
+  String date;
   String? bookingId;
   String? productId;
 
@@ -31,6 +32,7 @@ class Booking {
     required this.email,
     this.bookingId,
     this.productId,
+    required this.date,
   });
 
   Map<String, dynamic> toMap() {
@@ -226,6 +228,7 @@ class _ProductDetailsState extends State<ProductDetails> {
         quantity: selectedQuantity,
         email: user.email,
         productId: widget.product.productId,
+        date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
       );
 
       final bookingService = BookingService();
@@ -295,7 +298,9 @@ class _ProductDetailsState extends State<ProductDetails> {
           }
         }
       } else {
-        double finalTotal = await getAmount(); // Call the getAmount method
+        double previousTotalAmount = await getAmount();
+        double finalTotal = (previousTotalAmount +
+            adjustedTotal * selectedQuantity); // Call the getAmount method
         double convert_srilankan_ammount_to_USD = finalTotal / 340;
         String formattedAmount =
             convert_srilankan_ammount_to_USD.toStringAsFixed(2);
@@ -315,7 +320,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => paymentpage(amount: parsedAmount),
+                        builder: (context) => singleProductBookingPaymentpage(
+                            amount: parsedAmount,
+                            product: widget.product,
+                            selectedQuantity: selectedQuantity),
                       ),
                     );
                   },
@@ -410,11 +418,8 @@ class _ProductDetailsState extends State<ProductDetails> {
         previousTotalAmount += total;
       }
     }
-    double selectProductPrice = (widget.product.price * selectedQuantity);
-    // Calculate finalTotal outside of the loop
-    double finalTotal = previousTotalAmount + selectProductPrice;
 
-    return finalTotal;
+    return previousTotalAmount;
   }
 
   @override
