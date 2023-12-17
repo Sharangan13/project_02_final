@@ -6,7 +6,6 @@ import 'package:project_02_final/authentication/screens/login.dart';
 import 'package:project_02_final/Admin/ManageUserPage.dart';
 import 'package:project_02_final/Admin/SpecialOffers.dart';
 import 'AddAdmin_ShowAdmin_screen.dart';
-
 import 'AdminManagePage.dart';
 import 'Adminchatscreen.dart';
 import 'ConsultancyBookingDetailsPage.dart';
@@ -14,7 +13,6 @@ import 'QrScannerhomepage.dart';
 import 'RatingListScreen.dart';
 import 'SeeOrdersPage.dart';
 import 'SelectProductsPage.dart';
-import 'SessionTimeout.dart';
 import 'UploadPlantsEquipmentsPage.dart';
 import 'adminEditProfile.dart';
 import 'fcm_token_page.dart';
@@ -121,7 +119,6 @@ class _AdminHomeState extends State<AdminHome> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -137,7 +134,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -153,7 +149,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -169,7 +164,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       String bookingId =
                           "ABC345"; // Replace with the actual booking ID
                       Navigator.push(
@@ -187,7 +181,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -203,7 +196,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -221,7 +213,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -239,7 +230,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -255,7 +245,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -271,7 +260,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -287,7 +275,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -303,7 +290,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -319,7 +305,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -335,7 +320,6 @@ class _AdminHomeState extends State<AdminHome> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      SessionTimeout().onUserInteraction();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
