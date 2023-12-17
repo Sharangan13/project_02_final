@@ -152,6 +152,35 @@ class _OrdersListState extends State<OrdersList> {
       if (orderDocument['status'] == 'pending') {
         await orderDocument.reference.update({'status': 'cancelled'});
       }
+      final documentReference = FirebaseFirestore.instance
+          .collection(orderDocument['category'].trim() == 'equipments'
+              ? 'Equipments'
+              : 'Plants')
+          .doc(orderDocument['category'].trim())
+          .collection('Items')
+          .doc(orderDocument['productId']);
+
+      // Retrieve the current quantity value as a string
+      documentReference.get().then((docSnapshot) {
+        if (docSnapshot.exists) {
+          // Get the current quantity as a string
+          final currentQuantityString = docSnapshot.data()?['quantity'];
+
+          // Convert the current quantity string to an integer
+          final currentQuantityInt = int.tryParse(currentQuantityString) ?? 0;
+
+          // Update the quantity by adding the new quantity
+          final newQuantityInt = currentQuantityInt + orderDocument['quantity'];
+
+          // Convert the new quantity integer back to a string
+          final newQuantityString = newQuantityInt.toString();
+
+          // Update the Firestore document with the new quantity string
+          documentReference.update({
+            'quantity': newQuantityString,
+          });
+        }
+      });
 
       await _loadOrders();
     }
@@ -203,13 +232,14 @@ class _OrdersListState extends State<OrdersList> {
                         DocumentSnapshot userBookingDocument =
                             filteredOrders[index];
                         OrderModel order = OrderModel(
-                          userEmail: userBookingDocument['UserEmail'],
-                          imageUrl: userBookingDocument['image_url'],
-                          name: userBookingDocument['name'],
-                          quantity: userBookingDocument['quantity'],
-                          payment: userBookingDocument['payment'],
-                          date: userBookingDocument['date'],
-                        );
+                            userEmail: userBookingDocument['UserEmail'],
+                            imageUrl: userBookingDocument['image_url'],
+                            name: userBookingDocument['name'],
+                            quantity: userBookingDocument['quantity'],
+                            payment: userBookingDocument['payment'],
+                            date: userBookingDocument['date'],
+                            category: userBookingDocument['category'],
+                            productId: userBookingDocument['productId']);
 
                         return Card(
                           elevation: 3,
@@ -287,6 +317,8 @@ class OrderModel {
   final String? payment;
   final String? status;
   final String? date;
+  final String? category;
+  final String? productId;
 
   OrderModel(
       {this.userEmail,
@@ -295,5 +327,7 @@ class OrderModel {
       this.quantity,
       this.payment,
       this.date,
+      this.category,
+      this.productId,
       this.status});
 }
