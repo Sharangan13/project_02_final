@@ -72,9 +72,9 @@ class _OrdersListState extends State<OrdersList> {
         return AlertDialog(
           title: Text(
             "Finished Order",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
           ),
-          content: Text("Are you sure you want to finished this order?"),
+          content: Text("Are you sure you want to finish this order?"),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -84,7 +84,8 @@ class _OrdersListState extends State<OrdersList> {
               },
               child: Text(
                 'No',
-                style: TextStyle(color: Colors.red),
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
               ),
             ),
             TextButton(
@@ -93,7 +94,11 @@ class _OrdersListState extends State<OrdersList> {
 
                 Navigator.of(context).pop(true);
               },
-              child: Text("Yes"),
+              child: Text(
+                "Yes",
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+              ),
             ),
           ],
         );
@@ -108,14 +113,14 @@ class _OrdersListState extends State<OrdersList> {
     }
   }
 
-  Future<void> _cancellOrderAction(DocumentSnapshot orderDocument) async {
+  Future<void> _cancelOrderAction(DocumentSnapshot orderDocument) async {
     bool confirmAction = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
             "Cancel Order",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
           ),
           content: Text("Are you sure you want to cancel this order?"),
           actions: <Widget>[
@@ -159,17 +164,27 @@ class _OrdersListState extends State<OrdersList> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            decoration: InputDecoration(
-              labelText: 'Search using Customer email..',
-              suffixIcon: Icon(Icons.search),
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-            onChanged: (value) {
-              setState(() {
-                _searchQuery = value;
-              });
-            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: TextField(
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  labelText: 'Search using Customer email..',
+                  suffixIcon: Icon(Icons.search),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
+                },
+              ),
+            ),
           ),
         ),
         Expanded(
@@ -193,6 +208,7 @@ class _OrdersListState extends State<OrdersList> {
                           name: userBookingDocument['name'],
                           quantity: userBookingDocument['quantity'],
                           payment: userBookingDocument['payment'],
+                          date: userBookingDocument['date'],
                         );
 
                         return Card(
@@ -206,43 +222,52 @@ class _OrdersListState extends State<OrdersList> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            subtitle: Row(
                               children: [
-                                Text('Name: ${order.name}'),
-                                Text('Quantity: ${order.quantity}'),
-                                Text('Payment: ${order.payment}'),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Name: ${order.name}'),
+                                    Text('Quantity: ${order.quantity}'),
+                                    Text('Payment: ${order.payment}'),
+                                    Text('Date: ${order.date}'),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ElevatedButton.icon(
+                                          onPressed: () {
+                                            SessionTimeout()
+                                                .onUserInteraction();
+                                            _markAsFinished(
+                                                userBookingDocument);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.green,
+                                          ),
+                                          icon: Icon(Icons.check),
+                                          label: Text('Finish'),
+                                        ),
+                                        SizedBox(width: 20),
+                                        ElevatedButton.icon(
+                                          onPressed: () {
+                                            _cancelOrderAction(
+                                                userBookingDocument);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                          ),
+                                          icon: Icon(Icons.delete),
+                                          label: Text('Delete'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                             leading: CircleAvatar(
                               backgroundImage:
                                   NetworkImage(order.imageUrl ?? ''),
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    SessionTimeout().onUserInteraction();
-
-                                    _markAsFinished(userBookingDocument);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
-                                  ),
-                                  child: Text('Finished'),
-                                ),
-                                SizedBox(width: 10),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    _cancellOrderAction(userBookingDocument);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                  ),
-                                  child: Text('Delete'),
-                                ),
-                              ],
                             ),
                           ),
                         );
@@ -261,6 +286,7 @@ class OrderModel {
   final int? quantity;
   final String? payment;
   final String? status;
+  final String? date;
 
   OrderModel(
       {this.userEmail,
@@ -268,5 +294,6 @@ class OrderModel {
       this.name,
       this.quantity,
       this.payment,
+      this.date,
       this.status});
 }

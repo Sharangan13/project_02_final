@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'QrScannerItemBookingPage.dart';
 import 'QrScannerPage.dart';
 import 'SessionTimeout.dart';
