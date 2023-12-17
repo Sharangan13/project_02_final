@@ -193,7 +193,7 @@ class _OrdersListState extends State<OrdersList> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Card(
             elevation: 4,
             shape: RoundedRectangleBorder(

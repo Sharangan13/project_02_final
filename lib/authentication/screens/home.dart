@@ -11,7 +11,6 @@ import 'PreOrderBookingPage.dart';
 import 'ProductSearchScreen.dart';
 import 'QRCodeRetrieval.dart';
 import 'RateUs.dart';
-
 import 'UserConsaltancyBookingDetailsPage.dart';
 import 'chat.dart';
 import 'login.dart';
