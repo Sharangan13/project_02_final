@@ -69,7 +69,7 @@ class _AdminHomeState extends State<AdminHome> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: Colors.green,
               borderRadius: BorderRadius.only(
                 bottomRight: Radius.circular(50),
               ),
@@ -103,7 +103,7 @@ class _AdminHomeState extends State<AdminHome> {
             ),
           ),
           Container(
-            color: Theme.of(context).primaryColor,
+            color: Colors.green,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               decoration: const BoxDecoration(

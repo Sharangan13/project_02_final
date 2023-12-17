@@ -23,7 +23,6 @@ class _registerState extends State<register> {
 
 // Function to save the FCM token to Firebase Realtime Database
 
-
   Future<String?> generateQRCode(String uid) async {
     try {
       final qrData = uid;
@@ -179,10 +178,8 @@ class _registerState extends State<register> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Please Enter a Phone Number";
-                      } else if (!RegExp(
-                              r'^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$')
-                          .hasMatch(value)) {
-                        return "Please Enter a Valid Phone Number";
+                      } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                        return "Please Enter a Valid 10-digit Phone Number";
                       }
                       return null;
                     },
