@@ -74,7 +74,8 @@ class _OrdersListState extends State<OrdersList> {
             "Finished Order",
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
           ),
-          content: Text("Are you sure you want to finish this order?"),
+          content: Text(
+              "Are you sure you want to finish this order? confirm you recieved ammount"),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -119,10 +120,11 @@ class _OrdersListState extends State<OrdersList> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            "Cancel Order",
+            "Cancel Order WARNING....",
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
           ),
-          content: Text("Are you sure you want to cancel this order?"),
+          content: Text(
+              "Are you sure you want to cancel this order? If the customer has already paid, you must refund the amount manually"),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -148,7 +150,7 @@ class _OrdersListState extends State<OrdersList> {
       },
     );
 
-    if (confirmAction ?? true) {
+    if (confirmAction) {
       if (orderDocument['status'] == 'pending') {
         await orderDocument.reference.update({'status': 'cancelled'});
       }
@@ -239,6 +241,7 @@ class _OrdersListState extends State<OrdersList> {
                             payment: userBookingDocument['payment'],
                             date: userBookingDocument['date'],
                             category: userBookingDocument['category'],
+                            total: userBookingDocument['total'],
                             productId: userBookingDocument['productId']);
 
                         return Card(
@@ -259,7 +262,15 @@ class _OrdersListState extends State<OrdersList> {
                                   children: [
                                     Text('Name: ${order.name}'),
                                     Text('Quantity: ${order.quantity}'),
-                                    Text('Payment: ${order.payment}'),
+                                    Text(
+                                      'Payment: ${order.payment}',
+                                      style: TextStyle(
+                                          color: order.payment == 'complete'
+                                              ? Colors.green
+                                              : Colors.red,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text('Total: ${order.total}'),
                                     Text('Date: ${order.date}'),
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -319,12 +330,14 @@ class OrderModel {
   final String? date;
   final String? category;
   final String? productId;
+  final double? total;
 
   OrderModel(
       {this.userEmail,
       this.imageUrl,
       this.name,
       this.quantity,
+      this.total,
       this.payment,
       this.date,
       this.category,

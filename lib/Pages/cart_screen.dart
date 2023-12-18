@@ -218,7 +218,8 @@ class _CartScreenState extends State<CartScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirm Booking'),
-          content: Text('Are you sure you want to book these items?'),
+          content: Text(
+              'Are you sure you want to book these items? dont forget to collect your orders within 10 days'),
           actions: <Widget>[
             TextButton(
               onPressed: () {

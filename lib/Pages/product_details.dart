@@ -245,7 +245,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Are you sure you want to book $selectedQuantity ${widget.product.name}?',
+                    'Are you sure you want to book $selectedQuantity ${widget.product.name}? dont forget to collect your orders within 10 days',
                   ),
                 ],
               ),

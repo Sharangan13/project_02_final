@@ -114,7 +114,7 @@ class _paymentState extends State<singleProductBookingPaymentpage> {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 child: Text(
-                  'Unfortunately, you are required to make your payment through PayPal in USD. All discounts have been applied. The option to make the payment in LKR will be available after a few days. Similarly, card payments will also be accepted after the same period.',
+                  'Unfortunately, you are required to make your payment through PayPal in USD. All discounts have been applied. The option to make the payment in LKR will be available after a few days. Similarly, card payments will also be accepted after the same period.if any change of mind there is no refund available you can get your refund by coming dirrectly to the shop',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 17.0,

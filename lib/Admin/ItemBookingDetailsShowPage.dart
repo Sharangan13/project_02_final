@@ -38,7 +38,6 @@ class _BookingDetailsPageState extends State<ItemBookingDetailsPage> {
 
   Future<void> _completeBooking(String bookingId) async {
     try {
-      // Show a confirmation dialog with "Yes" and "No" options
       final result = await showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
@@ -51,7 +50,7 @@ class _BookingDetailsPageState extends State<ItemBookingDetailsPage> {
               ),
             ),
             content: Text(
-              'Do you want to complete the booking?',
+              'Are you sure you want to finish this order? confirm you recieved ammount',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             actions: <Widget>[
@@ -120,14 +119,14 @@ class _BookingDetailsPageState extends State<ItemBookingDetailsPage> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
-              'Cancel Booking',
+              'Cancel Booking WARNNING',
               style: TextStyle(
                 color: Colors.red,
                 fontWeight: FontWeight.bold,
               ),
             ),
             content: Text(
-              'Do you want to cancel the booking?',
+              'Are you sure you want to cancel this order? If the customer has already paid, you must refund the amount manually',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             actions: <Widget>[
@@ -278,6 +277,11 @@ class _BookingDetailsPageState extends State<ItemBookingDetailsPage> {
                             ),
                             Text(
                               'Quantity: ${bookingData['quantity']}',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Payment: ${bookingData['payment']}',
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             ),
