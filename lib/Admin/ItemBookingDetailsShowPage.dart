@@ -283,7 +283,11 @@ class _BookingDetailsPageState extends State<ItemBookingDetailsPage> {
                             Text(
                               'Payment: ${bookingData['payment']}',
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                  color: bookingData['payment'] == 'complete'
+                                      ? Colors.green
+                                      : Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
                             ),
                             Text(
                               'User email: ${bookingData['UserEmail']}',
